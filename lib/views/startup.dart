@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:petadoption/custom_widgets/custom_button.dart';
+import 'package:petadoption/custom_widgets/stateful_wrapper.dart';
+import 'package:petadoption/viewModel/startup_viewmodel.dart';
 import 'package:provider/provider.dart';
-import '../viewModel/authentication_view_model.dart';
+
+import '../custom_widgets/custom_button.dart';
 
 class Startup extends StatelessWidget {
   Startup({super.key});
@@ -9,26 +11,31 @@ class Startup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-     AuthenticationViewModel viewModel = context.watch< AuthenticationViewModel>();
-      onInit: () {
+     StartupViewModel viewModel = context.watch< StartupViewModel>();
      
-      };
-    return Scaffold( key: scaffoldKey,
-       backgroundColor: Colors.white,
-       body: Container(
-         decoration: const BoxDecoration(image: DecorationImage(fit: BoxFit.cover, image: AssetImage('assets/images/bg.png'))),
-         padding: const EdgeInsets.all(20.0),
-         child:  Column(
-           children: [
-             Expanded(child: SizedBox()),
-             Align(alignment: Alignment.center, child: SizedBox( width: 400, child: Text('Not Supported on This Device!'))),
-             CustomButton(text:"Login",onTap:(){
-               viewModel.Login("ahmed@gmail.com", "Connect@360");
-             }),
-             Expanded(child: SizedBox()),
-           ],
+    return StatefulWrapper(
+ onInit: () {
+     viewModel.doStartupLogic(context);
+      }, onDispose: (){},
+      
+      child: Scaffold( key: scaffoldKey,
+         backgroundColor: Colors.white,
+         body: Container(
+           decoration: const BoxDecoration(image: DecorationImage(fit: BoxFit.cover, image: AssetImage('assets/images/bg.png'))),
+           padding: const EdgeInsets.all(20.0),
+           child:  Column(
+             children: [
+               Expanded(child: SizedBox()),
+               Align(alignment: Alignment.center, child: SizedBox( width: 400, child: Text('Not Supported on This Device!'))),
+              
+            Expanded(child: CustomButton(text: "Logout",onTap:(){
+              viewModel.logout();
+              
+             } )),
+             ],
+           ),
          ),
        ),
-     );
+    );
   }
 }

@@ -5,12 +5,14 @@ class RefreshTokenResponse extends IBaseModel<RefreshTokenResponse> {
   String? message;
   String? accessToken;
   String? refreshToken;
+  String? expiresIn; // New field
 
   RefreshTokenResponse({
     this.success,
     this.message,
     this.accessToken,
     this.refreshToken,
+    this.expiresIn,
   });
 
   factory RefreshTokenResponse.fromJson(Map<String, dynamic> json) =>
@@ -19,6 +21,7 @@ class RefreshTokenResponse extends IBaseModel<RefreshTokenResponse> {
         message: json["message"],
         accessToken: json["accessToken"],
         refreshToken: json["refreshToken"],
+        expiresIn: json["expiresIn"], // Read from JSON
       );
 
   @override
@@ -31,5 +34,6 @@ class RefreshTokenResponse extends IBaseModel<RefreshTokenResponse> {
         "message": message,
         "accessToken": accessToken,
         "refreshToken": refreshToken,
+        "expiresIn": expiresIn, // Add to output JSON
       };
 }

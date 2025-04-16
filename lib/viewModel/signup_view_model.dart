@@ -2,6 +2,7 @@
 
 import 'dart:io';
 
+import 'package:custom_platform_device_id/platform_device_id.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
@@ -24,7 +25,7 @@ import '../models/response_models/refresh_token_response.dart';
 import '../services/db_service.dart';
 
 
-class AuthenticationViewModel extends BaseViewModel {
+class SignupViewModel extends BaseViewModel {
   PrefService get _prefService => locator<PrefService>();
   IAPIService get _apiService => locator<IAPIService>();
    IErrorReportingService get _errorReportingService =>
@@ -32,18 +33,23 @@ class AuthenticationViewModel extends BaseViewModel {
   NavigationService get _navigationService => locator<NavigationService>();
   GlobalService get _globalService => locator<GlobalService>();
   IDialogService get _dialogService => locator<IDialogService>();
-  
+   String deviceId="23423sadasd3q432423";
   final LocalAuthentication _auth = LocalAuthentication();
 
   String? _email = "";
   String? _password = "";
   bool _showPassword = false;
+
+  String role="Adopter";
   
   String? get getEmail => _email;
   String? get getPassword => _password;
   bool get getShowPassword => _showPassword;
  
-
+Future<void> _deviceId() async
+{
+ deviceId= await PlatformDeviceId.getDeviceId??"defaultId";
+}
   setShowPassword(bool showPassword) async {
     _showPassword = showPassword;
     notifyListeners();
@@ -57,8 +63,9 @@ class AuthenticationViewModel extends BaseViewModel {
     _password = password;
   }
 
-  void Login(String email, String password) async {
+  void Signup(String email, String password,String phoneNumber) async {
     try {
+      await _deviceId();
       await loading(true);
       _globalService.init();
       setEmail(email);
@@ -141,11 +148,16 @@ class AuthenticationViewModel extends BaseViewModel {
     }
     return null;
   }
-
-  void gotoSignup() {
+  
+  void gotoLogin() {
       _navigationService.pushNamedAndRemoveUntil(
-                Routes.signup,
+                Routes.login,
                 args: TransitionType.fade,
               );
+  }
+
+  void setRole(String Role) {
+     role=Role;
+     notifyListeners();
   }
 }

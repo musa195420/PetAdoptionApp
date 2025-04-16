@@ -36,7 +36,7 @@ class APIService implements IAPIService {
         }
         ApiResponse res = ApiResponse.fromJson(json.decode(response.body));
         if (response.statusCode == 200) {
-          if (res.success ?? false) {
+          if (res.success ?? true) {
             return ApiStatus(
               data: RefreshTokenResponse.fromJson(res.data),
               errorCode: "PA0004",
@@ -72,7 +72,6 @@ class APIService implements IAPIService {
    @override
      Future<ApiStatus>login(LoginRequest login) async{
        try {
-        debugPrint("Check1");
         var response = await _httpService.postData(
             "api/users/login", login.toJson());
         if (response.statusCode == 404) {

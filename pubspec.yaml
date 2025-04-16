@@ -37,6 +37,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   logger: ^2.5.0
   flutter_easyloading: ^3.0.5
+  custom_platform_device_id: ^1.0.8
 
 dev_dependencies:
   flutter_test:

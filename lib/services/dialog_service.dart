@@ -136,11 +136,20 @@ class DialogService implements IDialogService {
     }
     return res;
   }
-
+ @override
+  Future<void> showToast(Message message) async {
+    ScaffoldMessenger.of(_navigationService.navigatorKey.currentContext!)
+        .showSnackBar(SnackBar(
+            content: Text(
+      message.description,
+      style: const TextStyle(fontSize: 14),
+    )));
+  }
 }
 
 abstract class IDialogService {
 
   Future<bool> showAlert(Message message);
-  
+   Future<void> showToast(Message message);
+
 }

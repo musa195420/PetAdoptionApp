@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
@@ -6,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:petadoption/helpers/constants.dart';
 import 'package:petadoption/services/db_service.dart';
 import 'package:petadoption/services/error_reporting_service.dart';
 import 'package:petadoption/services/global_service.dart';
@@ -24,7 +27,6 @@ import 'helpers/provider.dart';
 import 'models/hive_models/user.dart';
 import 'services/navigation_service.dart';
 void main() async {
-try{
     runZonedGuarded(
     () async {
     
@@ -62,9 +64,7 @@ try{
     
     },
   );
-}catch(e,s){
-  debugPrint("Error IS => "+e.toString());
-}
+
 }
 
 
@@ -102,6 +102,8 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+   double width = MediaQuery.of(context).size.width;
+   double height= MediaQuery.of(context).size.height;
     return
       MultiProvider(
           providers: ProviderInjector.providers,

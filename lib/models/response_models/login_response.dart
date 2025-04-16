@@ -2,12 +2,14 @@ class LoginResponse {
   final String message;
   final String accessToken;
   final String refreshToken;
+  final String expiresIn; // New field
 
   // Constructor
   LoginResponse({
     required this.message,
     required this.accessToken,
     required this.refreshToken,
+    required this.expiresIn, // Include in constructor
   });
 
   // From JSON
@@ -16,6 +18,7 @@ class LoginResponse {
       message: json['message'],
       accessToken: json['accessToken'],
       refreshToken: json['refreshToken'],
+      expiresIn: json['expiresIn'], // Parse from JSON
     );
   }
 
@@ -25,6 +28,7 @@ class LoginResponse {
       'message': message,
       'accessToken': accessToken,
       'refreshToken': refreshToken,
+      'expiresIn': expiresIn, // Include in output
     };
   }
 }

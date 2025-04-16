@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:petadoption/views/home.dart';
 import 'package:petadoption/views/login.dart';
 import 'package:petadoption/views/not_supported.dart';
+import 'package:petadoption/views/signup.dart';
 import 'package:petadoption/views/startup.dart';
 
 import '../helpers/locator.dart';
@@ -16,6 +17,7 @@ class Routes {
   static const String dashboard = "dashboard";
     static const String message = "message";
     static const String notSupported = "notSupported";
+     static const String signup = "signup";
     
   
 }
@@ -158,6 +160,21 @@ class RouteManager {
             pageBuilder: (BuildContext context, Animation<double> animation,
                 Animation<double> secondaryAnimation) {
               return NotSupportedPage();
+            },
+            transitionsBuilder: (BuildContext context,
+                Animation<double> animation,
+                Animation<double> secondaryAnimation,
+                Widget child) {
+              return _transitionsBuilder(transition, animation, child);
+            },
+          );
+        }
+         case Routes.signup:
+        {
+          return PageRouteBuilder(
+            pageBuilder: (BuildContext context, Animation<double> animation,
+                Animation<double> secondaryAnimation) {
+              return SignupPage();
             },
             transitionsBuilder: (BuildContext context,
                 Animation<double> animation,

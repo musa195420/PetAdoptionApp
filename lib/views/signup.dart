@@ -1,19 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:petadoption/custom_widgets/custom_button.dart';
 import 'package:petadoption/custom_widgets/default_text_input.dart';
+import 'package:petadoption/helpers/constants.dart';
+import 'package:petadoption/viewModel/signup_view_model.dart';
 import 'package:provider/provider.dart';
 import '../viewModel/authentication_view_model.dart';
 
-class LoginPage extends StatelessWidget {
-  LoginPage({super.key});
+class SignupPage extends StatelessWidget {
+  SignupPage({super.key});
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+    final TextEditingController nameController = TextEditingController();
+       final TextEditingController numberController = TextEditingController();
+
+   List<String> roles = ["Adopter", "Donor", "Admin"];
+  
 
   @override
   Widget build(BuildContext context) {
-    AuthenticationViewModel viewModel = context.watch<AuthenticationViewModel>();
+    SignupViewModel viewModel = context.watch<SignupViewModel>();
 
      return Scaffold(
     key: scaffoldKey,
@@ -28,12 +34,12 @@ class LoginPage extends StatelessWidget {
         // Login form content with SafeArea
        SafeArea(
   child: Padding(
-    padding: const EdgeInsets.all(20.0),
+    padding: const EdgeInsets.all(10.0),
     child: Stack(
       children: [
         // White login container
         Positioned(
-          top: 170, // adjust as needed
+          top: 130, // adjust as needed
           left: 0,
           right: 0,
           child: Container(
@@ -54,15 +60,14 @@ class LoginPage extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 _buildLoginForm(viewModel),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                _buildForgotPasswordText(),
-             
-                  ],
-                ),
+               
+                 buildRoleSelector(roles:roles,selectedRole: viewModel.role,onRoleSelected: (role) {
+      
+        viewModel.setRole(role);
+      
+    }),
                 _buildLoginButton(viewModel),
-                 _buildSignup(viewModel),
+                 _buildLogin(viewModel),
                 
               ],
             ),
@@ -86,23 +91,32 @@ class LoginPage extends StatelessWidget {
 
   Widget _buildCharacterImage() {
     return Image.asset(
-      'assets/images/login.png',
-      height: 200,
+      'assets/images/signup.png',
+      height: 150,
       fit: BoxFit.contain,
     );
   }
 
-  Widget _buildLoginForm(AuthenticationViewModel viewModel) {
+  Widget _buildLoginForm(SignupViewModel viewModel) {
     return Column(
       spacing: 15,
       children: [
-        Text("LOGIN",style: TextStyle(color: const Color.fromARGB(255, 146, 61, 5),fontSize: 40,fontWeight: FontWeight.w700),),
+        Text("SIGNUP",style: TextStyle(color: const Color.fromARGB(255, 146, 61, 5),fontSize: 30,fontWeight: FontWeight.w700),),
+         DefaultTextInput(
+          controller: nameController,
+          hintText: "Name",
+          icon: Icons.person,
+        ),
         DefaultTextInput(
           controller: emailController,
           hintText: "Email",
           icon: Icons.email_outlined,
         ),
-        
+        DefaultTextInput(
+          controller: numberController,
+          hintText: "PhoneNumber",
+          icon: Icons.phone,
+        ),
         DefaultTextInput(
           controller: passwordController,
           hintText: "Password",
@@ -119,7 +133,7 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  Widget _buildLoginButton(AuthenticationViewModel viewModel) {
+  Widget _buildLoginButton(SignupViewModel viewModel) {
     return Container(
       padding: EdgeInsets.fromLTRB(60,10,60,10),
      decoration: BoxDecoration(
@@ -127,42 +141,31 @@ class LoginPage extends StatelessWidget {
        color: Colors.deepOrange,
      ),
       child: GestureDetector(
-        child: Text( "Log in",style: TextStyle(fontWeight: FontWeight.w600,color: Colors.white),),
+        child: Text( "Sign Up",style: TextStyle(fontWeight: FontWeight.w600,color: Colors.white),),
       onTap: () {
-        viewModel.Login(emailController.text, passwordController.text);
+        viewModel.Signup(emailController.text, passwordController.text,numberController.text);
       },
       ),
     );
   }
 
-  Widget _buildForgotPasswordText() {
-    return TextButton(
-      onPressed: () {
-        // TODO: Add forgot password logic
-      },
-      child: const Text(
-        "Forgot password?",
-        style: TextStyle(color: Colors.black54),
-      ),
-    );
-  }
 
   
-  Widget _buildSignup(AuthenticationViewModel viewModel) {
+  Widget _buildLogin(SignupViewModel viewModel) {
     return TextButton(
       onPressed: () {
-      viewModel.gotoSignup();
+       viewModel.gotoLogin();
       },
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const Text(
-            "Dont Have An Account ?",
+            "Already Have An Account ?",
             style: TextStyle(color: Colors.black54),
           ),
           Text(
-            "  Signup",style: TextStyle(
+            "  Login",style: TextStyle(
               fontWeight: FontWeight.w600,color: Colors.deepOrange
             ),
           )
@@ -170,4 +173,59 @@ class LoginPage extends StatelessWidget {
       ),
     );
   }
+
+  Widget buildRoleSelector({
+  required List<String> roles,
+  required String selectedRole,
+  required Function(String) onRoleSelected,
+}) {
+  final imagePaths = {
+    'Donor': 'assets/images/donor.png',
+    'Adopter': 'assets/images/adopter.png',
+    'Admin': 'assets/images/admin.png',
+  };
+
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    children: roles.map((role) {
+      final isSelected = role == selectedRole;
+
+      return GestureDetector(
+        onTap: () => onRoleSelected(role),
+        child: Container(
+          width: 100,
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: isSelected ? Colors.orange.shade100 :Color.fromARGB(255, 255, 247, 240),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: isSelected ? Colors.orange : Colors.transparent,
+              width: 2,
+            ),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.asset(
+                imagePaths[role] ?? '',
+                height: height*0.10,
+                width: width*0.20,
+                fit: BoxFit.contain,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                role,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: isSelected ? Colors.orange.shade900 : Colors.black87,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }).toList(),
+  );
+}
 }
