@@ -1,7 +1,7 @@
 import 'package:petadoption/models/base_model.dart';
 
 class RefreshTokenResponse extends IBaseModel<RefreshTokenResponse> {
-  int? success;
+  bool? success;
   String? message;
   String? accessToken;
   String? refreshToken;

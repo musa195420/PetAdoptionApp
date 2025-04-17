@@ -99,16 +99,18 @@ class AuthenticationViewModel extends BaseViewModel {
               );
             
           } else {
-            await _errorReportingService.showError(userRes);
+               await _dialogService.showApiError( loginRes.data.status.toString(),loginRes.data.message.toString(), loginRes.data.error.toString());
+   
+        
             _globalService.log('Client ($email) Login Fail');
           }
         } else {
-          await _errorReportingService
-              .showError(ApiStatus(errorCode: "PA0018"));
+           await _dialogService.showApiError( loginRes.data.status.toString(),loginRes.data.message.toString(), loginRes.data.error.toString());
+   
           _globalService.log('Client ($email) Login Fail');
         }
       } else {
-        await _errorReportingService.showError(loginRes);
+       await _dialogService.showApiError( loginRes.data.status.toString(),loginRes.data.message.toString(), loginRes.data.error.toString());
         _globalService.log('Client ($email) Login Fail');
       }
     } catch (e, s) {

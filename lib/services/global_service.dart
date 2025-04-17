@@ -1,12 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:petadoption/models/hive_models/user.dart';
 import 'package:petadoption/services/logging_service.dart';
 import 'package:petadoption/helpers/locator.dart';
 import 'package:petadoption/services/pref_service.dart';
 class GlobalService {
   PrefService get _prefService => locator<PrefService>();
   LoggingService get _loggingService => locator<LoggingService>();
-
+User? _user=User(userId: '1', email: 'user@gmail.com', phoneNumber: '324234234324', password: 'Connect@32434', role: 'Adopter', deviceId: '4353455345');
   
+
+  get user
+  {
+    return _user;
+  }
+
+  setuser(value) {
+  _user = value;
+}
+
   log(String message, {bool vti = false}) {
     if (vti) {
     
@@ -46,13 +57,13 @@ class GlobalService {
   Future<String> getHost() async {
     try {
       if (await _prefService.getBool(PrefKey.isProduction)) {
-        return "https://fdec-103-198-155-48.ngrok-free.app";
+        return "https://91ae-103-198-155-50.ngrok-free.app";
       }
     } catch (e,s) {
       logError("Error Occured When get Host", e.toString(), s);
       debugPrint(e.toString());
     }
-    return "https://fdec-103-198-155-48.ngrok-free.app";
+    return "https://91ae-103-198-155-50.ngrok-free.app";
   }
 
  

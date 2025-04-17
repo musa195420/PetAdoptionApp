@@ -6,9 +6,10 @@ class ApiResponse extends IBaseModel<ApiResponse> {
   num? responseStatusCode;
   dynamic data;
   String? exception;
-  String? code;
+  String? error;
   String? elapsedTime;
   num? totalRecords;
+  num? status;
 
   ApiResponse({
     required this.success,
@@ -16,9 +17,10 @@ class ApiResponse extends IBaseModel<ApiResponse> {
     required this.responseStatusCode,
     required this.data,
     required this.exception,
-    required this.code,
+    required this.error,
     required this.elapsedTime,
     required this.totalRecords,
+    this.status,
   });
 
   factory ApiResponse.fromJson(Map<String, dynamic> json) => ApiResponse(
@@ -27,9 +29,10 @@ class ApiResponse extends IBaseModel<ApiResponse> {
         responseStatusCode: json["responseStatusCode"],
         data: json["data"],
         exception: json["exception"],
-        code: json["code"],
+        error: json["error"],
         elapsedTime: json["elapsedTime"],
         totalRecords: json["totalRecords"],
+        status: json["status"]
       );
 
   @override
@@ -42,8 +45,9 @@ class ApiResponse extends IBaseModel<ApiResponse> {
         "responseStatusCode": responseStatusCode,
         "data": data,
         "exception": exception,
-        "code": code,
+        "error": error,
         "elapsedTime": elapsedTime,
         "totalRecords": totalRecords,
+        "status":status,
       };
 }

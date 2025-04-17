@@ -3,7 +3,7 @@ import 'package:petadoption/custom_widgets/custom_button.dart';
 import 'package:petadoption/custom_widgets/default_text_input.dart';
 import 'package:provider/provider.dart';
 import '../viewModel/authentication_view_model.dart';
-
+ dynamic formKey = GlobalKey<FormState>();
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
   final scaffoldKey = GlobalKey<ScaffoldState>();
@@ -93,29 +93,44 @@ class LoginPage extends StatelessWidget {
   }
 
   Widget _buildLoginForm(AuthenticationViewModel viewModel) {
-    return Column(
-      spacing: 15,
-      children: [
-        Text("LOGIN",style: TextStyle(color: const Color.fromARGB(255, 146, 61, 5),fontSize: 40,fontWeight: FontWeight.w700),),
-        DefaultTextInput(
-          controller: emailController,
-          hintText: "Email",
-          icon: Icons.email_outlined,
-        ),
-        
-        DefaultTextInput(
-          controller: passwordController,
-          hintText: "Password",
-          icon: Icons.lock_outline,
-          isPassword: true,
-          showPassword: viewModel.getShowPassword,
-          secureText:viewModel.getShowPassword ,
-          onEyePressed: ()
-          {
-            viewModel.setShowPassword(!viewModel.getShowPassword);
-          },
-        ),
-      ],
+    return Form(
+      key:formKey,
+      child: Column(
+        spacing: 15,
+        children: [
+          Text("LOGIN",style: TextStyle(color: const Color.fromARGB(255, 146, 61, 5),fontSize: 40,fontWeight: FontWeight.w700),),
+          DefaultTextInput(
+            controller: emailController,
+            hintText: "Email",
+            icon: Icons.email_outlined,
+              validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Enter Your Email Please';
+                                      }
+                                      return null;
+                                    },
+          ),
+          
+          DefaultTextInput(
+            controller: passwordController,
+            hintText: "Password",
+            icon: Icons.lock_outline,
+            isPassword: true,
+            showPassword: viewModel.getShowPassword,
+            secureText:viewModel.getShowPassword ,
+            onEyePressed: ()
+            {
+              viewModel.setShowPassword(!viewModel.getShowPassword);
+            },
+             validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Enter Your Phone Number Please';
+                                      }
+                                      return null;
+                                    },
+          ),
+        ],
+      ),
     );
   }
 
@@ -129,8 +144,9 @@ class LoginPage extends StatelessWidget {
       child: GestureDetector(
         child: Text( "Log in",style: TextStyle(fontWeight: FontWeight.w600,color: Colors.white),),
       onTap: () {
+         if (formKey.currentState!.validate()) {
         viewModel.Login(emailController.text, passwordController.text);
-      },
+      }},
       ),
     );
   }

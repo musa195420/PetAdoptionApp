@@ -3,8 +3,7 @@ import 'package:petadoption/custom_widgets/default_text_input.dart';
 import 'package:petadoption/helpers/constants.dart';
 import 'package:petadoption/viewModel/signup_view_model.dart';
 import 'package:provider/provider.dart';
-import '../viewModel/authentication_view_model.dart';
-
+ dynamic formKey = GlobalKey<FormState>();
 class SignupPage extends StatelessWidget {
   SignupPage({super.key});
   final scaffoldKey = GlobalKey<ScaffoldState>();
@@ -32,21 +31,22 @@ class SignupPage extends StatelessWidget {
           fit: BoxFit.cover,
         ),
         // Login form content with SafeArea
-       SafeArea(
-  child: Padding(
-    padding: const EdgeInsets.all(10.0),
-    child: Stack(
-      children: [
-        // White login container
-        Positioned(
-          top: 130, // adjust as needed
-          left: 0,
-          right: 0,
-          child: Container(
+     SafeArea(
+  child: SingleChildScrollView(
+    child: Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Column(
+        children: [
+          // Character image at top
+          _buildCharacterImage(),
+
+        
+
+          Container(
             decoration: BoxDecoration(
-              color: Color.fromARGB(255, 255, 247, 240),
+              color: const Color.fromARGB(255, 255, 247, 240),
               borderRadius: BorderRadius.circular(16),
-              boxShadow: [
+              boxShadow: const [
                 BoxShadow(
                   color: Colors.black12,
                   blurRadius: 10,
@@ -54,36 +54,34 @@ class SignupPage extends StatelessWidget {
                 ),
               ],
             ),
-            padding: const EdgeInsets.fromLTRB(20, 20, 20, 20), // top padding gives space for character image
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
             child: Column(
-              spacing: 10,
-              mainAxisSize: MainAxisSize.min,
               children: [
                 _buildLoginForm(viewModel),
-               
-                 buildRoleSelector(roles:roles,selectedRole: viewModel.role,onRoleSelected: (role) {
-      
-        viewModel.setRole(role);
-      
-    }),
+                const SizedBox(height: 10),
+                Text(
+                  "What You Are Select The Role?",
+                  style: TextStyle(color: Colors.black54, fontSize: 13),
+                ),
+                const SizedBox(height: 5),
+                buildRoleSelector(
+                  roles: roles,
+                  selectedRole: viewModel.role,
+                  onRoleSelected: (role) {
+                    viewModel.setRole(role);
+                  },
+                ),
+                const SizedBox(height: 20),
                 _buildLoginButton(viewModel),
-                 _buildLogin(viewModel),
-                
+                _buildLogin(viewModel),
               ],
             ),
           ),
-        ),
-
-        // Character image on top
-        Align(
-          alignment: Alignment.topCenter,
-          child: _buildCharacterImage(),
-        ),
-      ],
+        ],
+      ),
     ),
   ),
-)
-,
+),
       ],
     ),
   );
@@ -98,38 +96,65 @@ class SignupPage extends StatelessWidget {
   }
 
   Widget _buildLoginForm(SignupViewModel viewModel) {
-    return Column(
-      spacing: 15,
-      children: [
-        Text("SIGNUP",style: TextStyle(color: const Color.fromARGB(255, 146, 61, 5),fontSize: 30,fontWeight: FontWeight.w700),),
-         DefaultTextInput(
-          controller: nameController,
-          hintText: "Name",
-          icon: Icons.person,
-        ),
-        DefaultTextInput(
-          controller: emailController,
-          hintText: "Email",
-          icon: Icons.email_outlined,
-        ),
-        DefaultTextInput(
-          controller: numberController,
-          hintText: "PhoneNumber",
-          icon: Icons.phone,
-        ),
-        DefaultTextInput(
-          controller: passwordController,
-          hintText: "Password",
-          icon: Icons.lock_outline,
-          isPassword: true,
-          showPassword: viewModel.getShowPassword,
-          secureText:viewModel.getShowPassword ,
-          onEyePressed: ()
-          {
-            viewModel.setShowPassword(!viewModel.getShowPassword);
-          },
-        ),
-      ],
+    return Form(
+      key: formKey,
+      child: Column(
+        spacing: 15,
+        children: [
+          Text("SIGNUP",style: TextStyle(color: const Color.fromARGB(255, 146, 61, 5),fontSize: 30,fontWeight: FontWeight.w700),),
+           DefaultTextInput(
+            controller: nameController,
+            hintText: "Name",
+            icon: Icons.person,
+            validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Enter Your Name Please';
+                                      }
+                                      return null;
+                                    },
+          ),
+          DefaultTextInput(
+            controller: emailController,
+            hintText: "Email",
+            icon: Icons.email_outlined,
+             validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Enter Your Email Please';
+                                      }
+                                      return null;
+                                    },
+          ),
+          DefaultTextInput(
+            controller: numberController,
+            hintText: "PhoneNumber",
+            icon: Icons.phone,
+             validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Enter Your Phone Number Please';
+                                      }
+                                      return null;
+                                    },
+          ),
+          DefaultTextInput(
+            controller: passwordController,
+            hintText: "Password",
+            icon: Icons.lock_outline,
+            isPassword: true,
+            showPassword: viewModel.getShowPassword,
+            secureText:viewModel.getShowPassword ,
+            onEyePressed: ()
+            {
+              viewModel.setShowPassword(!viewModel.getShowPassword);
+            },
+              validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Enter Your Password Please';
+                                      }
+                                      return null;
+                                    },
+          ),
+        ],
+      ),
     );
   }
 
@@ -143,8 +168,9 @@ class SignupPage extends StatelessWidget {
       child: GestureDetector(
         child: Text( "Sign Up",style: TextStyle(fontWeight: FontWeight.w600,color: Colors.white),),
       onTap: () {
+        if (formKey.currentState!.validate()) {
         viewModel.Signup(emailController.text, passwordController.text,numberController.text);
-      },
+      }},
       ),
     );
   }
@@ -190,7 +216,7 @@ class SignupPage extends StatelessWidget {
     children: roles.map((role) {
       final isSelected = role == selectedRole;
 
-      return GestureDetector(
+      return InkWell(
         onTap: () => onRoleSelected(role),
         child: Container(
           width: 100,

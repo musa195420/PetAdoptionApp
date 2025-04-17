@@ -1,12 +1,15 @@
 // ignore_for_file: non_constant_identifier_names
 
 import 'dart:io';
+import 'dart:math';
 
 import 'package:custom_platform_device_id/platform_device_id.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:petadoption/helpers/locator.dart';
+import 'package:petadoption/models/message.dart';
+import 'package:petadoption/models/request_models/signup_request.dart';
 import 'package:petadoption/models/request_models/userinforequest.dart';
 import 'package:petadoption/services/api_service.dart';
 import 'package:petadoption/services/dialog_service.dart';
@@ -23,7 +26,7 @@ import '../models/request_models/refresh_token_request.dart';
 import '../models/response_models/login_response.dart';
 import '../models/response_models/refresh_token_response.dart';
 import '../services/db_service.dart';
-
+import 'package:intl/intl.dart';
 
 class SignupViewModel extends BaseViewModel {
   PrefService get _prefService => locator<PrefService>();
@@ -46,9 +49,20 @@ class SignupViewModel extends BaseViewModel {
   String? get getPassword => _password;
   bool get getShowPassword => _showPassword;
  
-Future<void> _deviceId() async
-{
- deviceId= await PlatformDeviceId.getDeviceId??"defaultId";
+Future<void> _deviceId() async {
+  try {
+    deviceId = await PlatformDeviceId.getDeviceId ?? "";
+  } catch(e) {
+    // Generate random hex string
+    final random = Random();
+    final hex = List.generate(6, (_) => random.nextInt(256).toRadixString(16).padLeft(2, '0')).join();
+
+    // Get current date-time in a compact format
+    final now = DateFormat('yyyyMMdd_HHmmss').format(DateTime.now());
+
+    // Assign fallback device ID
+    deviceId = 'RND_${hex}_$now';
+  }
 }
   setShowPassword(bool showPassword) async {
     _showPassword = showPassword;
@@ -71,12 +85,18 @@ Future<void> _deviceId() async
       setEmail(email);
       setPassword(password);
       debugPrint(_apiService.runtimeType.toString());
-      var loginRes = await _apiService.login(LoginRequest(
+      var signupRes = await _apiService.signUp(SignupRequest(
+          email: email,
+          password: password, phoneNumber: phoneNumber, role: role, deviceId: deviceId,
+          ));
+      if (signupRes.errorCode == "PA0004") { 
+         var loginRes = await _apiService.login(LoginRequest(
           email: email,
           password: password,
           ));
-      if (loginRes.errorCode == "PA0004") {
-       RefreshTokenResponse response = loginRes.data as  RefreshTokenResponse;
+
+       if(loginRes.errorCode == "PA0004"){
+        RefreshTokenResponse response = loginRes.data as  RefreshTokenResponse;
         if ((response.accessToken ?? "").isNotEmpty) {
           _prefService.setString(PrefKey.token, response.accessToken ?? "");
           _prefService.setString(
@@ -92,6 +112,7 @@ Future<void> _deviceId() async
           if (userRes.errorCode == "PA0004") {
             User userResponse = userRes.data as User;
             await locator<IHiveService<User>>().deleteAllAndAdd(userResponse);
+           await  _globalService.setuser(userResponse);
         
               _prefService.setBool(PrefKey.isSetupComplete, false);
               _prefService.setBool(PrefKey.isLoggedIn, true);
@@ -109,13 +130,20 @@ Future<void> _deviceId() async
             await _errorReportingService.showError(userRes);
             _globalService.log('Client ($email) Login Fail');
           }
-        } else {
+        } else{
           await _errorReportingService
               .showError(ApiStatus(errorCode: "PA0018"));
           _globalService.log('Client ($email) Login Fail');
         }
-      } else {
-        await _errorReportingService.showError(loginRes);
+       }
+       else{
+         _navigationService.pushNamedAndRemoveUntil(
+                Routes.login,
+                args: TransitionType.fade,
+              );
+       }
+      } else{
+      await _dialogService.showApiError( signupRes.data.status.toString(),signupRes.data.message.toString(), signupRes.data.error.toString());
         _globalService.log('Client ($email) Login Fail');
       }
     } catch (e, s) {
