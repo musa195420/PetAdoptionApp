@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:petadoption/custom_widgets/stateful_wrapper.dart';
-import 'package:petadoption/viewModel/startup_viewmodel.dart';
+import 'package:petadoption/viewModel/home_view_model.dart';
 import 'package:provider/provider.dart';
 
 import '../custom_widgets/custom_button.dart';
+import '../viewModel/startup_viewmodel.dart';
 
 class Startup extends StatelessWidget {
   Startup({super.key});

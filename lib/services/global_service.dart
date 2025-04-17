@@ -9,7 +9,7 @@ class GlobalService {
 User? _user=User(userId: '1', email: 'user@gmail.com', phoneNumber: '324234234324', password: 'Connect@32434', role: 'Adopter', deviceId: '4353455345');
   
 
-  get user
+  User? getuser()
   {
     return _user;
   }

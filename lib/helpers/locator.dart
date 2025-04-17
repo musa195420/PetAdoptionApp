@@ -13,9 +13,10 @@ import 'package:petadoption/services/navigation_service.dart';
 import 'package:petadoption/services/network_service.dart';
 import 'package:petadoption/services/pref_service.dart';
 import 'package:petadoption/viewModel/authentication_view_model.dart';
-import 'package:petadoption/viewModel/startup_viewmodel.dart';
+import 'package:petadoption/viewModel/home_view_model.dart';
 
 import '../viewModel/signup_view_model.dart';
+import '../viewModel/startup_viewmodel.dart';
 
 
 GetIt locator = GetIt.instance;
@@ -41,6 +42,7 @@ class LocatorInjector {
      locator.registerLazySingleton(() => AuthenticationViewModel());
       locator.registerLazySingleton(() => SignupViewModel());
        locator.registerLazySingleton(() => StartupViewModel());
+       locator.registerLazySingleton(() => HomeViewModel());
     
 
     // Repos

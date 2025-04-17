@@ -3,7 +3,6 @@
 import 'dart:io';
 import 'dart:math';
 
-import 'package:custom_platform_device_id/platform_device_id.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
@@ -18,7 +17,6 @@ import 'package:petadoption/services/global_service.dart';
 import 'package:petadoption/services/navigation_service.dart';
 import 'package:petadoption/services/pref_service.dart';
 import 'package:petadoption/viewModel/base_view_model.dart';
-
 import '../models/api_status.dart';
 import '../models/hive_models/user.dart';
 import '../models/request_models/login_request.dart';
@@ -42,28 +40,64 @@ class SignupViewModel extends BaseViewModel {
   String? _email = "";
   String? _password = "";
   bool _showPassword = false;
-
+  List<String> roles = ["Adopter", "Donor", "Admin"];
+  
   String role="Adopter";
   
   String? get getEmail => _email;
   String? get getPassword => _password;
   bool get getShowPassword => _showPassword;
- 
-Future<void> _deviceId() async {
-  try {
-    deviceId = await PlatformDeviceId.getDeviceId ?? "";
-  } catch(e) {
-    // Generate random hex string
-    final random = Random();
-    final hex = List.generate(6, (_) => random.nextInt(256).toRadixString(16).padLeft(2, '0')).join();
 
-    // Get current date-time in a compact format
-    final now = DateFormat('yyyyMMdd_HHmmss').format(DateTime.now());
 
-    // Assign fallback device ID
-    deviceId = 'RND_${hex}_$now';
-  }
-}
+//   bool? _serviceEnabled;
+// PermissionStatus? _permissionGranted;
+// LocationData? _locationData;
+
+
+//  Future<void> _getLocation()async
+//  {
+//   try{
+// Location location = new Location();
+
+
+
+// _serviceEnabled = await location.serviceEnabled();
+// if (_serviceEnabled!=null && !_serviceEnabled!) {
+//   _serviceEnabled = await location.requestService();
+//   if (!_serviceEnabled!) {
+//     return;
+//   }
+// }
+
+// _permissionGranted = await location.hasPermission();
+// if (_permissionGranted == PermissionStatus.denied) {
+//   _permissionGranted = await location.requestPermission();
+//   if (_permissionGranted != PermissionStatus.granted) {
+//     return;
+//   }
+// }
+
+// _locationData = await location.getLocation();
+//   }catch(e,s)
+//   {
+//  debugPrint("Error ${e.toString()} Stack ${s.toString()}");
+//   }
+//  }
+// Future<void> _deviceId() async {
+//   try {
+//     deviceId = await PlatformDeviceId.getDeviceId ?? "";
+//   } catch(e) {
+//     // Generate random hex string
+//     final random = Random();
+//     final hex = List.generate(6, (_) => random.nextInt(256).toRadixString(16).padLeft(2, '0')).join();
+
+//     // Get current date-time in a compact format
+//     final now = DateFormat('yyyyMMdd_HHmmss').format(DateTime.now());
+
+//     // Assign fallback device ID
+//     deviceId = 'RND_${hex}_$now';
+//   }
+// }
   setShowPassword(bool showPassword) async {
     _showPassword = showPassword;
     notifyListeners();
@@ -79,7 +113,8 @@ Future<void> _deviceId() async {
 
   void Signup(String email, String password,String phoneNumber) async {
     try {
-      await _deviceId();
+      //await _deviceId();
+     
       await loading(true);
       _globalService.init();
       setEmail(email);
@@ -121,10 +156,7 @@ Future<void> _deviceId() async {
               // _globalService.setIsFromLogin(true);
               _globalService.log('Client ($email) Login Success');
     
-              _navigationService.pushNamedAndRemoveUntil(
-                Routes.startup,
-                args: TransitionType.fade,
-              );
+             _gotoNextPage();
             
           } else {
             await _errorReportingService.showError(userRes);
@@ -169,6 +201,10 @@ Future<void> _deviceId() async {
           return response;
         }
       }
+      else{
+           await _dialogService.showApiError( refreshRes.data.status.toString(),refreshRes.data.message.toString(), refreshRes.data.error.toString());
+   
+      }
     } catch (e, s) {
       _globalService.logError(
           "Error Occured When Renew User Token", e.toString(), s);
@@ -187,5 +223,34 @@ Future<void> _deviceId() async {
   void setRole(String Role) {
      role=Role;
      notifyListeners();
+  }
+  
+   _gotoNextPage()async {
+
+switch(role)
+{
+  case "Adopter":
+  await    _navigationService.pushNamedAndRemoveUntil(
+                Routes.home,
+                args: TransitionType.fade,
+              );
+  
+  break;
+  case "Donor":
+  await   _navigationService.pushNamedAndRemoveUntil(
+                Routes.petpage,
+                args: TransitionType.fade,
+              );
+  
+  break;
+  case "Admin":
+   await  _navigationService.pushNamedAndRemoveUntil(
+                Routes.admin,
+                args: TransitionType.fade,
+              );
+  
+  break;
+}
+  
   }
 }

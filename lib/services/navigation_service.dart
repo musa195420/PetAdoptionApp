@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:petadoption/views/admin.dart';
 import 'package:petadoption/views/home.dart';
 import 'package:petadoption/views/login.dart';
 import 'package:petadoption/views/not_supported.dart';
+import 'package:petadoption/views/pet_page.dart';
 import 'package:petadoption/views/signup.dart';
 import 'package:petadoption/views/startup.dart';
 
@@ -18,6 +20,8 @@ class Routes {
     static const String message = "message";
     static const String notSupported = "notSupported";
      static const String signup = "signup";
+     static const String admin = "admin";
+       static const String petpage = "petpage";
     
   
 }
@@ -184,6 +188,7 @@ class RouteManager {
             },
           );
         }
+          
       case Routes.home:
         {
           return PageRouteBuilder(
@@ -245,7 +250,37 @@ class RouteManager {
       //       },
       //     );
       //   }
-    
+
+       case Routes.admin:
+        {
+          return PageRouteBuilder(
+            pageBuilder: (BuildContext context, Animation<double> animation,
+                Animation<double> secondaryAnimation) {
+              return AdminPage();
+            },
+            transitionsBuilder: (BuildContext context,
+                Animation<double> animation,
+                Animation<double> secondaryAnimation,
+                Widget child) {
+              return _transitionsBuilder(transition, animation, child);
+            },
+          );
+        }
+     case Routes.petpage:
+        {
+          return PageRouteBuilder(
+            pageBuilder: (BuildContext context, Animation<double> animation,
+                Animation<double> secondaryAnimation) {
+              return PetPage();
+            },
+            transitionsBuilder: (BuildContext context,
+                Animation<double> animation,
+                Animation<double> secondaryAnimation,
+                Widget child) {
+              return _transitionsBuilder(transition, animation, child);
+            },
+          );
+        }
       default:
         {
           return _errorPage();

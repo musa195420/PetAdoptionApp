@@ -49,10 +49,10 @@ String error="Not Defined";
               errorCode: "PA0004",
             );
           } else {
-            return ApiStatus(data: null, errorCode: res.status.toString());
+            return ApiStatus(data: ErrorResponse.fromJson(res.toJson()), errorCode: res.status.toString());
           }
         } else {
-          return ApiStatus(data: null, errorCode: res.status.toString());
+          return ApiStatus(data: ErrorResponse.fromJson(res.toJson()), errorCode: res.status.toString());
         }
       } on HttpException catch (e, s) {
         _globalService.logError("Error Occured!", e.toString(), s);

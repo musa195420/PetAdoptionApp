@@ -92,9 +92,9 @@ class AuthenticationViewModel extends BaseViewModel {
               setPassword("");
               // _globalService.setIsFromLogin(true);
               _globalService.log('Client ($email) Login Success');
-    
+              _globalService.setuser(userResponse);
               _navigationService.pushNamedAndRemoveUntil(
-                Routes.startup,
+                Routes.home,
                 args: TransitionType.fade,
               );
             
@@ -136,6 +136,8 @@ class AuthenticationViewModel extends BaseViewModel {
           return response;
         }
       }
+        await _dialogService.showApiError( refreshRes.data.status.toString(),refreshRes.data.message.toString(), refreshRes.data.error.toString());
+    
     } catch (e, s) {
       _globalService.logError(
           "Error Occured When Renew User Token", e.toString(), s);
