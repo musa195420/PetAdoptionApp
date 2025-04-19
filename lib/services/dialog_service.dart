@@ -13,7 +13,7 @@ import 'package:petadoption/services/api_service.dart';
 import 'package:petadoption/helpers/constants.dart';
 import '../custom_widgets/custom_button.dart';
 import '../models/message.dart';
-
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class DialogService implements IDialogService {
   IAPIService get _apiService => locator<IAPIService>();
@@ -276,12 +276,74 @@ Future<bool> showApiError(String? code, String? error, String? message) async {
       style: const TextStyle(fontSize: 14),
     )));
   }
+
+
+   @override
+  Future<int> showSelect(Message message) async {
+    var isLoader = EasyLoading.isShow ? true : false;
+    if (isLoader) {
+      await EasyLoading.dismiss();
+    }
+
+    var res = await showBarModalBottomSheet<int>(
+          context: _navigationService.navigatorKey.currentContext!,
+          backgroundColor: Colors.transparent,
+          builder: (context) => Container(
+            color: Colors.white,
+            padding: const EdgeInsets.all(20),
+            child: SizedBox(
+              width: 600,
+              child: SingleChildScrollView(
+                // Prevent overflow
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      message.description,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const Divider(),
+                    ListView.builder(
+                      shrinkWrap:
+                          true, // Ensures ListView takes only required space
+                      physics:
+                          const NeverScrollableScrollPhysics(), // Prevent ListView scrolling inside SingleChildScrollView
+                      itemCount: message.items!.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return ListTile(
+                          title: Text(message.items![index]!),
+                          onTap: () {
+                            _navigationService.popDialog(result: index);
+                          },
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ) ??
+        -1;
+
+    if (isLoader) {
+      await EasyLoading.show(status: 'Loading...');
+    }
+
+    return res;
+  }
+
 }
 
 abstract class IDialogService {
-
+Future<int> showSelect(Message message) ;
   Future<bool> showAlert(Message message);
    Future<bool> showApiError(String? code,String? error,String? message);
    Future<void> showToast(Message message);
-
 }

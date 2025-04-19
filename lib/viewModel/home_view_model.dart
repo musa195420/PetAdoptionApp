@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:petadoption/helpers/locator.dart';
@@ -23,28 +25,16 @@ class HomeViewModel extends BaseViewModel {
 
   bool checkVersion = true;
 Future<void> uploadProfileImage() async {
-  String userId= _globalService.getuser()!.userId;
   final picker = ImagePicker();
   final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
   if (pickedFile == null) return;
 
-  var request = http.MultipartRequest(
-    'POST',
-    Uri.parse('${await _globalService.getHost()}/api/users/upload-profile'),
-  );
-
-  request.fields['user_id'] = userId;
-  request.files.add(await http.MultipartFile.fromPath('image', pickedFile.path));
-
-  var response = await request.send();
-
-  if (response.statusCode == 200) {
-    print("Upload successful");
-    final responseBody = await response.stream.bytesToString();
-    print(responseBody); // Contains image URL
+  final status = await _apiService.uploadProfileImage(pickedFile.path);
+  if (status.data != null) {
+    debugPrint("Upload success: ${status.data}");
   } else {
-    print("Upload failed with status: ${response.statusCode}");
+    debugPrint("Upload failed: ${status.errorCode}");
   }
 }
 }

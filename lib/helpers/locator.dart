@@ -15,6 +15,7 @@ import 'package:petadoption/services/pref_service.dart';
 import 'package:petadoption/viewModel/authentication_view_model.dart';
 import 'package:petadoption/viewModel/home_view_model.dart';
 
+import '../viewModel/pet_view_model.dart';
 import '../viewModel/signup_view_model.dart';
 import '../viewModel/startup_viewmodel.dart';
 
@@ -43,6 +44,7 @@ class LocatorInjector {
       locator.registerLazySingleton(() => SignupViewModel());
        locator.registerLazySingleton(() => StartupViewModel());
        locator.registerLazySingleton(() => HomeViewModel());
+       locator.registerLazySingleton(() => PetViewModel());
     
 
     // Repos

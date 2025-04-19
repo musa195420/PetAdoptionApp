@@ -57,13 +57,13 @@ User? _user=User(userId: '1', email: 'user@gmail.com', phoneNumber: '32423423432
   Future<String> getHost() async {
     try {
       if (await _prefService.getBool(PrefKey.isProduction)) {
-        return "https://91ae-103-198-155-50.ngrok-free.app";
+        return "https://d841-103-198-155-49.ngrok-free.app";
       }
     } catch (e,s) {
       logError("Error Occured When get Host", e.toString(), s);
       debugPrint(e.toString());
     }
-    return "https://91ae-103-198-155-50.ngrok-free.app";
+    return "https://d841-103-198-155-49.ngrok-free.app";
   }
 
  

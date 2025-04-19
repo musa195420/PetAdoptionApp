@@ -37,15 +37,8 @@ class StartupViewModel extends BaseViewModel {
           );
         }  else {
 
-         String startTime = await _prefService.getString(PrefKey.tokenStartTime);
-  String expiresIn = await _prefService.getString(PrefKey.tokenExpiresIn);
-
-
-
-  DateTime startDateTime = DateTime.parse(startTime);
+    String expiresIn = await _prefService.getString(PrefKey.tokenExpiresIn);
   DateTime expiryDateTime = DateTime.parse(expiresIn);
-
-  int elapsedSeconds = DateTime.now().difference(startDateTime).inSeconds;
   int remainingSeconds = expiryDateTime.difference(DateTime.now()).inSeconds;
 
 
@@ -71,19 +64,27 @@ class StartupViewModel extends BaseViewModel {
         _prefService.setString(PrefKey.tokenStartTime, DateTime.now().toString());
 
         _navigationService.pushNamedAndRemoveUntil(
-          Routes.home,
+          Routes.petpage,
           args: TransitionType.fade,
         );
       }
     }
     else{
     await _dialogService.showApiError( refreshRes.data.status.toString(),refreshRes.data.message.toString(), refreshRes.data.error.toString());
-   
+  await  logout();
      await  _navigationService.pushNamedAndRemoveUntil(
                 Routes.login,
                 args: TransitionType.fade,
               );
     }
+  }
+  else{
+      await loading(false);
+   await   _navigationService.pushNamedAndRemoveUntil(
+          Routes.petpage,
+          args: TransitionType.fade,
+        );
+
   }
         }  
     } catch (e,s) {

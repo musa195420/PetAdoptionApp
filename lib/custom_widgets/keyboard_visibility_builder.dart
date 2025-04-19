@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class KeyboardVisibilityBuilder extends StatefulWidget {
   final Widget child;
@@ -20,7 +19,6 @@ class KeyboardVisibilityBuilder extends StatefulWidget {
 
 class _KeyboardVisibilityBuilderState extends State<KeyboardVisibilityBuilder>
     with WidgetsBindingObserver {
-
   @override
   void initState() {
     super.initState();
@@ -35,15 +33,19 @@ class _KeyboardVisibilityBuilderState extends State<KeyboardVisibilityBuilder>
 
   @override
   void didChangeMetrics() {
-     // Add a slight delay before reapplying the UI mode
-    Future.delayed(const Duration(milliseconds: 100), () {
-      SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
-    });
+  //  final bottomInset = MediaQuery.of(context).viewInsets.bottom;
+   // final isKeyboardVisible = bottomInset > 0.0;
+
+    // if (!isKeyboardVisible) {
+    //   // Only apply immersive mode when keyboard is dismissed
+    //   Future.delayed(const Duration(milliseconds: 100), () {
+    //     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+    //   });
+    // }
   }
 
   @override
-  Widget build(BuildContext context) => widget.builder(
-        context,
-        widget.child
-      );
+  Widget build(BuildContext context) {
+    return widget.builder(context, widget.child);
+  }
 }

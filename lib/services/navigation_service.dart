@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:petadoption/views/admin.dart';
 import 'package:petadoption/views/home.dart';
 import 'package:petadoption/views/login.dart';
+import 'package:petadoption/views/modals/animalBreed_modal.dart';
+import 'package:petadoption/views/modals/animalType_modal.dart';
 import 'package:petadoption/views/not_supported.dart';
 import 'package:petadoption/views/pet_page.dart';
 import 'package:petadoption/views/signup.dart';
 import 'package:petadoption/views/startup.dart';
 
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import '../helpers/locator.dart';
 import 'global_service.dart';
 
@@ -22,6 +25,8 @@ class Routes {
      static const String signup = "signup";
      static const String admin = "admin";
        static const String petpage = "petpage";
+       static const String animalType_modal = "animalType_modal";
+        static const String animalBreed_modal = "animalBreed_modal";
     
   
 }
@@ -71,6 +76,12 @@ class NavigationService {
     }
   }
 
+    Future pushModalBottom(String path, {required dynamic data}) async {
+    _globalService.log('Open {$path}\' Modal');
+    openModalBottomSheet(path, data);
+  }
+
+
   Future pushNamed(String path,
       {required dynamic data, required TransitionType args}) async {
     _globalService.log('Go to {$path}\' Page');
@@ -99,6 +110,37 @@ class NavigationService {
       removeAllOldRoutes,
       arguments: [args],
     );
+  }
+
+  
+  void openModalBottomSheet(String path, dynamic data) {
+    switch (path) {
+      case Routes.animalType_modal:
+        {
+          showBarModalBottomSheet(
+            expand: true,
+            context: navigatorKey.currentContext!,
+            backgroundColor: Colors.transparent,
+            builder: (context) => AnimaltypeModal(
+            //  invoice: data,
+            ),
+          );
+        }
+        break;
+
+          case Routes.animalBreed_modal:
+        {
+          showBarModalBottomSheet(
+            expand: true,
+            context: navigatorKey.currentContext!,
+            backgroundColor: Colors.transparent,
+            builder: (context) => AnimalbreedModal(
+            petId: data.petId,
+            ),
+          );
+        }
+        break;
+    }
   }
 
   Future pushNamedAndRemoveUntil(String path,

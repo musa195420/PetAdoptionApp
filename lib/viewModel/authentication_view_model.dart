@@ -85,7 +85,7 @@ class AuthenticationViewModel extends BaseViewModel {
           if (userRes.errorCode == "PA0004") {
             User userResponse = userRes.data as User;
             await locator<IHiveService<User>>().deleteAllAndAdd(userResponse);
-        
+       await  _globalService.setuser(userResponse);
               _prefService.setBool(PrefKey.isSetupComplete, false);
               _prefService.setBool(PrefKey.isLoggedIn, true);
               setEmail("");
@@ -94,7 +94,7 @@ class AuthenticationViewModel extends BaseViewModel {
               _globalService.log('Client ($email) Login Success');
               _globalService.setuser(userResponse);
               _navigationService.pushNamedAndRemoveUntil(
-                Routes.home,
+                Routes.petpage,
                 args: TransitionType.fade,
               );
             
