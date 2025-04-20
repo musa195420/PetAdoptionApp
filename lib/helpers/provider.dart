@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
 import '../viewModel/admin_view_models/admin_view_model.dart';
-import '../viewModel/admin_view_models/user_admin_view.dart';
+import '../viewModel/admin_view_models/user_admin_view_model.dart';
 import '../viewModel/home_view_model.dart';
 import '../viewModel/pet_view_model.dart';
 

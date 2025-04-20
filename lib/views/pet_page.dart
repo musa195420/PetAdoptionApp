@@ -12,16 +12,16 @@ import '../helpers/constants.dart';
 
 dynamic formKey = GlobalKey<FormState>();
 
-class PetPage extends StatelessWidget {
-  PetPage({super.key});
-  final scaffoldKey = GlobalKey<ScaffoldState>();
-
   TextEditingController nameController = TextEditingController();
   TextEditingController animalTypeController = TextEditingController();
   TextEditingController breedController = TextEditingController();
   TextEditingController ageController = TextEditingController();
   TextEditingController genderController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
+class PetPage extends StatelessWidget {
+  PetPage({super.key});
+  final scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     PetViewModel viewModel = context.watch<PetViewModel>();
@@ -54,10 +54,11 @@ class PetPage extends StatelessWidget {
               child: SingleChildScrollView(
                 child: Padding(
                   padding: const EdgeInsets.all(10.0),
-                  child: Stack(
+                  child: Column(
                     children: [
                       // Character image at top, overlapping the container
-
+                   _buildCharacterImage(viewModel),
+      
                       // Padding to make space for the image
                       Padding(
                         padding: const EdgeInsets.only(
@@ -94,12 +95,7 @@ class PetPage extends StatelessWidget {
                           ),
                         ),
                       ),
-                      Positioned(
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        child: Center(child: _buildCharacterImage(viewModel)),
-                      ),
+                     
                     ],
                   ),
                 ),
@@ -134,9 +130,9 @@ class PetPage extends StatelessWidget {
                     width: 130,
                     fit: BoxFit.cover,
                   ),
-                )
-              : Image.asset(
-                  'assets/images/profile.png',
+                ):
+               Image.asset(
+                  'assets/images/noprofile.png',
                   height: 120,
                   fit: BoxFit.contain,
                 ),

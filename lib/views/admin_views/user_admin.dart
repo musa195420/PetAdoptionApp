@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:petadoption/custom_widgets/stateful_wrapper.dart';
 import 'package:petadoption/models/hive_models/user.dart';
-import 'package:petadoption/viewModel/admin_view_models/user_admin_view.dart';
+import 'package:petadoption/viewModel/admin_view_models/user_admin_view_model.dart';
 import 'package:provider/provider.dart';
 
 class UserAdmin extends StatelessWidget {
@@ -54,7 +54,7 @@ class UserAdmin extends StatelessWidget {
                 child: viewModel.filteredUsers == null
                     ? const Center(child: Text("No users loaded."))
                     : ListView.builder(
-                        padding: const EdgeInsets.all(10),
+                        padding: const EdgeInsets.all(2),
                         itemCount: viewModel.filteredUsers!.length,
                         itemBuilder: (context, index) {
                           final user = viewModel.filteredUsers![index];
@@ -89,7 +89,7 @@ class UserAdmin extends StatelessWidget {
                   ? Icon(Icons.person, color: Theme.of(context).primaryColor, size: 30)
                   : null,
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: 10),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -103,26 +103,32 @@ class UserAdmin extends StatelessWidget {
                         children: [
                           Icon(roleIcon, size: 18, color: Theme.of(context).primaryColor),
                           const SizedBox(width: 6),
-                          Text((user.role ?? '').toUpperCase(),
+                          Text((user.role ).toUpperCase(),
                               style: Theme.of(context).textTheme.bodySmall),
                         ],
                       ),
-                      Row(
-                        children: [
-                          IconButton(
-                            icon: Icon(Icons.edit, color: Theme.of(context).colorScheme.primary),
-                            onPressed: () {},
-                          ),
-                          IconButton(
-                            icon: Icon(Icons.delete, color: Theme.of(context).colorScheme.error),
-                            onPressed: () {},
-                          ),
-                          IconButton(
-                            icon: Icon(Icons.link, color: Theme.of(context).colorScheme.secondary),
-                            onPressed: () {},
-                          ),
-                        ],
-                      ),
+                    Flexible(
+  child: Row(
+    mainAxisAlignment: MainAxisAlignment.end,
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      IconButton(
+        icon: Icon(Icons.edit, color: Theme.of(context).colorScheme.primary),
+        onPressed: () async{
+      viewModel.gotoEditUser(user);
+        },
+      ),
+      IconButton(
+        icon: Icon(Icons.delete, color: Theme.of(context).colorScheme.error),
+        onPressed: () {},
+      ),
+      IconButton(
+        icon: Icon(Icons.link, color: Theme.of(context).colorScheme.secondary),
+        onPressed: () {},
+      ),
+    ],
+  ),
+),
                     ],
                   ),
                 ],

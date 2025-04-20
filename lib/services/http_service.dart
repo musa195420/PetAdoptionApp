@@ -43,6 +43,23 @@ class HttpService {
     return response;
   }
 
+
+  
+  Future<dynamic> patchData(String endpoint, Map<String, dynamic>? data) async {
+    headers.addAll({
+      "Authorization": "Bearer ${await _prefService.getString(PrefKey.token)}"
+    });
+    final response = await http
+        .patch(
+          Uri.parse('${await _globalService.getHost()}/$endpoint'),
+          body: json.encode(data),
+          headers: headers,
+        )
+        .timeout(const Duration(minutes: 1));
+
+    return response;
+  }
+
   Future<dynamic> postListData(
       String endpoint, List<Map<String, dynamic>>? data) async {
     headers.addAll({

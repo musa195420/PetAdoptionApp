@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:petadoption/helpers/locator.dart';
 import 'package:petadoption/models/hive_models/user.dart';
 import 'package:petadoption/models/message.dart';
@@ -10,6 +11,8 @@ import 'package:petadoption/services/pref_service.dart';
 import 'package:petadoption/viewModel/base_view_model.dart';
 import 'package:petadoption/viewModel/startup_viewmodel.dart';
 
+import '../../views/modals/user_edit_modal.dart';
+
 class UserAdminViewModel extends BaseViewModel {
   PrefService get _prefService => locator<PrefService>();
   NavigationService get _navigationService => locator<NavigationService>();
@@ -17,10 +20,45 @@ class UserAdminViewModel extends BaseViewModel {
   IAPIService get _apiService => locator<IAPIService>();
   StartupViewModel get _startModel => locator<StartupViewModel>();
   GlobalService get _globalService => locator<GlobalService>();
-
+ String ?path;
   List<User>? users;
   List<User>? filteredUsers;
 
+
+  List<String> roles = ["Adopter", "Donor", "Admin"];
+String role="Adopter";
+  void setRole(String Role) {
+    role = Role;
+    notifyListeners();
+  }
+void removeImagePath()
+{
+  path=null;
+  notifyListeners();
+}
+
+
+
+  Future<void> updateUserImage(String userId) async {
+    if (path != null) {
+      final status = await _apiService.uploadProfileImage(path!, userId);
+      if (status.data != null) {
+        debugPrint("Upload success: ${status.data}");
+      } else {
+        debugPrint("Upload failed: ${status.errorCode}");
+      }
+    }
+  }
+
+ Future<void> savePetImagePath() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile == null) return;
+    path = pickedFile.path;
+
+    notifyListeners();
+  }
   Future<void> getUsers() async {
     try {
       loading(true);
@@ -73,5 +111,73 @@ class UserAdminViewModel extends BaseViewModel {
       default:
         return Icons.help_outline;
     }
+  }
+
+  void gotoEditUser(User user)async {
+    path=null;
+        await _navigationService.pushModalBottom(Routes.user_edit_modal,
+          data: UserEditModal(user:user));
+      
+  }
+
+  void updateUser(String email, String number,User user)async {
+
+   try{
+    
+    loading(true);
+     var updateUserRes=await _apiService.updateUser(
+      User(userId: user.userId, email: email, phoneNumber: number,  role: role, deviceId: user.deviceId, password: user.password)
+    );
+
+    if(updateUserRes.errorCode=="PA0004")
+    {
+      debugPrint("User Updated Success Fully");
+       loading(false);
+     if(path!=null) {
+       _updateImage(user.userId,path!);
+     }
+    }
+    else{
+      await _dialogService.showApiError(
+                updateUserRes.data.status.toString(),
+                updateUserRes.data.message.toString(),
+                updateUserRes.data.error.toString());
+
+    }
+   }
+   catch(e)
+   {
+    
+     loading(false);
+debugPrint(e.toString());
+   }
+   finally{
+    loading(false);
+   }
+  }
+  
+  void _updateImage(String userId, String path)async {
+   
+   try{
+    loading(true,loadingText: "Uploading Image");
+   var imageRes= await _apiService.uploadProfileImage(path, userId);
+ if(imageRes.errorCode=="PA0000")
+    {
+      debugPrint("User Updated Success Fully");
+    
+    }
+    else{
+      await _dialogService.showAlert(
+               Message(description: "Failed To update Image"));
+
+    }
+   }catch(e)
+   {
+     loading(false);
+debugPrint(e.toString());
+   }
+   finally{
+    loading(false);
+   }
   }
 }

@@ -409,6 +409,53 @@ class APIService implements IAPIService {
     }
   }
 
+
+   @override
+  Future<ApiStatus> updateUser(User user) async {
+    try {
+      var response =
+          await _httpService.patchData("api/users/", user.toJson());
+      if (response.statusCode == 404) {
+        return ApiStatus(data: null, errorCode: "PA0002");
+      }
+      if (response.statusCode == 401) {
+        return ApiStatus(data: null, errorCode: "PA0001");
+      }
+      ApiResponse res = ApiResponse.fromJson(json.decode(response.body));
+      if (response.statusCode == 200) {
+        if (res.success ?? false) {
+          return ApiStatus(
+            data: null,
+            errorCode: "PA0004",
+          );
+        } else {
+          return ApiStatus(
+              data: null, errorCode: res.status.toString() ?? "PA0007");
+        }
+      } else {
+        debugPrint(response.statusCode);
+        return ApiStatus(
+            data: null, errorCode: res.status.toString() ?? "PA0002");
+      }
+    } on HttpException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0013");
+    } on FormatException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0007");
+    } on TimeoutException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0003");
+    } catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0006");
+    }
+  }
+
   @override
   Future<ApiStatus> signUp(SignupRequest signup) async {
     try {
@@ -455,9 +502,9 @@ class APIService implements IAPIService {
   }
 
   @override
-  Future<ApiStatus> uploadProfileImage(String filePath) async {
+  Future<ApiStatus> uploadProfileImage(String filePath,String userId) async {
     try {
-      final userId = _globalService.getuser()!.userId;
+      
       final response = await _httpService.uploadImage(
         'api/users/upload-profile',
         {'user_id': userId},
@@ -647,10 +694,12 @@ abstract class IAPIService {
   Future<ApiStatus> addAnimalType(AddAnimalType animal);
   Future<ApiStatus> getAnimalType();
   Future<ApiStatus> getAnimalBreed(GetAnimalBreed breed);
-  Future<ApiStatus> uploadProfileImage(String filePath);
+  Future<ApiStatus> uploadProfileImage(String filePath,String userId);
   Future<ApiStatus> signUp(SignupRequest signup);
   Future<ApiStatus> refreshToken(RefreshTokenRequest token);
   Future<ApiStatus> userInfo(UserInfoRequest userInfo);
   Future<ApiStatus> login(LoginRequest login);
   Future<ApiStatus> uploadPetImage(String filePath, String petId);
+  
+  Future<ApiStatus> updateUser(User user);
 }
