@@ -1,8 +1,10 @@
 import 'dart:async';
-abstract class IHiveService<T>{
+
+abstract class IHiveService<T> {
   Future<void> init();
   Future<List<T>> search(String searchValue);
-  Future<List<T>> searchAndPaginate(String searchValue, int pageNo, int pageSize);
+  Future<List<T>> searchAndPaginate(
+      String searchValue, int pageNo, int pageSize);
   Future<void> add(T item);
   Future<void> addOrUpdate(T item);
   Future<void> deleteAllAndAdd(T item);

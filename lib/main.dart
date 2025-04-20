@@ -26,13 +26,10 @@ import 'helpers/life_cycle_observer.dart';
 import 'helpers/provider.dart';
 import 'models/hive_models/user.dart';
 import 'services/navigation_service.dart';
-void main() async {
-    runZonedGuarded(
-    () async {
-    
 
-      
-  
+void main() async {
+  runZonedGuarded(
+    () async {
       EasyLoading.instance
         ..displayDuration = const Duration(milliseconds: 2000)
         ..indicatorType = EasyLoadingIndicatorType.pulse
@@ -47,53 +44,42 @@ void main() async {
         ..userInteractions = false
         ..maskType = EasyLoadingMaskType.black
         ..dismissOnTap = false;
-   await LocatorInjector.setupLocator();
+      await LocatorInjector.setupLocator();
 
-  await Hive.initFlutter();
+      await Hive.initFlutter();
 
-        await configSettings();
+      await configSettings();
       HttpOverrides.global = CustomHttpOverrides();
-      
-    
- WidgetsFlutterBinding.ensureInitialized();
-  runApp(const MyApp());
-     
-     
+
+      WidgetsFlutterBinding.ensureInitialized();
+      runApp(const MyApp());
     },
-    (Object error, StackTrace stack) {
-    
-    },
+    (Object error, StackTrace stack) {},
   );
-
 }
-
 
 Future configSettings() async {
   // Init Services
- 
- 
- try{
-   await locator<PrefService>().init();
-  await locator<GlobalService>().init();
-  //await locator<ScheduleService>().init();
-  await locator<LoggingService>().init();
-   await locator<NetworkService>().init();
-   await locator<IErrorReportingService>().initErrors();
-  // Init Repos
-  final appDocumentDirectory = await path_provider.getApplicationDocumentsDirectory();
-  Hive.init("${appDocumentDirectory.path}/pet_adoption");
- await locator<IHiveService<User>>().init();
- 
 
-  locator<GlobalService>().log('-----------------------------------------');
-  locator<GlobalService>().log('---------------- App Start --------------');
-  locator<GlobalService>().log('-----------------------------------------');
+  try {
+    await locator<PrefService>().init();
+    await locator<GlobalService>().init();
+    //await locator<ScheduleService>().init();
+    await locator<LoggingService>().init();
+    await locator<NetworkService>().init();
+    await locator<IErrorReportingService>().initErrors();
+    // Init Repos
+    final appDocumentDirectory =
+        await path_provider.getApplicationDocumentsDirectory();
+    Hive.init("${appDocumentDirectory.path}/pet_adoption");
+    await locator<IHiveService<User>>().init();
 
-
- }catch(e,s)
- {
- debugPrint("Error => $e");
- }
+    locator<GlobalService>().log('-----------------------------------------');
+    locator<GlobalService>().log('---------------- App Start --------------');
+    locator<GlobalService>().log('-----------------------------------------');
+  } catch (e, s) {
+    debugPrint("Error => $e");
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -102,24 +88,19 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-
-    return
-      MultiProvider(
-          providers: ProviderInjector.providers,
-          child: MaterialApp(
-            title: 'Pet Adoption',
-            debugShowCheckedModeBanner: false,
-            theme: petTheme,
-            
-            builder: EasyLoading.init(),
-            initialRoute: Routes.startup,
-            navigatorKey: locator<NavigationService>().navigatorKey,
-            onGenerateRoute: RouteManager.generateRoute,
-          ));
-   
+    return MultiProvider(
+        providers: ProviderInjector.providers,
+        child: MaterialApp(
+          title: 'Pet Adoption',
+          debugShowCheckedModeBanner: false,
+          theme: petTheme,
+          builder: EasyLoading.init(),
+          initialRoute: Routes.startup,
+          navigatorKey: locator<NavigationService>().navigatorKey,
+          onGenerateRoute: RouteManager.generateRoute,
+        ));
   }
 }
-
 
 class CustomHttpOverrides extends HttpOverrides {
   @override

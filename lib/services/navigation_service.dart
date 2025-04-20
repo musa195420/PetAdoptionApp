@@ -18,17 +18,15 @@ class Routes {
 
   static const String startup = "/";
   static const String home = "home";
-    static const String login = "login";
+  static const String login = "login";
   static const String dashboard = "dashboard";
-    static const String message = "message";
-    static const String notSupported = "notSupported";
-     static const String signup = "signup";
-     static const String admin = "admin";
-       static const String petpage = "petpage";
-       static const String animalType_modal = "animalType_modal";
-        static const String animalBreed_modal = "animalBreed_modal";
-    
-  
+  static const String message = "message";
+  static const String notSupported = "notSupported";
+  static const String signup = "signup";
+  static const String admin = "admin";
+  static const String petpage = "petpage";
+  static const String animalType_modal = "animalType_modal";
+  static const String animalBreed_modal = "animalBreed_modal";
 }
 
 class NavigationService {
@@ -76,11 +74,10 @@ class NavigationService {
     }
   }
 
-    Future pushModalBottom(String path, {required dynamic data}) async {
+  Future pushModalBottom(String path, {required dynamic data}) async {
     _globalService.log('Open {$path}\' Modal');
     openModalBottomSheet(path, data);
   }
-
 
   Future pushNamed(String path,
       {required dynamic data, required TransitionType args}) async {
@@ -112,7 +109,6 @@ class NavigationService {
     );
   }
 
-  
   void openModalBottomSheet(String path, dynamic data) {
     switch (path) {
       case Routes.animalType_modal:
@@ -122,20 +118,20 @@ class NavigationService {
             context: navigatorKey.currentContext!,
             backgroundColor: Colors.transparent,
             builder: (context) => AnimaltypeModal(
-            //  invoice: data,
-            ),
+                //  invoice: data,
+                ),
           );
         }
         break;
 
-          case Routes.animalBreed_modal:
+      case Routes.animalBreed_modal:
         {
           showBarModalBottomSheet(
             expand: true,
             context: navigatorKey.currentContext!,
             backgroundColor: Colors.transparent,
             builder: (context) => AnimalbreedModal(
-            petId: data.petId,
+              petId: data.petId,
             ),
           );
         }
@@ -215,7 +211,7 @@ class RouteManager {
             },
           );
         }
-         case Routes.signup:
+      case Routes.signup:
         {
           return PageRouteBuilder(
             pageBuilder: (BuildContext context, Animation<double> animation,
@@ -230,7 +226,7 @@ class RouteManager {
             },
           );
         }
-          
+
       case Routes.home:
         {
           return PageRouteBuilder(
@@ -251,7 +247,7 @@ class RouteManager {
           return PageRouteBuilder(
             pageBuilder: (BuildContext context, Animation<double> animation,
                 Animation<double> secondaryAnimation) {
-              return  LoginPage();
+              return LoginPage();
             },
             transitionsBuilder: (BuildContext context,
                 Animation<double> animation,
@@ -276,7 +272,7 @@ class RouteManager {
             },
           );
         }
-      
+
       // case Routes.dashboard:
       //   {
       //     return PageRouteBuilder(
@@ -293,7 +289,7 @@ class RouteManager {
       //     );
       //   }
 
-       case Routes.admin:
+      case Routes.admin:
         {
           return PageRouteBuilder(
             pageBuilder: (BuildContext context, Animation<double> animation,
@@ -308,7 +304,7 @@ class RouteManager {
             },
           );
         }
-     case Routes.petpage:
+      case Routes.petpage:
         {
           return PageRouteBuilder(
             pageBuilder: (BuildContext context, Animation<double> animation,
@@ -440,7 +436,7 @@ class RouteManager {
             ),
           );
         }
-      }
+    }
   }
 
   static Route<dynamic> _errorPage() {

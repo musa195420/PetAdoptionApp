@@ -3,26 +3,30 @@ import 'package:petadoption/models/hive_models/user.dart';
 import 'package:petadoption/services/logging_service.dart';
 import 'package:petadoption/helpers/locator.dart';
 import 'package:petadoption/services/pref_service.dart';
+
 class GlobalService {
   PrefService get _prefService => locator<PrefService>();
   LoggingService get _loggingService => locator<LoggingService>();
-User? _user=User(userId: '1', email: 'user@gmail.com', phoneNumber: '324234234324', password: 'Connect@32434', role: 'Adopter', deviceId: '4353455345');
-  
+  User? _user = User(
+      userId: '1',
+      email: 'user@gmail.com',
+      phoneNumber: '324234234324',
+      password: 'Connect@32434',
+      role: 'Adopter',
+      deviceId: '4353455345');
 
-  User? getuser()
-  {
+  User? getuser() {
     return _user;
   }
 
   setuser(value) {
-  _user = value;
-}
+    _user = value;
+  }
 
   log(String message, {bool vti = false}) {
     if (vti) {
-    
       _loggingService.logVti(message);
-    }else{
+    } else {
       _loggingService.logInfo(message);
     }
   }
@@ -42,29 +46,22 @@ User? _user=User(userId: '1', email: 'user@gmail.com', phoneNumber: '32423423432
   init() async {
     try {
       if (await _prefService.getBool(PrefKey.isProduction)) {
-       
-      } else {
-        
-      }
-    } catch (e,s) {
+      } else {}
+    } catch (e, s) {
       logError("Error Occured When Init Global Service", e.toString(), s);
       debugPrint(e.toString());
     }
   }
-
-  
 
   Future<String> getHost() async {
     try {
       if (await _prefService.getBool(PrefKey.isProduction)) {
         return "https://d841-103-198-155-49.ngrok-free.app";
       }
-    } catch (e,s) {
+    } catch (e, s) {
       logError("Error Occured When get Host", e.toString(), s);
       debugPrint(e.toString());
     }
     return "https://d841-103-198-155-49.ngrok-free.app";
   }
-
- 
 }

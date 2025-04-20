@@ -11,6 +11,7 @@ import 'package:petadoption/services/global_service.dart';
 import 'package:petadoption/services/navigation_service.dart';
 import 'package:petadoption/services/pref_service.dart';
 import 'package:petadoption/viewModel/base_view_model.dart';
+import 'package:petadoption/viewModel/startup_viewmodel.dart';
 import '../models/request_models/refresh_token_request.dart';
 import '../models/response_models/refresh_token_response.dart';
 import 'package:http/http.dart' as http;
@@ -22,19 +23,11 @@ class HomeViewModel extends BaseViewModel {
   IAPIService get _apiService => locator<IAPIService>();
   
   GlobalService get _globalService => locator<GlobalService>();
+  
+  StartupViewModel get _startupViewModel => locator<StartupViewModel>();
 
   bool checkVersion = true;
-Future<void> uploadProfileImage() async {
-  final picker = ImagePicker();
-  final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-
-  if (pickedFile == null) return;
-
-  final status = await _apiService.uploadProfileImage(pickedFile.path);
-  if (status.data != null) {
-    debugPrint("Upload success: ${status.data}");
-  } else {
-    debugPrint("Upload failed: ${status.errorCode}");
-  }
+Future<void>logout() async {
+await   _startupViewModel.logout();
 }
 }

@@ -10,7 +10,7 @@ class BaseViewModel extends ChangeNotifier {
 
   BaseViewModel({
     bool busy = false,
-  })  : _busy = busy;
+  }) : _busy = busy;
 
   bool get busy => _busy;
   bool get spinner => _spinner;
@@ -21,33 +21,34 @@ class BaseViewModel extends ChangeNotifier {
   setBusy(bool busy) async {
     _busy = busy;
   }
+
   setSpinner(bool spinner) async {
     _spinner = spinner;
     notifyListeners();
   }
+
   setListSpinner(bool listSpinner) async {
     _listSpinner = listSpinner;
     notifyListeners();
   }
-    setLoadMoreSpinner(bool loadMoreSpinner) async {
+
+  setLoadMoreSpinner(bool loadMoreSpinner) async {
     _loadMoreSpinner = loadMoreSpinner;
     notifyListeners();
   }
 
-  Future<void> loading(bool state, {loadingText='Loading...'}) async {
-    if(state){
+  Future<void> loading(bool state, {loadingText = 'Loading...'}) async {
+    if (state) {
       await EasyLoading.show(status: loadingText);
-    }
-    else{
+    } else {
       await EasyLoading.dismiss();
     }
   }
 
-
   @override
   void notifyListeners() {
     if (!isDisposed) {
-        super.notifyListeners();
+      super.notifyListeners();
     }
   }
 

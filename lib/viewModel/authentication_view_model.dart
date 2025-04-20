@@ -23,26 +23,24 @@ import '../models/response_models/login_response.dart';
 import '../models/response_models/refresh_token_response.dart';
 import '../services/db_service.dart';
 
-
 class AuthenticationViewModel extends BaseViewModel {
   PrefService get _prefService => locator<PrefService>();
   IAPIService get _apiService => locator<IAPIService>();
-   IErrorReportingService get _errorReportingService =>
+  IErrorReportingService get _errorReportingService =>
       locator<IErrorReportingService>();
   NavigationService get _navigationService => locator<NavigationService>();
   GlobalService get _globalService => locator<GlobalService>();
   IDialogService get _dialogService => locator<IDialogService>();
-  
+
   final LocalAuthentication _auth = LocalAuthentication();
 
   String? _email = "";
   String? _password = "";
   bool _showPassword = false;
-  
+
   String? get getEmail => _email;
   String? get getPassword => _password;
   bool get getShowPassword => _showPassword;
- 
 
   setShowPassword(bool showPassword) async {
     _showPassword = showPassword;
@@ -65,52 +63,52 @@ class AuthenticationViewModel extends BaseViewModel {
       setPassword(password);
       debugPrint(_apiService.runtimeType.toString());
       var loginRes = await _apiService.login(LoginRequest(
-          email: email,
-          password: password,
-          ));
+        email: email,
+        password: password,
+      ));
       if (loginRes.errorCode == "PA0004") {
-       RefreshTokenResponse response = loginRes.data as  RefreshTokenResponse;
+        RefreshTokenResponse response = loginRes.data as RefreshTokenResponse;
         if ((response.accessToken ?? "").isNotEmpty) {
           _prefService.setString(PrefKey.token, response.accessToken ?? "");
           _prefService.setString(
-              PrefKey.refreshToken, response.refreshToken??"" );
-         
-         var tokenStartTime = DateTime.now().toString();
-          _prefService.setString(PrefKey.tokenStartTime, tokenStartTime);
-           _prefService.setString(PrefKey.tokenExpiresIn, response.expiresIn.toString());
+              PrefKey.refreshToken, response.refreshToken ?? "");
 
-          var userRes = await _apiService.userInfo(UserInfoRequest(
-              
-              email: email));
+          var tokenStartTime = DateTime.now().toString();
+          _prefService.setString(PrefKey.tokenStartTime, tokenStartTime);
+          _prefService.setString(
+              PrefKey.tokenExpiresIn, response.expiresIn.toString());
+
+          var userRes =
+              await _apiService.userInfo(UserInfoRequest(email: email));
           if (userRes.errorCode == "PA0004") {
             User userResponse = userRes.data as User;
             await locator<IHiveService<User>>().deleteAllAndAdd(userResponse);
-       await  _globalService.setuser(userResponse);
-              _prefService.setBool(PrefKey.isSetupComplete, false);
-              _prefService.setBool(PrefKey.isLoggedIn, true);
-              setEmail("");
-              setPassword("");
-              // _globalService.setIsFromLogin(true);
-              _globalService.log('Client ($email) Login Success');
-              _globalService.setuser(userResponse);
-              _navigationService.pushNamedAndRemoveUntil(
-                Routes.petpage,
-                args: TransitionType.fade,
-              );
-            
+            _globalService.setuser(userResponse);
+            _prefService.setBool(PrefKey.isSetupComplete, false);
+            _prefService.setBool(PrefKey.isLoggedIn, true);
+            setEmail("");
+            setPassword("");
+            // _globalService.setIsFromLogin(true);
+            _globalService.log('Client ($email) Login Success');
+            _globalService.setuser(userResponse);
+            _gotoNextPage(userResponse);
           } else {
-               await _dialogService.showApiError( loginRes.data.status.toString(),loginRes.data.message.toString(), loginRes.data.error.toString());
-   
-        
+            await _dialogService.showApiError(
+                loginRes.data.status.toString(),
+                loginRes.data.message.toString(),
+                loginRes.data.error.toString());
+
             _globalService.log('Client ($email) Login Fail');
           }
         } else {
-           await _dialogService.showApiError( loginRes.data.status.toString(),loginRes.data.message.toString(), loginRes.data.error.toString());
-   
+          await _dialogService.showApiError(loginRes.data.status.toString(),
+              loginRes.data.message.toString(), loginRes.data.error.toString());
+
           _globalService.log('Client ($email) Login Fail');
         }
       } else {
-       await _dialogService.showApiError( loginRes.data.status.toString(),loginRes.data.message.toString(), loginRes.data.error.toString());
+        await _dialogService.showApiError(loginRes.data.status.toString(),
+            loginRes.data.message.toString(), loginRes.data.error.toString());
         _globalService.log('Client ($email) Login Fail');
       }
     } catch (e, s) {
@@ -122,22 +120,18 @@ class AuthenticationViewModel extends BaseViewModel {
     }
   }
 
- 
-
-  
-
   Future<RefreshTokenResponse?> renewUserToken(User usr) async {
     try {
-      var refreshRes = await _apiService
-          .refreshToken(RefreshTokenRequest(RefreshToken:await  _prefService.getString(PrefKey.refreshToken)));
+      var refreshRes = await _apiService.refreshToken(RefreshTokenRequest(
+          RefreshToken: await _prefService.getString(PrefKey.refreshToken)));
       if (refreshRes.errorCode == "PA0004") {
         RefreshTokenResponse response = refreshRes.data as RefreshTokenResponse;
         if ((response.accessToken ?? "").isNotEmpty) {
           return response;
         }
       }
-        await _dialogService.showApiError( refreshRes.data.status.toString(),refreshRes.data.message.toString(), refreshRes.data.error.toString());
-    
+      await _dialogService.showApiError(refreshRes.data.status.toString(),
+          refreshRes.data.message.toString(), refreshRes.data.error.toString());
     } catch (e, s) {
       _globalService.logError(
           "Error Occured When Renew User Token", e.toString(), s);
@@ -147,9 +141,77 @@ class AuthenticationViewModel extends BaseViewModel {
   }
 
   void gotoSignup() {
+    _navigationService.pushNamedAndRemoveUntil(
+      Routes.signup,
+      args: TransitionType.fade,
+    );
+  }
+
+  void _gotoNextPage(User? userResponse) async {
+    try {
+      if (userResponse == null) {
+        await logout();
+        await _navigationService.pushNamedAndRemoveUntil(
+          Routes.login,
+          args: TransitionType.fade,
+        );
+        return;
+      }
+
+      switch (userResponse.role) {
+        case "Admin":
+          {
+            _navigationService.pushNamedAndRemoveUntil(
+              Routes.admin,
+              args: TransitionType.fade,
+            );
+          }
+          break;
+        case "Adopter":
+          {
+            _navigationService.pushNamedAndRemoveUntil(
+              Routes.home,
+              args: TransitionType.fade,
+            );
+          }
+          break;
+
+        case "Donor":
+          {
+            _navigationService.pushNamedAndRemoveUntil(
+              Routes.petpage,
+              args: TransitionType.fade,
+            );
+          }
+          break;
+      }
+    } catch (e) {
+      debugPrint("Error Occured Startup ViewModel ${e.toString()}");
+    }
+  }
+
+  Future<bool> logout({bool confirm = true}) async {
+    try {
+      await loading(true);
+
+      await _prefService.setBool(PrefKey.isLoggedIn, false);
+
+      await _prefService.setString(PrefKey.token, "");
+      await _prefService.setString(PrefKey.tokenExpiresIn, "");
+      await _prefService.setString(PrefKey.tokenStartTime, "");
+
+      await locator<IHiveService<User>>().deleteAll();
+
       _navigationService.pushNamedAndRemoveUntil(
-                Routes.signup,
-                args: TransitionType.fade,
-              );
+        Routes.login,
+        args: TransitionType.fade,
+      );
+    } catch (e, s) {
+      _globalService.logError("Error Occured When Logout", e.toString(), s);
+      debugPrint(e.toString());
+    } finally {
+      await loading(false);
+    }
+    return true;
   }
 }

@@ -87,24 +87,22 @@ class HttpService {
     return response;
   }
 
-Future<http.StreamedResponse> uploadImage(
-    String endpoint, Map<String, String> fields, String filePath) async {
-  final request = http.MultipartRequest(
-    'POST',
-    Uri.parse('${await _globalService.getHost()}/$endpoint'),
-  );
+  Future<http.StreamedResponse> uploadImage(
+      String endpoint, Map<String, String> fields, String filePath) async {
+    final request = http.MultipartRequest(
+      'POST',
+      Uri.parse('${await _globalService.getHost()}/$endpoint'),
+    );
 
-  final token = await _prefService.getString(PrefKey.token);
-  request.headers.addAll({
-    "Authorization": "Bearer $token",
-    "WLID": "94DE1528-DE42-498A-A07E-4A458E97240E"
-  });
+    final token = await _prefService.getString(PrefKey.token);
+    request.headers.addAll({
+      "Authorization": "Bearer $token",
+      "WLID": "94DE1528-DE42-498A-A07E-4A458E97240E"
+    });
 
-  request.fields.addAll(fields);
-  request.files.add(await http.MultipartFile.fromPath('image', filePath));
+    request.fields.addAll(fields);
+    request.files.add(await http.MultipartFile.fromPath('image', filePath));
 
-  return await request.send();
-}
-
-
+    return await request.send();
+  }
 }

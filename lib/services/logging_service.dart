@@ -10,33 +10,36 @@ class LoggingService {
   late Logger _logger;
   late Directory _logDir;
   late File _currentLogFile;
-String _currentLogDate = DateTime.now().toString();
+  String _currentLogDate = DateTime.now().toString();
 
   Future<void> init() async {
     // Initialize the logger
-    try{
-      _logger = Logger( filter: ProductionFilter(),
-      printer: PrettyPrinter(printEmojis: false, colors: false, methodCount: 0),
-      level: Level.info,
-    );
+    try {
+      _logger = Logger(
+        filter: ProductionFilter(),
+        printer:
+            PrettyPrinter(printEmojis: false, colors: false, methodCount: 0),
+        level: Level.info,
+      );
 
-    // Get the application directory
-    
-    _logDir = await getDirectory();
+      // Get the application directory
 
-    // Initialize log file handling
-    _currentLogDate = _getCurrentDate();
-    _currentLogFile = File('${_logDir.path}/log_$_currentLogDate.txt');
-    await _createLogFileIfNeeded();
+      _logDir = await getDirectory();
 
-    // Set up a log file writer
-    _logger = Logger( filter: ProductionFilter(),
-      printer: PrettyPrinter(printEmojis: false, colors: false, methodCount: 0),
-      level: Level.info,
-      output: FileOutput(_currentLogFile),
-    );
-    }catch(e)
-    {
+      // Initialize log file handling
+      _currentLogDate = _getCurrentDate();
+      _currentLogFile = File('${_logDir.path}/log_$_currentLogDate.txt');
+      await _createLogFileIfNeeded();
+
+      // Set up a log file writer
+      _logger = Logger(
+        filter: ProductionFilter(),
+        printer:
+            PrettyPrinter(printEmojis: false, colors: false, methodCount: 0),
+        level: Level.info,
+        output: FileOutput(_currentLogFile),
+      );
+    } catch (e) {
       debugPrint("Error ${e.toString()}");
     }
   }
@@ -53,15 +56,14 @@ String _currentLogDate = DateTime.now().toString();
         "[VTI] | ${DateFormat('hh:mm:ss').format(DateTime.now())} | $message");
   }
 
-  void logCC(String message, {bool request=true}) {
+  void logCC(String message, {bool request = true}) {
     _checkDateChange();
-    if(request){
+    if (request) {
       _logger.i(
-        "[CC->Request] | ${DateFormat('hh:mm:ss').format(DateTime.now())} | $message");
-    }
-    else{
+          "[CC->Request] | ${DateFormat('hh:mm:ss').format(DateTime.now())} | $message");
+    } else {
       _logger.i(
-        "[CC->Response] | ${DateFormat('hh:mm:ss').format(DateTime.now())} | $message");
+          "[CC->Response] | ${DateFormat('hh:mm:ss').format(DateTime.now())} | $message");
     }
   }
 
@@ -85,7 +87,8 @@ String _currentLogDate = DateTime.now().toString();
       _currentLogDate = currentDate;
       _currentLogFile = File('${_logDir.path}/log_$_currentLogDate.txt');
       _createLogFileIfNeeded();
-      _logger = Logger( filter: ProductionFilter(),
+      _logger = Logger(
+        filter: ProductionFilter(),
         printer:
             PrettyPrinter(printEmojis: false, colors: false, methodCount: 0),
         level: Level.info,
@@ -95,12 +98,14 @@ String _currentLogDate = DateTime.now().toString();
   }
 
   Future<LogData?> getLogs() async {
-    final preData = DateFormat('yyyy-MM-dd').format(DateTime.now().subtract(const Duration(days: 1)));
+    final preData = DateFormat('yyyy-MM-dd')
+        .format(DateTime.now().subtract(const Duration(days: 1)));
     var file = File('${_logDir.path}/log_$preData.txt');
     if (await file.exists()) {
       final fileStream = file.openRead();
       final contents = await fileStream.transform(utf8.decoder).join();
-      return LogData(fileName: "log_$preData.txt", data: contents, date: preData );
+      return LogData(
+          fileName: "log_$preData.txt", data: contents, date: preData);
     }
     return null;
   }
@@ -114,13 +119,13 @@ String _currentLogDate = DateTime.now().toString();
   String _getCurrentDate() {
     return DateFormat('yyyy-MM-dd').format(DateTime.now());
   }
-  
+
   Future<Directory> getDirectory() async {
     var directory = await getApplicationDocumentsDirectory();
-    if(Platform.isAndroid){
+    if (Platform.isAndroid) {
       var externalDirectory = await getExternalStorageDirectory();
-      if(externalDirectory!=null){
-        directory=externalDirectory;
+      if (externalDirectory != null) {
+        directory = externalDirectory;
       }
     }
     return directory;
