@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:petadoption/views/admin.dart';
+import 'package:petadoption/views/admin_views/admin.dart';
+import 'package:petadoption/views/admin_views/user_admin.dart';
 import 'package:petadoption/views/home.dart';
 import 'package:petadoption/views/login.dart';
 import 'package:petadoption/views/modals/animalBreed_modal.dart';
@@ -27,6 +28,7 @@ class Routes {
   static const String petpage = "petpage";
   static const String animalType_modal = "animalType_modal";
   static const String animalBreed_modal = "animalBreed_modal";
+   static const String userAdmin = "userAdmin";
 }
 
 class NavigationService {
@@ -310,6 +312,21 @@ class RouteManager {
             pageBuilder: (BuildContext context, Animation<double> animation,
                 Animation<double> secondaryAnimation) {
               return PetPage();
+            },
+            transitionsBuilder: (BuildContext context,
+                Animation<double> animation,
+                Animation<double> secondaryAnimation,
+                Widget child) {
+              return _transitionsBuilder(transition, animation, child);
+            },
+          );
+        }
+         case Routes.userAdmin:
+        {
+          return PageRouteBuilder(
+            pageBuilder: (BuildContext context, Animation<double> animation,
+                Animation<double> secondaryAnimation) {
+              return UserAdmin();
             },
             transitionsBuilder: (BuildContext context,
                 Animation<double> animation,

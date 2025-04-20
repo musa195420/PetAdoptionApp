@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:petadoption/custom_widgets/stateful_wrapper.dart';
-import 'package:petadoption/viewModel/home_view_model.dart';
 import 'package:provider/provider.dart';
 
-import '../custom_widgets/custom_button.dart';
+import '../custom_widgets/blinking_dots.dart';
 import '../viewModel/startup_viewmodel.dart';
 
 class Startup extends StatelessWidget {
@@ -16,7 +15,7 @@ class Startup extends StatelessWidget {
 
     return StatefulWrapper(
       onInit: () {
-        viewModel.doStartupLogic(context);
+       viewModel.doStartupLogic(context);
       },
       onDispose: () {},
       child: Scaffold(
@@ -30,18 +29,32 @@ class Startup extends StatelessWidget {
           padding: const EdgeInsets.all(20.0),
           child: Column(
             children: [
-              Expanded(child: SizedBox()),
-              Align(
-                  alignment: Alignment.center,
-                  child: SizedBox(
-                      width: 400,
-                      child: Text('Not Supported on This Device!'))),
-              Expanded(
-                  child: CustomButton(
-                      text: "Logout",
-                      onTap: () {
-                        viewModel.logout();
-                      })),
+              Expanded(child: Image.asset("assets/images/startup.png")),
+              Positioned(
+                top: 0,
+                
+  child: SizedBox(
+    width: 400,
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          'We are setting things up\nPlease Wait!',
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            color: Color.fromARGB(255, 146, 61, 5),
+            fontSize: 25,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        const SizedBox(height: 10),
+       const BlinkingDotsLoader(),
+      ],
+    ),
+  ),
+),
+
+           
             ],
           ),
         ),
@@ -49,3 +62,5 @@ class Startup extends StatelessWidget {
     );
   }
 }
+
+

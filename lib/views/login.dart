@@ -1,86 +1,94 @@
 import 'package:flutter/material.dart';
 import 'package:petadoption/custom_widgets/custom_button.dart';
 import 'package:petadoption/custom_widgets/default_text_input.dart';
+import 'package:petadoption/custom_widgets/stateful_wrapper.dart';
 import 'package:provider/provider.dart';
 import '../viewModel/authentication_view_model.dart';
 
 dynamic formKey = GlobalKey<FormState>();
 
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     AuthenticationViewModel viewModel =
         context.watch<AuthenticationViewModel>();
 
-    return Scaffold(
-      key: scaffoldKey,
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          // Background image
-          Image.asset(
-            'assets/images/bg.png',
-            fit: BoxFit.cover,
-          ),
-          // Login form content with SafeArea
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Stack(
-                children: [
-                  // White login container
-                  Positioned(
-                    top: 170, // adjust as needed
-                    left: 0,
-                    right: 0,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Color.fromARGB(255, 255, 247, 240),
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black12,
-                            blurRadius: 10,
-                            offset: Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      padding: const EdgeInsets.fromLTRB(20, 20, 20,
-                          20), // top padding gives space for character image
-                      child: Column(
-                        spacing: 10,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          _buildLoginForm(viewModel),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              _buildForgotPasswordText(),
-                            ],
-                          ),
-                          _buildLoginButton(viewModel),
-                          _buildSignup(viewModel),
-                        ],
+    return StatefulWrapper(
+      onInit: (){},
+      onDispose: (){
+        emailController.dispose();
+        passwordController.dispose();
+      },
+      child: Scaffold(
+        key: scaffoldKey,
+        body: Stack(
+          fit: StackFit.expand,
+          children: [
+            // Background image
+            Image.asset(
+              'assets/images/bg.png',
+              fit: BoxFit.cover,
+            ),
+            // Login form content with SafeArea
+            SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Stack(
+                  children: [
+                    // White login container
+                    Positioned(
+                      top: 170, // adjust as needed
+                      left: 0,
+                      right: 0,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Color.fromARGB(255, 255, 247, 240),
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black12,
+                              blurRadius: 10,
+                              offset: Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        padding: const EdgeInsets.fromLTRB(20, 20, 20,
+                            20), // top padding gives space for character image
+                        child: Column(
+                          spacing: 10,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            _buildLoginForm(viewModel),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                _buildForgotPasswordText(),
+                              ],
+                            ),
+                            _buildLoginButton(viewModel),
+                            _buildSignup(viewModel),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-
-                  // Character image on top
-                  Align(
-                    alignment: Alignment.topCenter,
-                    child: _buildCharacterImage(),
-                  ),
-                ],
+      
+                    // Character image on top
+                    Align(
+                      alignment: Alignment.topCenter,
+                      child: _buildCharacterImage(),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

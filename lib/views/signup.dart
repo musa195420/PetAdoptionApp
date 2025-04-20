@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:petadoption/custom_widgets/default_text_input.dart';
+import 'package:petadoption/custom_widgets/stateful_wrapper.dart';
 import 'package:petadoption/helpers/constants.dart';
 import 'package:petadoption/viewModel/signup_view_model.dart';
 import 'package:provider/provider.dart';
 
 dynamic formKey = GlobalKey<FormState>();
-
-class SignupPage extends StatelessWidget {
-  SignupPage({super.key});
-  final scaffoldKey = GlobalKey<ScaffoldState>();
-
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
   final TextEditingController numberController = TextEditingController();
+class SignupPage extends StatelessWidget {
+  SignupPage({super.key});
+  final scaffoldKey = GlobalKey<ScaffoldState>();
+
+
 
   List<String> roles = ["Adopter", "Donor", "Admin"];
 
@@ -21,68 +22,79 @@ class SignupPage extends StatelessWidget {
   Widget build(BuildContext context) {
     SignupViewModel viewModel = context.watch<SignupViewModel>();
 
-    return Scaffold(
-      key: scaffoldKey,
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          // Background image
-          Image.asset(
-            'assets/images/bg.png',
-            fit: BoxFit.cover,
-          ),
-          // Login form content with SafeArea
-          SafeArea(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Column(
-                  children: [
-                    // Character image at top
-                    _buildCharacterImage(),
+    return StatefulWrapper(
+      onDispose: (){
+        emailController.dispose();
+        passwordController.dispose();
+        nameController.dispose();
+        numberController.dispose();
+      },
+      onInit: (){
 
-                    Container(
-                      decoration: BoxDecoration(
-                        color: const Color.fromARGB(255, 255, 247, 240),
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Colors.black12,
-                            blurRadius: 10,
-                            offset: Offset(0, 4),
-                          ),
-                        ],
+      },
+      child: Scaffold(
+        key: scaffoldKey,
+        body: Stack(
+          fit: StackFit.expand,
+          children: [
+            // Background image
+            Image.asset(
+              'assets/images/bg.png',
+              fit: BoxFit.cover,
+            ),
+            // Login form content with SafeArea
+            SafeArea(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Column(
+                    children: [
+                      // Character image at top
+                      _buildCharacterImage(),
+      
+                      Container(
+                        decoration: BoxDecoration(
+                          color: const Color.fromARGB(255, 255, 247, 240),
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Colors.black12,
+                              blurRadius: 10,
+                              offset: Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                        child: Column(
+                          children: [
+                            _buildLoginForm(viewModel),
+                            const SizedBox(height: 10),
+                            Text(
+                              "What You Are Select The Role?",
+                              style:
+                                  TextStyle(color: Colors.black54, fontSize: 13),
+                            ),
+                            const SizedBox(height: 5),
+                            buildRoleSelector(
+                              roles: roles,
+                              selectedRole: viewModel.role,
+                              onRoleSelected: (role) {
+                                viewModel.setRole(role);
+                              },
+                            ),
+                            const SizedBox(height: 20),
+                            _buildLoginButton(viewModel),
+                            _buildLogin(viewModel),
+                          ],
+                        ),
                       ),
-                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-                      child: Column(
-                        children: [
-                          _buildLoginForm(viewModel),
-                          const SizedBox(height: 10),
-                          Text(
-                            "What You Are Select The Role?",
-                            style:
-                                TextStyle(color: Colors.black54, fontSize: 13),
-                          ),
-                          const SizedBox(height: 5),
-                          buildRoleSelector(
-                            roles: roles,
-                            selectedRole: viewModel.role,
-                            onRoleSelected: (role) {
-                              viewModel.setRole(role);
-                            },
-                          ),
-                          const SizedBox(height: 20),
-                          _buildLoginButton(viewModel),
-                          _buildLogin(viewModel),
-                        ],
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

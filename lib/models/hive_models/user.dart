@@ -1,7 +1,7 @@
 import 'package:hive/hive.dart';
 import 'package:petadoption/models/base_model.dart';
 
-part 'user.g.dart';
+part 'g/user.g.dart';
 
 @HiveType(typeId: 43)
 class User extends IHiveBaseModel<User> {
@@ -23,6 +23,10 @@ class User extends IHiveBaseModel<User> {
   @HiveField(5)
   String deviceId;
 
+  
+  @HiveField(6)
+  String? profileImage;
+
   User({
     required this.userId,
     required this.email,
@@ -30,6 +34,7 @@ class User extends IHiveBaseModel<User> {
     required this.password,
     required this.role,
     required this.deviceId,
+    this.profileImage,
   });
 
   factory User.fromJson(Map<String, dynamic> json) => User(
@@ -39,6 +44,7 @@ class User extends IHiveBaseModel<User> {
         password: json["password"],
         role: json["role"],
         deviceId: json["device_id"],
+        profileImage: json["profile_image"]
       );
 
   @override
@@ -52,5 +58,6 @@ class User extends IHiveBaseModel<User> {
         "password": password,
         "role": role,
         "device_id": deviceId,
+        "profile_image":profileImage,
       };
 }
