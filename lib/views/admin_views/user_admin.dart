@@ -120,11 +120,15 @@ class UserAdmin extends StatelessWidget {
       ),
       IconButton(
         icon: Icon(Icons.delete, color: Theme.of(context).colorScheme.error),
-        onPressed: () {},
+        onPressed: () {
+          viewModel.deleteUser(user.userId);
+        },
       ),
       IconButton(
         icon: Icon(Icons.link, color: Theme.of(context).colorScheme.secondary),
-        onPressed: () {},
+        onPressed: () {
+          viewModel.showLink(user);
+        },
       ),
     ],
   ),

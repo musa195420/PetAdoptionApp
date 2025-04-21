@@ -30,24 +30,51 @@ class AdminPage extends StatelessWidget {
         ),
         padding: const EdgeInsets.all(20),
         child: Column(
-          children: [
-            const SizedBox(height: 40),
-            const Text(
-              "Admin Dashboard",
-              style: TextStyle(
-                fontSize: 26,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF5D1F00),
+  children: [
+    const SizedBox(height: 40),
+    Stack(
+      alignment: Alignment.center,
+      children: [
+        Align(
+          alignment: Alignment.topRight,
+          child: GestureDetector(
+            onTap: () {
+              viewModel.logout();
+            },
+            child:  Container(
+              padding: EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                   color: Colors.brown,
+              ),
+           
+              child: Icon(
+                Icons.logout_rounded,
+                color: Colors.white,
               ),
             ),
-            const SizedBox(height: 20),
-            Expanded(
-              child: ListView(
-                children: listItems,
-              ),
-            ),
-          ],
+          ),
         ),
+        const Center(
+          child: Text(
+            "Admin Dashboard",
+            style: TextStyle(
+              fontSize: 26,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF5D1F00),
+            ),
+          ),
+        ),
+      ],
+    ),
+    const SizedBox(height: 20),
+    Expanded(
+      child: ListView(
+        children: listItems,
+      ),
+    ),
+  ],
+),
       ),
     );
   }

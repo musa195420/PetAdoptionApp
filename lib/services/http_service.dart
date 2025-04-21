@@ -92,12 +92,13 @@ class HttpService {
     return response;
   }
 
-  Future<dynamic> deleteData(String endpoint) async {
+  Future<dynamic> deleteData(String endpoint, Map<String, dynamic>? data) async {
     headers.addAll({
       "Authorization": "Bearer ${await _prefService.getString(PrefKey.token)}"
     });
     final response = await http
         .delete(Uri.parse('${await _globalService.getHost()}/$endpoint'),
+        body: json.encode(data),
             headers: headers)
         .timeout(const Duration(minutes: 1));
 

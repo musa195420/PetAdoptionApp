@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import '../../helpers/locator.dart';
 import '../../models/selection_box_model.dart';
 import '../../services/navigation_service.dart';
+import '../startup_viewmodel.dart';
 
 class AdminViewModel extends ChangeNotifier {
   int? expandedBoxId;
-
+   StartupViewModel get _startupViewModel => locator<StartupViewModel>();
   NavigationService get _navigationService => locator<NavigationService>();
   final Map<int, List<String>> subItemsMap = {
     0: ['Config User', 'Config Adopter', 'Config Donor'],
@@ -41,5 +42,10 @@ class AdminViewModel extends ChangeNotifier {
     }
     break;
    }
+  }
+
+  void logout() async{
+   await _startupViewModel.logout();
+    
   }
 }

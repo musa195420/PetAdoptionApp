@@ -3,6 +3,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:petadoption/helpers/locator.dart';
 import 'package:petadoption/models/hive_models/user.dart';
 import 'package:petadoption/models/message.dart';
+import 'package:petadoption/models/request_models/delete_user.dart';
 import 'package:petadoption/services/api_service.dart';
 import 'package:petadoption/services/dialog_service.dart';
 import 'package:petadoption/services/global_service.dart';
@@ -119,7 +120,34 @@ void removeImagePath()
           data: UserEditModal(user:user));
       
   }
-
+ Future<void> deleteUser(String userId) async {
+   try{
+    loading(true,loadingText: "Deleting User");
+    bool res=await _dialogService.showAlertDialog(Message(description:"Do you Really want to delete User ?"));
+   if(res)
+   {
+   var resDelete= await _apiService.deleteUser(DeleteUser(userId:userId) );
+   if(resDelete.errorCode=="PA0004")
+   {
+    debugPrint("User Deleted Sucess Fully");
+   }
+   else{
+     await _dialogService.showApiError(
+                resDelete.data.status.toString(),
+                resDelete.data.message.toString(),
+                resDelete.data.error.toString());
+   }
+   }
+  
+   }catch(e)
+   {
+     loading(false);
+    debugPrint("Error => $e");
+   }
+   finally{
+     loading(false);
+   }
+ }
   void updateUser(String email, String number,User user)async {
 
    try{
@@ -180,4 +208,11 @@ debugPrint(e.toString());
     loading(false);
    }
   }
+
+  void showLink(User user) {
+
+    await _apiService.
+  }
+
+ 
 }

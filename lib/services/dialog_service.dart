@@ -48,6 +48,128 @@ class DialogService implements IDialogService {
   ];
 
   @override
+  Future<bool> showAlertDialog(Message message) async {
+    var isLoader = EasyLoading.isShow ? true : false;
+    if (isLoader) {
+      await EasyLoading.dismiss();
+    }
+
+    var res = await showDialog<bool>(
+          context: _navigationService.navigatorKey.currentContext!,
+          barrierDismissible: false,
+          builder: (_) => PopScope(
+            canPop: false,
+            child: Dialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              backgroundColor: const Color(0xFFFAF3E0),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.of(
+                              _navigationService.navigatorKey.currentContext!)
+                          .size
+                          .height *
+                      0.8,
+                ),
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(25),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        // Title and Image
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                message.title,
+                                style: const TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF3E2723),
+                                ),
+                              ),
+                            ),
+                            Image.asset(
+                              'assets/images/error.png',
+                              height: MediaQuery.of(_navigationService
+                                          .navigatorKey.currentContext!)
+                                      .size
+                                      .height *
+                                  0.15,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+
+                        // Description box
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: Color(0xFFBCAAA4)),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Text(
+                              message.description,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                color: Color(0xFF4E342E),
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        const SizedBox(height: 20),
+
+                        // Button
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: Row(
+                            spacing: 10,
+                            children: [
+                              CustomButton(
+                                height: 45,
+                                text: message.okText,
+                                onTap: () {
+                                  _navigationService.popDialog(result: true);
+                                },
+                                backgroundcolor: const Color(0xFFFF6F00),
+                                fontcolor: Colors.white,
+                              ),
+
+                              CustomButton(
+                                height: 45,
+                                text: message.cancelText,
+                                onTap: () {
+                                  _navigationService.popDialog(result: false);
+                                },
+                                backgroundcolor: const Color(0xFFFF6F00),
+                                fontcolor: Colors.white,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ) ??
+        false;
+
+    if (isLoader) {
+      await EasyLoading.show(status: 'Loading...');
+    }
+    return res;
+  }
+
+
+  @override
   Future<bool> showAlert(Message message) async {
     var isLoader = EasyLoading.isShow ? true : false;
     if (isLoader) {
@@ -161,7 +283,7 @@ class DialogService implements IDialogService {
         ? "An Error Occurred"
         : error;
     message = (message == "null" || message == null || message.isEmpty)
-        ? "Please check your credentials or contact the administrator."
+        ? "Please  Contact the administrator."
         : message;
 
     if (EasyLoading.isShow) {
@@ -357,9 +479,13 @@ class DialogService implements IDialogService {
 
     return res;
   }
+
+
 }
 
 abstract class IDialogService {
+  
+  Future<bool> showAlertDialog(Message message);
   Future<int> showSelect(Message message);
   Future<bool> showAlert(Message message);
   Future<bool> showApiError(String? code, String? error, String? message);
