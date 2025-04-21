@@ -1,7 +1,7 @@
 class PetRequest {
   final String donorId;
   final String name;
-  final String animalType;
+  final String animalId;
   final bool isLive;
   final String breedId;
   final int age;
@@ -13,7 +13,7 @@ class PetRequest {
   PetRequest({
     required this.donorId,
     required this.name,
-    required this.animalType,
+    required this.animalId,
     required this.isLive,
     required this.breedId,
     required this.age,
@@ -26,7 +26,7 @@ class PetRequest {
     return PetRequest(
       donorId: json['donor_id'],
       name: json['name'],
-      animalType: json['animal_type'],
+      animalId: json['animal_id'],
       isLive: json['is_live'],
       breedId: json['breed_id'],
       age: json['age'],
@@ -40,7 +40,7 @@ class PetRequest {
     return {
       'donor_id': donorId,
       'name': name,
-      'animal_type': animalType,
+      'animal_id': animalId,
       'is_live': isLive,
       'breed_id': breedId,
       'age': age,

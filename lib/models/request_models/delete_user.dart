@@ -1,15 +1,15 @@
-class DeleteUser {
+class SingleUser {
  
 
     final String userId;
 
-  DeleteUser({
+  SingleUser({
  
    required this.userId,
   });
 
-  factory DeleteUser.fromJson(Map<String, dynamic> json) {
-    return DeleteUser(
+  factory SingleUser.fromJson(Map<String, dynamic> json) {
+    return SingleUser(
       userId: json['user_id'],
     
     );

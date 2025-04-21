@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 import 'package:flutter/material.dart';
 import 'package:petadoption/views/admin_views/admin.dart';
 import 'package:petadoption/views/admin_views/user_admin.dart';
@@ -6,6 +8,7 @@ import 'package:petadoption/views/login.dart';
 import 'package:petadoption/views/modals/animalBreed_modal.dart';
 import 'package:petadoption/views/modals/animalType_modal.dart';
 import 'package:petadoption/views/modals/user_edit_modal.dart';
+import 'package:petadoption/views/modals/userlink_modal.dart';
 import 'package:petadoption/views/not_supported.dart';
 import 'package:petadoption/views/pet_page.dart';
 import 'package:petadoption/views/signup.dart';
@@ -30,6 +33,7 @@ class Routes {
   static const String animalType_modal = "animalType_modal";
   static const String animalBreed_modal = "animalBreed_modal";
   static const String user_edit_modal = "user_edit_modal";
+    static const String user_link_modal = "user_link_modal";
    static const String userAdmin = "userAdmin";
 }
 
@@ -122,6 +126,19 @@ class NavigationService {
             context: navigatorKey.currentContext!,
             backgroundColor: Colors.transparent,
             builder: (context) => AnimaltypeModal(
+                //  invoice: data,
+                ),
+          );
+        }
+        break;
+         case Routes.user_link_modal:
+        {
+          showBarModalBottomSheet(
+            expand: true,
+            context: navigatorKey.currentContext!,
+            backgroundColor: Colors.transparent,
+            builder: (context) => UserLinkModal(user: data.user,
+            userProfile: data.userProfile,pets: data.pets,
                 //  invoice: data,
                 ),
           );

@@ -220,7 +220,7 @@ class PetViewModel extends BaseViewModel {
     var addpetRes = await _apiService.addPet(PetRequest(
       donorId: await _globalService.getuser()!.userId,
       name: name,
-      animalType: selectedAnimalTypeId!,
+      animalId: selectedAnimalTypeId!,
       isLive: false,
       breedId: selectedBreedId!,
       age: age,

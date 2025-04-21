@@ -4,6 +4,8 @@ import 'package:petadoption/helpers/locator.dart';
 import 'package:petadoption/models/hive_models/user.dart';
 import 'package:petadoption/models/message.dart';
 import 'package:petadoption/models/request_models/delete_user.dart';
+import 'package:petadoption/models/response_models/pet_response.dart';
+import 'package:petadoption/models/response_models/user_profile.dart';
 import 'package:petadoption/services/api_service.dart';
 import 'package:petadoption/services/dialog_service.dart';
 import 'package:petadoption/services/global_service.dart';
@@ -11,6 +13,7 @@ import 'package:petadoption/services/navigation_service.dart';
 import 'package:petadoption/services/pref_service.dart';
 import 'package:petadoption/viewModel/base_view_model.dart';
 import 'package:petadoption/viewModel/startup_viewmodel.dart';
+import 'package:petadoption/views/modals/userlink_modal.dart';
 
 import '../../views/modals/user_edit_modal.dart';
 
@@ -126,7 +129,7 @@ void removeImagePath()
     bool res=await _dialogService.showAlertDialog(Message(description:"Do you Really want to delete User ?"));
    if(res)
    {
-   var resDelete= await _apiService.deleteUser(DeleteUser(userId:userId) );
+   var resDelete= await _apiService.deleteUser(SingleUser(userId:userId) );
    if(resDelete.errorCode=="PA0004")
    {
     debugPrint("User Deleted Sucess Fully");
@@ -209,9 +212,59 @@ debugPrint(e.toString());
    }
   }
 
-  void showLink(User user) {
+  UserProfile? userProfile;
 
-    await _apiService.
+  void showLink(User user) async{
+   try{
+
+    userProfile=null;
+    pets=null;
+     loading(true,loadingText: "Checking Links");
+
+  var profileRes=  await _apiService.getProfile(SingleUser(userId: user.userId));
+
+  if(profileRes.errorCode=="PA0004")
+  {
+    userProfile=profileRes.data as UserProfile;
+    if(user.role.toLowerCase()=="donor")
+    {
+  await  _getpetuserId(user);
+
+
+ 
+    }
+  }
+ 
+   }catch(e)
+   {
+    loading(false);
+   }
+   finally{
+       await _navigationService.pushModalBottom(Routes.user_link_modal,
+        data: UserLinkModal(user: user,pets: pets,userProfile: userProfile,));
+    loading(false);
+   }
+  }
+  
+
+  List<PetResponse>? pets;
+  Future<void> _getpetuserId(User user) async{
+
+
+     var petRes= await _apiService.getPetByUserId(SingleUser(userId: user.userId));
+
+     if (petRes.errorCode == "PA0004") {
+        debugPrint(petRes.data.toString());
+
+        // Parse the response
+        pets = (petRes.data as List)
+            .map((json) => PetResponse.fromJson(json as Map<String, dynamic>))
+            .toList();
+
+        // Get all names for the dialog
+       
+
+      } 
   }
 
  

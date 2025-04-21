@@ -22,8 +22,7 @@ class LoginPage extends StatelessWidget {
     return StatefulWrapper(
       onInit: (){},
       onDispose: (){
-        emailController.dispose();
-        passwordController.dispose();
+     
       },
       child: Scaffold(
         key: scaffoldKey,
