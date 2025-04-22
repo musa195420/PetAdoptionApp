@@ -1,51 +1,21 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:petadoption/services/global_service.dart';
 import 'package:petadoption/services/navigation_service.dart';
 import 'package:petadoption/helpers/locator.dart';
-import 'package:petadoption/services/api_service.dart';
-import 'package:petadoption/helpers/constants.dart';
 import '../custom_widgets/custom_button.dart';
 import '../models/message.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class DialogService implements IDialogService {
-  IAPIService get _apiService => locator<IAPIService>();
 
   NavigationService get _navigationService => locator<NavigationService>();
-  GlobalService get _globalService => locator<GlobalService>();
 
   TextEditingController amountController = TextEditingController(text: '0.00');
-  final GlobalKey _parentKey = GlobalKey();
   OverlayEntry? overlayEntry;
   bool isDot = false;
   int dotCount = 0;
-  final List<int> _colors = [
-    0xFFFF6F00,
-    0xFFBF360C,
-    0xFF33691E,
-    0xFF004D40,
-    0xFF00B8D4,
-    0xFF2962FF,
-    0xFF6200EA,
-    0xFFB71C1C,
-    0xFFFF1744,
-    0xFFFF6F00,
-    0xFFBF360C,
-    0xFF33691E,
-    0xFF004D40,
-    0xFF00B8D4,
-    0xFF2962FF,
-    0xFF6200EA,
-    0xFFB71C1C,
-    0xFFFF1744
-  ];
 
   @override
   Future<bool> showAlertDialog(Message message) async {
@@ -292,7 +262,7 @@ class DialogService implements IDialogService {
 
     var res = await showDialog<bool>(
           context: _navigationService.navigatorKey.currentContext!,
-          barrierDismissible: false,
+          barrierDismissible: true,
           builder: (_) => PopScope(
             canPop: false,
             child: Dialog(
@@ -301,103 +271,102 @@ class DialogService implements IDialogService {
               ),
               backgroundColor: const Color(0xFFFAF3E0),
               child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxHeight: MediaQuery.of(
-                              _navigationService.navigatorKey.currentContext!)
-                          .size
-                          .height *
-                      0.85,
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(24),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      // Error Image
-                      Image.asset(
-                        'assets/images/error.png',
-                        height: MediaQuery.of(_navigationService
-                                    .navigatorKey.currentContext!)
-                                .size
-                                .height *
-                            0.22,
-                      ),
-                      const SizedBox(height: 20),
+  constraints: BoxConstraints(
+    maxHeight: MediaQuery.of(
+                _navigationService.navigatorKey.currentContext!)
+            .size
+            .height *
+        0.85,
+  ),
+  child: Padding(
+    padding: const EdgeInsets.all(24),
+    child: SingleChildScrollView( // Wrap the entire column
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Image.asset(
+            'assets/images/error.png',
+            height: MediaQuery.of(_navigationService
+                        .navigatorKey.currentContext!)
+                    .size
+                    .height *
+                0.22,
+          ),
+          const SizedBox(height: 20),
 
-                      // Title
-                      Text(
-                        "Oops! Something went wrong",
-                        style: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xFF3E2723),
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-
-                      const SizedBox(height: 16),
-
-                      // Error Details
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: Color(0xFFCCBFB8)),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black12,
-                              blurRadius: 6,
-                              offset: Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("Code: $code",
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black87,
-                                )),
-                            const SizedBox(height: 6),
-                            Text("Error: $error",
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.redAccent,
-                                )),
-                            const SizedBox(height: 6),
-                            Text("Message: $message",
-                                style: const TextStyle(
-                                  fontSize: 15,
-                                  color: Colors.black54,
-                                )),
-                          ],
-                        ),
-                      ),
-
-                      const SizedBox(height: 24),
-
-                      // Button
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: CustomButton(
-                          height: 45,
-                          text: "Got It",
-                          onTap: () {
-                            _navigationService.popDialog(result: null);
-                          },
-                          backgroundcolor: const Color(0xFFFF6F00),
-                          fontcolor: Colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+          Text(
+            "Oops! Something went wrong",
+            style: const TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.w700,
+              color: Color(0xFF3E2723),
             ),
+            textAlign: TextAlign.center,
+          ),
+
+          const SizedBox(height: 16),
+
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: Color(0xFFCCBFB8)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black12,
+                  blurRadius: 6,
+                  offset: Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("Code: $code",
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    )),
+                const SizedBox(height: 6),
+                Text("Error: $error",
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Colors.redAccent,
+                    )),
+                const SizedBox(height: 6),
+                Text("Message: $message",
+                    style: const TextStyle(
+                      fontSize: 15,
+                      color: Colors.black54,
+                    )),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 24),
+
+          Align(
+            alignment: Alignment.centerRight,
+            child: CustomButton(
+              height: 45,
+              text: "Got It",
+              onTap: () {
+                _navigationService.popDialog(result: null);
+              },
+              backgroundcolor: const Color(0xFFFF6F00),
+              fontcolor: Colors.white,
+            ),
+          ),
+        ],
+      ),
+    ),
+  ),
+),
+ 
+               ),
           ),
         ) ??
         false;

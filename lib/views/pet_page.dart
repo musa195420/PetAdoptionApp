@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:petadoption/custom_widgets/stateful_wrapper.dart';
 import 'package:petadoption/viewModel/pet_view_model.dart';
@@ -8,7 +7,6 @@ import 'package:petadoption/viewModel/pet_view_model.dart';
 import 'package:provider/provider.dart';
 
 import '../custom_widgets/default_text_input.dart';
-import '../helpers/constants.dart';
 
 dynamic formKey = GlobalKey<FormState>();
 
@@ -60,39 +58,35 @@ class PetPage extends StatelessWidget {
                    _buildCharacterImage(viewModel),
       
                       // Padding to make space for the image
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            top: 75), // Adjust to control overlap
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: const Color.fromARGB(255, 255, 247, 240),
-                            borderRadius: BorderRadius.circular(16),
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Colors.black12,
-                                blurRadius: 10,
-                                offset: Offset(0, 4),
-                              ),
-                            ],
-                          ),
-                          padding: const EdgeInsets.fromLTRB(20, 80, 20, 20),
-                          child: Column(
-                            children: [
-                              _buildAddPetForm(viewModel),
-                              const SizedBox(height: 10),
-                              const SizedBox(height: 20),
-                              InkWell(
-                                  onTap: () {
-                                    if (formKey.currentState!.validate()) {
-                                      viewModel.addPet(
-                                          nameController.text,
-                                          int.parse(ageController.text),
-                                          descriptionController.text);
-                                    }
-                                  },
-                                  child: _buildAddPetButton(viewModel)),
-                            ],
-                          ),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: const Color.fromARGB(255, 255, 247, 240),
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Colors.black12,
+                              blurRadius: 10,
+                              offset: Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+                        child: Column(
+                          children: [
+                            _buildAddPetForm(viewModel),
+                            const SizedBox(height: 10),
+                          
+                            InkWell(
+                                onTap: () {
+                                  if (formKey.currentState!.validate()) {
+                                    viewModel.addPet(
+                                        nameController.text,
+                                        int.parse(ageController.text),
+                                        descriptionController.text);
+                                  }
+                                },
+                                child: _buildAddPetButton(viewModel)),
+                          ],
                         ),
                       ),
                      
@@ -132,7 +126,7 @@ class PetPage extends StatelessWidget {
                   ),
                 ):
                Image.asset(
-                  'assets/images/noprofile.png',
+                  'assets/images/signup.png',
                   height: 120,
                   fit: BoxFit.contain,
                 ),

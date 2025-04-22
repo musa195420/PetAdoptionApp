@@ -81,7 +81,7 @@ class StartupViewModel extends BaseViewModel {
           _gotoNextPage();
         }
       }
-    } catch (e, s) {
+    } catch (e) {
       debugPrint(e.toString());
     } finally {
       await loading(false);

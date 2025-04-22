@@ -1,11 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:petadoption/custom_widgets/default_text_input.dart';
-import 'package:petadoption/custom_widgets/stateful_wrapper.dart';
 import 'package:petadoption/models/hive_models/user.dart';
 import 'package:petadoption/viewModel/admin_view_models/user_admin_view_model.dart';
-import '../../helpers/locator.dart';
-import '../../services/api_service.dart';
 import 'package:provider/provider.dart';
 
 class UserEditModal extends StatefulWidget {
@@ -23,7 +20,6 @@ class _UserEditModalState extends State<UserEditModal> {
   late TextEditingController emailController;
   late TextEditingController numberController;
 
-  IAPIService get _apiService => locator<IAPIService>();
 
   @override
   void initState() {

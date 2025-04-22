@@ -1,20 +1,15 @@
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:petadoption/helpers/locator.dart';
-import 'package:petadoption/models/hive_models/user.dart';
 import 'package:petadoption/models/message.dart';
 import 'package:petadoption/models/request_models/animal_breed_request.dart';
 import 'package:petadoption/models/request_models/pet_request.dart';
 import 'package:petadoption/models/response_models/animal_Type.dart';
 import 'package:petadoption/services/api_service.dart';
-import 'package:petadoption/services/db_service.dart';
 import 'package:petadoption/services/dialog_service.dart';
 import 'package:petadoption/services/global_service.dart';
 import 'package:petadoption/services/navigation_service.dart';
-import 'package:petadoption/services/pref_service.dart';
-import 'package:petadoption/viewModel/authentication_view_model.dart';
 import 'package:petadoption/viewModel/base_view_model.dart';
 import 'package:petadoption/viewModel/startup_viewmodel.dart';
 import 'package:petadoption/views/modals/animalBreed_modal.dart';
@@ -22,7 +17,6 @@ import 'package:petadoption/views/modals/animalBreed_modal.dart';
 import '../models/response_models/breed_type.dart';
 
 class PetViewModel extends BaseViewModel {
-  PrefService get _prefService => locator<PrefService>();
   NavigationService get _navigationService => locator<NavigationService>();
 
   IDialogService get _dialogService => locator<IDialogService>();
@@ -71,8 +65,7 @@ class PetViewModel extends BaseViewModel {
                 description: "Please Select Animal Type", items: animalNames),
           );
 
-          if (selectedIndex != null &&
-              selectedIndex >= 0 &&
+          if (selectedIndex >= 0 &&
               selectedIndex < animals!.length) {
             // Assign selected animal_id
             selectedAnimalTypeId = animals![selectedIndex].animalId;
@@ -128,8 +121,7 @@ class PetViewModel extends BaseViewModel {
                   description: "Please Select Animal Type", items: breedNames),
             );
 
-            if (selectedIndex != null &&
-                selectedIndex >= 0 &&
+            if (selectedIndex >= 0 &&
                 selectedIndex < breeds!.length) {
               // Assign selected animal_id
               selectedBreedId = breeds![selectedIndex].animalId;
@@ -218,7 +210,7 @@ class PetViewModel extends BaseViewModel {
 
   Future<void> addPet(String name, int age, String description) async {
     var addpetRes = await _apiService.addPet(PetRequest(
-      donorId: await _globalService.getuser()!.userId,
+      donorId: _globalService.getuser()!.userId,
       name: name,
       animalId: selectedAnimalTypeId!,
       isLive: false,

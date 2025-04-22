@@ -2,22 +2,22 @@
 
 import 'package:flutter/material.dart';
 import 'package:petadoption/custom_widgets/stateful_wrapper.dart';
-import 'package:petadoption/models/hive_models/user.dart';
-import 'package:petadoption/viewModel/admin_view_models/user_admin_view_model.dart';
+import 'package:petadoption/models/response_models/user_profile.dart';
+import 'package:petadoption/viewModel/admin_view_models/adopter_admin_view_model.dart';
 import 'package:provider/provider.dart';
 
-class UserAdmin extends StatelessWidget {
-  UserAdmin({super.key});
+class AdopterAdmin extends StatelessWidget {
+  AdopterAdmin({super.key});
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final TextEditingController searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = context.watch<UserAdminViewModel>();
+    final viewModel = context.watch<AdopterAdminViewModel>();
 
     return StatefulWrapper(
-      onInit: () => viewModel.getUsers(),
+      onInit: () => viewModel.getAdopters(),
       onDispose: () {},
       child: Scaffold(
         key: scaffoldKey,
@@ -30,9 +30,9 @@ class UserAdmin extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: TextField(
                   controller: searchController,
-                  onChanged: viewModel.filterUsers,
+                  onChanged: viewModel.filterAdopters,
                   decoration: InputDecoration(
-                    hintText: "Search by email",
+                    hintText: "Search by Name",
                     prefixIcon: const Icon(Icons.search),
                     suffixIcon: searchController.text.isNotEmpty
                         ? IconButton(
@@ -53,13 +53,13 @@ class UserAdmin extends StatelessWidget {
               ),
               const SizedBox(height: 12),
               Expanded(
-                child: viewModel.filteredUsers == null
+                child: viewModel.filteredAdopters == null
                     ? const Center(child: Text("No users loaded."))
                     : ListView.builder(
                         padding: const EdgeInsets.all(2),
-                        itemCount: viewModel.filteredUsers!.length,
+                        itemCount: viewModel.filteredAdopters!.length,
                         itemBuilder: (context, index) {
-                          final user = viewModel.filteredUsers![index];
+                          final user = viewModel.filteredAdopters![index];
                           return _buildUserCard(context, user, viewModel);
                         },
                       ),
@@ -71,9 +71,10 @@ class UserAdmin extends StatelessWidget {
     );
   }
 
-  Widget _buildUserCard(BuildContext context, User user, UserAdminViewModel viewModel) {
-    final roleIcon = viewModel.getRoleIcon(user.role);
-
+  Widget _buildUserCard(BuildContext context, UserProfile user, AdopterAdminViewModel viewModel) {
+    
+  String displayText = user.isActive.toString() == 'true' ? "Live" : "Offline";
+   Color     color = user.isActive.toString() == 'true' ? Colors.green : Colors.red;
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       elevation: 4,
@@ -83,30 +84,37 @@ class UserAdmin extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CircleAvatar(
-              radius: 30,
-              backgroundColor: Theme.of(context).primaryColor.withOpacity(0.2),
-              backgroundImage: user.profileImage != null ? NetworkImage(user.profileImage!) : null,
-              child: user.profileImage == null
-                  ? Icon(Icons.person, color: Theme.of(context).primaryColor, size: 30)
-                  : null,
-            ),
-            const SizedBox(width: 10),
+           
+            
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(user.email, style: Theme.of(context).textTheme.titleMedium),
+                  Row(
+                    children: [
+                      Text(user.name, style: Theme.of(context).textTheme.titleMedium),
+                      Spacer(),
+                        Flexible(child: Text(user.location, style: Theme.of(context).textTheme.titleMedium)),
+                    
+                    ],
+                  ),
                   const SizedBox(height: 8),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Row(
                         children: [
-                          Icon(roleIcon, size: 18, color: Theme.of(context).primaryColor),
-                          const SizedBox(width: 6),
-                          Text((user.role ).toUpperCase(),
-                              style: Theme.of(context).textTheme.bodySmall),
+                       Container(
+                padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                decoration: BoxDecoration(
+                  color: color.withOpacity(0.1),
+                  border: Border.all(color: color),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Center(
+                  child: Text(displayText, style: TextStyle(color: color, fontWeight: FontWeight.bold)),
+                ),
+              ),
                         ],
                       ),
                     Flexible(
@@ -117,21 +125,16 @@ class UserAdmin extends StatelessWidget {
       IconButton(
         icon: Icon(Icons.edit, color: Theme.of(context).colorScheme.primary),
         onPressed: () async{
-      viewModel.gotoEditUser(user);
+      viewModel.gotoEditAdopter(user);
         },
       ),
       IconButton(
         icon: Icon(Icons.delete, color: Theme.of(context).colorScheme.error),
         onPressed: () {
-          viewModel.deleteUser(user.userId);
+          viewModel.deleteAdopter(user.adopterId??"");
         },
       ),
-      IconButton(
-        icon: Icon(Icons.link, color: Theme.of(context).colorScheme.secondary),
-        onPressed: () {
-          viewModel.showLink(user);
-        },
-      ),
+      
     ],
   ),
 ),

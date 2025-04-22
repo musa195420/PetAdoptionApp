@@ -2,13 +2,9 @@
 
 import 'dart:async';
 import 'dart:io';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hive_flutter/adapters.dart';
-import 'package:petadoption/helpers/constants.dart';
 import 'package:petadoption/services/db_service.dart';
 import 'package:petadoption/services/error_reporting_service.dart';
 import 'package:petadoption/services/global_service.dart';
@@ -18,11 +14,9 @@ import 'package:petadoption/helpers/locator.dart';
 import 'package:petadoption/services/pref_service.dart';
 import 'package:petadoption/themes/pet_theme.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_localizations/src/widgets_localizations.dart';
 
 import 'package:path_provider/path_provider.dart' as path_provider;
 
-import 'helpers/life_cycle_observer.dart';
 import 'helpers/provider.dart';
 import 'models/hive_models/user.dart';
 import 'services/navigation_service.dart';
@@ -77,7 +71,7 @@ Future configSettings() async {
     locator<GlobalService>().log('-----------------------------------------');
     locator<GlobalService>().log('---------------- App Start --------------');
     locator<GlobalService>().log('-----------------------------------------');
-  } catch (e, s) {
+  } catch (e) {
     debugPrint("Error => $e");
   }
 }

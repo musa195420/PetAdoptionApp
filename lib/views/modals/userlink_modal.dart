@@ -1,70 +1,59 @@
+// ignore_for_file: must_be_immutable, deprecated_member_use
+
 import 'package:flutter/material.dart';
-import 'package:petadoption/custom_widgets/default_text_input.dart';
 import 'package:petadoption/custom_widgets/stateful_wrapper.dart';
-import '../../helpers/locator.dart';
 import '../../models/hive_models/user.dart';
-import '../../models/request_models/animalType_request.dart';
 import '../../models/response_models/pet_response.dart';
 import '../../models/response_models/user_profile.dart';
-import '../../services/api_service.dart';
-
-dynamic formKey = GlobalKey<FormState>();
 
 class UserLinkModal extends StatelessWidget {
   final UserProfile? userProfile;
-  List<PetResponse>? pets;
+  final List<PetResponse>? pets;
   final User user;
+
   UserLinkModal({super.key, this.userProfile, required this.user, this.pets});
+
   final scaffoldKey = GlobalKey<ScaffoldState>();
-  IAPIService get _apiService => locator<IAPIService>();
   final TextEditingController petController = TextEditingController();
+
+  final Color headerColor = const Color.fromARGB(255, 146, 61, 5);
+  final EdgeInsets boxPadding = const EdgeInsets.all(5);
+  final BorderRadius boxRadius = BorderRadius.circular(10);
+  final BoxDecoration whiteBoxDecoration = BoxDecoration(
+    color: Colors.white,
+    border: Border.all(width: 1, color: Colors.brown),
+    borderRadius: BorderRadius.circular(10),
+  );
+
   @override
   Widget build(BuildContext context) {
     return StatefulWrapper(
       onInit: () {},
-      onDispose: () {
-        petController.dispose();
-      },
+      onDispose: petController.dispose,
       child: Scaffold(
         key: scaffoldKey,
         body: Stack(
           fit: StackFit.expand,
           children: [
-            // Background image
-            Image.asset(
-              'assets/images/bg.png',
-              fit: BoxFit.cover,
-            ),
-            // Login form content with SafeArea
+            Image.asset('assets/images/bg.png', fit: BoxFit.cover),
             SafeArea(
               child: SingleChildScrollView(
+                padding: const EdgeInsets.all(20),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 255, 247, 240),
+                    color: const Color.fromARGB(255, 255, 247, 240),
                     borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black12,
-                        blurRadius: 10,
-                        offset: Offset(0, 4),
-                      ),
+                    boxShadow: const [
+                      BoxShadow(color: Colors.black12, blurRadius: 10, offset: Offset(0, 4)),
                     ],
                   ),
-                  padding: const EdgeInsets.fromLTRB(20, 20, 20,
-                      20), // top padding gives space for character image
                   child: Column(
-                    spacing: 10,
+                    spacing: 5,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                       Text(
-            "User Information",
-            style: TextStyle(
-                color: const Color.fromARGB(255, 146, 61, 5),
-                fontSize: 20,
-                fontWeight: FontWeight.w700),
-          ),
-                      _showUser(),
-                      if (pets != null && pets!.isNotEmpty) _showPet(),
+                      Text("User Information", style: _headerTextStyle()),
+                      _buildUserInfo(),
+                      if (pets?.isNotEmpty ?? false) _buildPetInfo(),
                     ],
                   ),
                 ),
@@ -76,184 +65,151 @@ class UserLinkModal extends StatelessWidget {
     );
   }
 
-  Widget _showUser() {
+  TextStyle _headerTextStyle() => TextStyle(
+        color: headerColor,
+        fontSize: 20,
+        fontWeight: FontWeight.w700,
+      );
+
+  Widget _buildUserInfo() {
     return Container(
       width: double.infinity,
-     
-      padding: EdgeInsets.all(5),
-      decoration: BoxDecoration(
-         color: Colors.white,
-        border: Border.all(width: 1, color: Colors.brown),
-        borderRadius: BorderRadius.circular(10),
-      ),
+      padding: boxPadding,
+      decoration: whiteBoxDecoration,
       child: Column(
-        spacing: 3,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              ClipOval(
-                child: user.profileImage != null
-                    ? Image.network(
-                        user.profileImage!,
-                        width: 60,
-                        height: 60,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Image.asset(
-                            "assets/images/noprofile.png",
-                            width: 60,
-                            height: 60,
-                            fit: BoxFit.cover,
-                          );
-                        },
-                      )
-                    : Image.asset(
-                        "assets/images/noprofile.png",
-                        width: 60,
-                        height: 60,
-                        fit: BoxFit.cover,
-                      ),
-              )
-            ],
-          ),
-          if (userProfile != null)
-            Column(
-              children: [
-                Divider(),
-                _row("Name", userProfile!.name),
-                Divider(),
-                _row("Location", userProfile!.location),
-                 Divider(),
-                _row("Is Active", userProfile!.isActive.toString()),
-              ],
-            ),
-          Divider(),
-          _row("Email", user.email),
-          Divider(),
-          _row("phoneNumber", user.phoneNumber),
-          Divider(),
-          _row("Role", user.role),
-          Divider(),
-          _row("Device ID", user.deviceId),
-           Divider(),
-          
+          _profileImage(user.profileImage),
+          const Divider(),
+          if (userProfile != null) ...[
+            _infoRow("Name", userProfile!.name),
+            _infoRow("Location", userProfile!.location),
+            _statusRow("Is Active", userProfile!.isActive.toString()),
+          ],
+          _infoRow("Email", user.email),
+          _infoRow("Phone Number", user.phoneNumber),
+          _infoRow("Role", user.role),
+          _infoRow("Device ID", user.deviceId),
         ],
       ),
     );
   }
 
-  Widget _showPet() {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.all(5),
-      child: ListView.builder(
-        shrinkWrap:
-            true, // To prevent the list from expanding beyond the screen
-        itemCount: pets!.length, // Number of pets
-        itemBuilder: (context, index) {
-          return Column(
-            spacing: 3,
-            children: [
-                 Text(
-            "Pet (${index+1}) Information",
-            style: TextStyle(
-                color: const Color.fromARGB(255, 146, 61, 5),
-                fontSize: 20,
-                fontWeight: FontWeight.w700),
-          ),
-              Container(
-                margin: EdgeInsets.symmetric(
-                    vertical: 10), // Adds space between pet boxes
-                padding: EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  border: Border.all(
-                      width: 1, color: Colors.brown), // Box border for each pet
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.white, // Background color for each box
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Pet image
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        ClipOval(
-                          child: pets![index].image != null
-                              ? Image.network(
-                                  pets![index].image!,
-                                  width: 60,
-                                  height: 60,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Image.asset(
-                                      "assets/images/signup.png",
-                                      width: 60,
-                                      height: 60,
-                                      fit: BoxFit.cover,
-                                    );
-                                  },
-                                )
-                              : Image.asset(
-                                  "assets/images/signup.png",
-                                  width: 60,
-                                  height: 60,
-                                  fit: BoxFit.cover,
-                                ),
-                        ),
-                      ],
-                    ),
-                    Divider(),
-                    _row("Name", pets![index].name ?? ""),
-                    Divider(),
-                    _row("Animal Type", pets![index].animal ?? ""),
-                    Divider(),
-                    _row("Breed", pets![index].breed ?? ""),
-                    Divider(),
-                    _row("Age", pets![index].age.toString()),
-                    Divider(),
-                    _row("Gender", pets![index].gender.toString()),
-                    Divider(),
-                    _row("Created At", pets![index].createdAt.toString()),
-                    Divider(),
-                    _row("Description", pets![index].description ?? ""),
-                    Divider(),
-                    _row("Approval Status", pets![index].isApproved ?? ""),
-                    Divider(),
-                    _row("Live Status", pets![index].isLive.toString()),
-                    Divider(),
-                    _row("Rejection Reason", pets![index].rejectionReason ?? ""),
-                  ],
-                ),
+  Widget _buildPetInfo() {
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: pets!.length,
+      itemBuilder: (context, index) {
+        final pet = pets![index];
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("Pet (${index + 1}) Information", style: _headerTextStyle()),
+            Container(
+              margin: const EdgeInsets.symmetric(vertical: 10),
+              padding: const EdgeInsets.all(8),
+              decoration: whiteBoxDecoration,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _profileImage(pet.image, defaultAsset: "assets/images/signup.png"),
+                  _infoRow("Name", pet.name),
+                  _infoRow("Animal Type", pet.animal),
+                  _infoRow("Breed", pet.breed),
+                  _infoRow("Age", pet.age?.toString()),
+                  _infoRow("Gender", pet.gender),
+                  _infoRow("Created At", pet.createdAt?.toString()),
+                  _infoRow("Description", pet.description),
+                  _statusRow("Approval Status", pet.isApproved),
+                  _statusRow("Live Status", pet.isLive.toString()),
+                  _infoRow("Rejection Reason", pet.rejectionReason),
+                ],
               ),
-            ],
-          );
-        },
-      ),
+            ),
+          ],
+        );
+      },
     );
   }
 
-  Widget _row(String text1, String text2) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start, // Aligns text to the top
+  Widget _profileImage(String? imageUrl, {String defaultAsset = "assets/images/noprofile.png"}) {
+    return ClipOval(
+      child: imageUrl != null
+          ? Image.network(
+              imageUrl,
+              width: 60,
+              height: 60,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) => Image.asset(defaultAsset, width: 60, height: 60),
+            )
+          : Image.asset(defaultAsset, width: 60, height: 60),
+    );
+  }
+
+  Widget _infoRow(String label, String? value) {
+    return Column(
       children: [
-        Expanded(
-          child: Text(
-            text1,
-            style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w600),
-          ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(child: Text(label, style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.w600))),
+            Expanded(child: Text(value ?? "", style: const TextStyle(color: Colors.black))),
+          ],
         ),
-        Expanded(
-          child: Text(
-            text2,
-            style: TextStyle(color: Colors.black, fontWeight: FontWeight.w300),
-            softWrap:
-                true, // Ensures text wraps when it exceeds the available space
-            overflow:
-                TextOverflow.visible, // Allows the text to go to the next line
-          ),
+        const Divider(),
+      ],
+    );
+  }
+
+  Widget _statusRow(String label, String? value) {
+    final status = (value ?? "").toLowerCase();
+    late Color color;
+    late String displayText;
+
+    switch (label) {
+      case "Approval Status":
+        displayText = {
+          "approved": "Approved",
+          "pending": "Pending",
+          "rejected": "Disapproved"
+        }[status] ?? "Unknown";
+        color = {
+          "approved": Colors.green,
+          "pending": Colors.orange,
+          "rejected": Colors.red
+        }[status] ?? Colors.grey;
+        break;
+      case "Live Status":
+      case "Is Active":
+        displayText = status == 'true' ? "Live" : "Offline";
+        color = status == 'true' ? Colors.green : Colors.red;
+        break;
+      default:
+        displayText = value ?? "Unknown";
+        color = Colors.grey;
+    }
+
+    return Column(
+      children: [
+        Row(
+          children: [
+            Expanded(child: Text(label, style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.w600))),
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                decoration: BoxDecoration(
+                  color: color.withOpacity(0.1),
+                  border: Border.all(color: color),
+                  borderRadius: boxRadius,
+                ),
+                child: Center(
+                  child: Text(displayText, style: TextStyle(color: color, fontWeight: FontWeight.bold)),
+                ),
+              ),
+            ),
+          ],
         ),
+        const Divider(),
       ],
     );
   }

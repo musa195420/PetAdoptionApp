@@ -16,6 +16,7 @@ import 'package:petadoption/viewModel/admin_view_models/admin_view_model.dart';
 import 'package:petadoption/viewModel/authentication_view_model.dart';
 import 'package:petadoption/viewModel/home_view_model.dart';
 
+import '../viewModel/admin_view_models/adopter_admin_view_model.dart';
 import '../viewModel/admin_view_models/user_admin_view_model.dart';
 import '../viewModel/pet_view_model.dart';
 import '../viewModel/signup_view_model.dart';
@@ -50,6 +51,7 @@ class LocatorInjector {
        locator.registerLazySingleton(() => PetViewModel());
            locator.registerLazySingleton(() => AdminViewModel());
              locator.registerLazySingleton(() => UserAdminViewModel());
+                 locator.registerLazySingleton(() => AdopterAdminViewModel());
     
 
     // Repos
@@ -57,7 +59,7 @@ class LocatorInjector {
     locator.registerLazySingleton<IHiveService<User>>(() => UserRepo());
     //locator.registerLazySingleton<IHiveService<APIQueue>>(() => APIQueueRepo());
     
-   }catch(e,s)
+   }catch(e)
    {
     debugPrint("Error ==> ${e.toString()}");
    }

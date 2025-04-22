@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class LifecycleObserver extends StatefulWidget {
   final Widget child;
 
-  const LifecycleObserver({Key? key, required this.child}) : super(key: key);
+  const LifecycleObserver({super.key, required this.child});
 
   @override
   State<LifecycleObserver> createState() => _LifecycleObserverState();

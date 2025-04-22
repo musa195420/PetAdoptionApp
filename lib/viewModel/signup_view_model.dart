@@ -1,12 +1,8 @@
 // ignore_for_file: non_constant_identifier_names
 
-import 'dart:io';
-import 'dart:math';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:local_auth/local_auth.dart';
 import 'package:petadoption/helpers/locator.dart';
 import 'package:petadoption/models/message.dart';
 import 'package:petadoption/models/request_models/add_adopter.dart';
@@ -25,10 +21,8 @@ import '../models/api_status.dart';
 import '../models/hive_models/user.dart';
 import '../models/request_models/login_request.dart';
 import '../models/request_models/refresh_token_request.dart';
-import '../models/response_models/login_response.dart';
 import '../models/response_models/refresh_token_response.dart';
 import '../services/db_service.dart';
-import 'package:intl/intl.dart';
 
 class SignupViewModel extends BaseViewModel {
   PrefService get _prefService => locator<PrefService>();
@@ -39,7 +33,6 @@ class SignupViewModel extends BaseViewModel {
   GlobalService get _globalService => locator<GlobalService>();
   IDialogService get _dialogService => locator<IDialogService>();
   String deviceId = "23423sadasd3q432423";
-  final LocalAuthentication _auth = LocalAuthentication();
 
   String? _email = "";
   String? _password = "";

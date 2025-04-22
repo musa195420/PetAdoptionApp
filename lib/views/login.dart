@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:petadoption/custom_widgets/custom_button.dart';
 import 'package:petadoption/custom_widgets/default_text_input.dart';
 import 'package:petadoption/custom_widgets/stateful_wrapper.dart';
 import 'package:provider/provider.dart';

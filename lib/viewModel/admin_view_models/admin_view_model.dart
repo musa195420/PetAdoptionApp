@@ -41,6 +41,12 @@ class AdminViewModel extends ChangeNotifier {
  await _navigationService.pushNamed(Routes.userAdmin, data: null, args:  TransitionType.slideRight);
     }
     break;
+ case 'config adopter':
+    {
+ await _navigationService.pushNamed(Routes.adopterAdmin, data: null, args:  TransitionType.slideLeft);
+    }
+    break;
+
    }
   }
 

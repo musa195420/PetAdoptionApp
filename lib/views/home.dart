@@ -27,7 +27,7 @@ class HomePage extends StatelessWidget {
                 alignment: Alignment.center,
                 child: SizedBox(width: 400, child: Text('This Is Home Page'))),
             CustomButton(
-              text: "Add User",
+              text: "Logout",
               onTap: () async {
                 await viewModel.logout();
               },

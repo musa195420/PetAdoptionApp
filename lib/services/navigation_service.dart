@@ -2,9 +2,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:petadoption/views/admin_views/admin.dart';
+import 'package:petadoption/views/admin_views/adopter_admin.dart';
 import 'package:petadoption/views/admin_views/user_admin.dart';
 import 'package:petadoption/views/home.dart';
 import 'package:petadoption/views/login.dart';
+import 'package:petadoption/views/modals/adopter_edit_model.dart';
 import 'package:petadoption/views/modals/animalBreed_modal.dart';
 import 'package:petadoption/views/modals/animalType_modal.dart';
 import 'package:petadoption/views/modals/user_edit_modal.dart';
@@ -34,7 +36,10 @@ class Routes {
   static const String animalBreed_modal = "animalBreed_modal";
   static const String user_edit_modal = "user_edit_modal";
     static const String user_link_modal = "user_link_modal";
+    
+    static const String adopter_edit_modal = "adopter_edit_modal";
    static const String userAdmin = "userAdmin";
+    static const String adopterAdmin = "adopterAdmin";
 }
 
 class NavigationService {
@@ -131,6 +136,18 @@ class NavigationService {
           );
         }
         break;
+         case Routes.adopter_edit_modal:
+        {
+          showBarModalBottomSheet(
+            expand: true,
+            context: navigatorKey.currentContext!,
+            backgroundColor: Colors.transparent,
+            builder: (context) => AdopterEditModal(
+                user: data.user,
+                ),
+          );
+        }
+        break;
          case Routes.user_link_modal:
         {
           showBarModalBottomSheet(
@@ -218,12 +235,10 @@ class RouteManager {
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     TransitionType transition;
-    dynamic data;
     if (settings.arguments != null) {
       var args = settings.arguments as List<dynamic>;
       transition = args[0] as TransitionType;
       if (args.length > 1) {
-        data = args[1];
       }
     } else {
       transition = TransitionType.fade;
@@ -297,6 +312,22 @@ class RouteManager {
             pageBuilder: (BuildContext context, Animation<double> animation,
                 Animation<double> secondaryAnimation) {
               return Startup();
+            },
+            transitionsBuilder: (BuildContext context,
+                Animation<double> animation,
+                Animation<double> secondaryAnimation,
+                Widget child) {
+              return _transitionsBuilder(transition, animation, child);
+            },
+          );
+        }
+
+          case Routes.adopterAdmin:
+        {
+          return PageRouteBuilder(
+            pageBuilder: (BuildContext context, Animation<double> animation,
+                Animation<double> secondaryAnimation) {
+              return AdopterAdmin();
             },
             transitionsBuilder: (BuildContext context,
                 Animation<double> animation,

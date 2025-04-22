@@ -1,38 +1,29 @@
 // ignore_for_file: non_constant_identifier_names
 
-import 'dart:io';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
-import 'package:local_auth/local_auth.dart';
 import 'package:petadoption/helpers/locator.dart';
 import 'package:petadoption/models/request_models/userinforequest.dart';
 import 'package:petadoption/services/api_service.dart';
 import 'package:petadoption/services/dialog_service.dart';
-import 'package:petadoption/services/error_reporting_service.dart';
 import 'package:petadoption/services/global_service.dart';
 import 'package:petadoption/services/navigation_service.dart';
 import 'package:petadoption/services/pref_service.dart';
 import 'package:petadoption/viewModel/base_view_model.dart';
 
-import '../models/api_status.dart';
 import '../models/hive_models/user.dart';
 import '../models/request_models/login_request.dart';
 import '../models/request_models/refresh_token_request.dart';
-import '../models/response_models/login_response.dart';
 import '../models/response_models/refresh_token_response.dart';
 import '../services/db_service.dart';
 
 class AuthenticationViewModel extends BaseViewModel {
   PrefService get _prefService => locator<PrefService>();
   IAPIService get _apiService => locator<IAPIService>();
-  IErrorReportingService get _errorReportingService =>
-      locator<IErrorReportingService>();
   NavigationService get _navigationService => locator<NavigationService>();
   GlobalService get _globalService => locator<GlobalService>();
   IDialogService get _dialogService => locator<IDialogService>();
 
-  final LocalAuthentication _auth = LocalAuthentication();
 
   String? _email = "";
   String? _password = "";

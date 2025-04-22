@@ -1,5 +1,7 @@
 
 
+// ignore_for_file: non_constant_identifier_names
+
 import 'package:petadoption/models/base_model.dart';
 
 class RefreshTokenRequest extends IBaseModel<RefreshTokenRequest> {

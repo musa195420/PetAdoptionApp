@@ -18,10 +18,12 @@ import 'package:petadoption/views/modals/userlink_modal.dart';
 import '../../views/modals/user_edit_modal.dart';
 
 class UserAdminViewModel extends BaseViewModel {
+  // ignore: unused_element
   PrefService get _prefService => locator<PrefService>();
   NavigationService get _navigationService => locator<NavigationService>();
   IDialogService get _dialogService => locator<IDialogService>();
   IAPIService get _apiService => locator<IAPIService>();
+  // ignore: unused_element
   StartupViewModel get _startModel => locator<StartupViewModel>();
   GlobalService get _globalService => locator<GlobalService>();
  String ?path;
@@ -31,8 +33,8 @@ class UserAdminViewModel extends BaseViewModel {
 
   List<String> roles = ["Adopter", "Donor", "Admin"];
 String role="Adopter";
-  void setRole(String Role) {
-    role = Role;
+  void setRole(String role) {
+    this.role = role;
     notifyListeners();
   }
 void removeImagePath()
