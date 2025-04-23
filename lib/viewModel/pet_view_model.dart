@@ -22,7 +22,6 @@ class PetViewModel extends BaseViewModel {
   IDialogService get _dialogService => locator<IDialogService>();
   IAPIService get _apiService => locator<IAPIService>();
   StartupViewModel get _startModel => locator<StartupViewModel>();
-
   GlobalService get _globalService => locator<GlobalService>();
 
   bool checkVersion = true;
@@ -41,7 +40,7 @@ class PetViewModel extends BaseViewModel {
 
   String? selectedAnimalTypeId;
   String? selectedAnimalTypeName;
-  Future<void> getAnimalType() async {
+  Future<AnimalSelection> getAnimalType() async {
     try {
       loading(true);
 
@@ -70,8 +69,9 @@ class PetViewModel extends BaseViewModel {
             // Assign selected animal_id
             selectedAnimalTypeId = animals![selectedIndex].animalId;
             selectedAnimalTypeName = animals![selectedIndex].name;
+            return AnimalSelection(selectedAnimalId: selectedAnimalTypeId,selectedAnimalName: selectedAnimalTypeName);
 
-            debugPrint("Selected Animal ID: $selectedAnimalTypeName");
+           
           } else {
             debugPrint("No animal selected or invalid selection.");
           }
@@ -87,21 +87,26 @@ class PetViewModel extends BaseViewModel {
       _globalService.logError(
           "Error Occured When Renew User Token", e.toString(), s);
       debugPrint(e.toString());
+         return AnimalSelection(selectedAnimalId: selectedAnimalTypeId,selectedAnimalName: selectedAnimalTypeName);
     } finally {
       notifyListeners();
       loading(false);
+      
     }
+       return AnimalSelection(selectedAnimalId: selectedAnimalTypeId,selectedAnimalName: selectedAnimalTypeName);
   }
 
   String? selectedBreedId;
   String? selectedBreedName;
   List<BreedType>? breeds;
-  Future<void> getAnimalBreed() async {
+
+
+  Future<BreedSelection> getAnimalBreed(String? selectedAnimalTypeId) async {
     try {
       loading(true);
       if (selectedAnimalTypeId != null) {
         var breedRes = await _apiService
-            .getAnimalBreed(GetAnimalBreed(id: selectedAnimalTypeId!));
+            .getAnimalBreed(GetAnimalBreed(id: selectedAnimalTypeId));
 
         if (breedRes.errorCode == "PA0004") {
           debugPrint(breedRes.data.toString());
@@ -127,7 +132,9 @@ class PetViewModel extends BaseViewModel {
               selectedBreedId = breeds![selectedIndex].animalId;
               selectedBreedName = breeds![selectedIndex].name;
 
-              debugPrint("Selected Animal ID: $selectedBreedName");
+              return BreedSelection(selectedBreedId: selectedBreedId!, selectedBreedName: selectedBreedName!);
+
+            
             } else {
               debugPrint("No animal selected or invalid selection.");
             }
@@ -151,15 +158,18 @@ class PetViewModel extends BaseViewModel {
       _globalService.logError(
           "Error Occured When Renew User Token", e.toString(), s);
       debugPrint(e.toString());
+       return BreedSelection(selectedBreedId: selectedBreedId!, selectedBreedName: selectedBreedName!);
     } finally {
       notifyListeners();
       loading(false);
+      
     }
+     return BreedSelection(selectedBreedId: selectedBreedId!, selectedBreedName: selectedBreedName!);
   }
 
   String gender = "Male";
 
-  void getGender() async {
+  Future<String> getGender() async {
     List<String> genders = ["Male", "Female"];
 
     int? selectedIndex = await _dialogService.showSelect(
@@ -169,11 +179,13 @@ class PetViewModel extends BaseViewModel {
     if (selectedIndex >= 0 && selectedIndex < genders.length) {
       // Assign selected animal_id
       gender = genders[selectedIndex];
+  
 
-      debugPrint("Selected Animal ID: $selectedBreedName");
+     
     }
 
     notifyListeners();
+     return gender;
   }
 
   void addanimalType() async {
@@ -249,4 +261,23 @@ class PetViewModel extends BaseViewModel {
   void logout() async {
     await _startModel.logout();
   }
+
+
+  
+}
+
+class BreedSelection{
+ final String?  selectedBreedId ;
+  final String?  selectedBreedName ;
+
+  BreedSelection({ this.selectedBreedId,  this.selectedBreedName});
+}
+
+
+
+class AnimalSelection{
+ final String?  selectedAnimalId ;
+  final String?  selectedAnimalName ;
+
+  AnimalSelection({ this.selectedAnimalId,  this.selectedAnimalName});
 }

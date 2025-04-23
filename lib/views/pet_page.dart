@@ -236,7 +236,7 @@ class PetPage extends StatelessWidget {
               Expanded(
                 child: DefaultTextInput(
                   onTap: () async {
-                    viewModel.getAnimalBreed();
+                    viewModel.getAnimalBreed(viewModel.selectedAnimalTypeId);
                   },
                   readOnly: true,
                   controller: breedController,

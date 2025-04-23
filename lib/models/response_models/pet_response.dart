@@ -1,20 +1,20 @@
 class PetResponse {
-  final String petId;
-  final String donorId;
-  final String breedId;
-  final String animalId;
-  final String? name;
-  final int? age;
-  final String? gender;
-  final String? description;
-  final String? isApproved;
-  final String? rejectionReason;
-  final bool? isLive;
-  final String? createdAt;
-  final String? image;
-  final String? animal;
-  final String? breed;
-  final String? userEmail;
+   String petId;
+   String donorId;
+   String breedId;
+   String animalId;
+   String? name;
+   int? age;
+   String? gender;
+   String? description;
+   String? isApproved;
+   String? rejectionReason;
+   bool? isLive;
+   String? createdAt;
+   String? image;
+   String? animal;
+   String? breed;
+   String? userEmail;
 
   PetResponse({
     required this.petId,

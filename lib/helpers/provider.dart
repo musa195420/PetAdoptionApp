@@ -1,5 +1,6 @@
 import 'package:petadoption/helpers/locator.dart';
 import 'package:petadoption/viewModel/admin_view_models/donor_admin_view_model.dart';
+import 'package:petadoption/viewModel/admin_view_models/general_config_view_model.dart';
 import 'package:petadoption/viewModel/authentication_view_model.dart';
 import 'package:petadoption/viewModel/signup_view_model.dart';
 import 'package:petadoption/viewModel/startup_viewmodel.dart';
@@ -32,6 +33,7 @@ class ProviderInjector {
      ChangeNotifierProvider(create: (_) => locator<StartupViewModel>()),
       ChangeNotifierProvider(create: (_) => locator<PetViewModel>()),
         ChangeNotifierProvider(create: (_) => locator<PetAdminViewModel>()),
+              ChangeNotifierProvider(create: (_) => locator<GeneralConfigViewModel>()),
   
   ];
 

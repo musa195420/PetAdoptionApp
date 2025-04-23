@@ -21,6 +21,7 @@ import 'package:petadoption/views/startup.dart';
 
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import '../helpers/locator.dart';
+import '../views/modals/pet_edit_modal.dart';
 import 'global_service.dart';
 
 class Routes {
@@ -41,6 +42,7 @@ class Routes {
     static const String user_link_modal = "user_link_modal";
     static const String donor_edit_modal = "donor_edit_modal";
     static const String adopter_edit_modal = "adopter_edit_modal";
+    static const String pet_edit_modal = "pet_edit_modal";
    static const String userAdmin = "userAdmin";
     static const String adopterAdmin = "adopterAdmin";
      static const String donorAdmin = "donorAdmin";
@@ -200,6 +202,18 @@ class NavigationService {
             backgroundColor: Colors.transparent,
             builder: (context) => DonorEditModal(
               user: data.user,
+            ),
+          );
+        }
+        break;
+         case Routes.pet_edit_modal:
+        {
+          showBarModalBottomSheet(
+            expand: true,
+            context: navigatorKey.currentContext!,
+            backgroundColor: Colors.transparent,
+            builder: (context) => PetEditModal(
+              pet: data.pet,
             ),
           );
         }

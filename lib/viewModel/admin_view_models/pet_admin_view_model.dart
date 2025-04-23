@@ -4,27 +4,71 @@ import 'package:petadoption/helpers/locator.dart';
 import 'package:petadoption/models/message.dart';
 import 'package:petadoption/models/request_models/single_pet.dart';
 import 'package:petadoption/models/response_models/pet_response.dart';
-import 'package:petadoption/models/response_models/user_profile.dart';
 import 'package:petadoption/services/api_service.dart';
 import 'package:petadoption/services/dialog_service.dart';
 import 'package:petadoption/services/global_service.dart';
 import 'package:petadoption/services/navigation_service.dart';
 import 'package:petadoption/viewModel/base_view_model.dart';
+import 'package:petadoption/viewModel/pet_view_model.dart';
+import 'package:petadoption/views/modals/pet_edit_modal.dart';
+
+import 'user_admin_view_model.dart';
+
 class PetAdminViewModel extends BaseViewModel {
   NavigationService get _navigationService => locator<NavigationService>();
   IDialogService get _dialogService => locator<IDialogService>();
   IAPIService get _apiService => locator<IAPIService>();
   GlobalService get _globalService => locator<GlobalService>();
- String ?path;
+  PetViewModel get _petViewModel => locator<PetViewModel>();
+
+  UserAdminViewModel get _userModel => locator<UserAdminViewModel>();
+  String? path;
+  PetResponse? pet;
   List<PetResponse>? pets;
   List<PetResponse>? filteredPets;
-void removeImagePath()
-{
-  path=null;
-  notifyListeners();
-}
 
+  void setPet(PetResponse pet) {
+    this.pet = pet;
+  }
 
+  void removeImagePath() {
+    path = null;
+    notifyListeners();
+  }
+
+  getGender() async {
+    if (pet != null) {
+      pet!.gender = await _petViewModel.getGender();
+
+      notifyListeners();
+    }
+  }
+
+  getBreeds() async {
+    if (pet != null) {
+      BreedSelection breed = await _petViewModel.getAnimalBreed(pet!.animalId);
+      if (breed.selectedBreedId != null && breed.selectedBreedName != null) {
+        pet!.breedId = breed.selectedBreedId!;
+        pet!.breed = breed.selectedBreedName!;
+
+        notifyListeners();
+      }
+    }
+  }
+
+  void getAnimalType() async {
+    if (pet != null) {
+      AnimalSelection animal = await _petViewModel.getAnimalType();
+      if (animal.selectedAnimalId != null &&
+          animal.selectedAnimalName != null) {
+        pet!.animalId = animal.selectedAnimalId!;
+        pet!.animal = animal.selectedAnimalName!;
+        pet!.breed = null;
+        pet!.breedId = "";
+        notifyListeners();
+      }
+    }
+  }
 
   Future<void> updatepetImage(String petId) async {
     if (path != null) {
@@ -37,7 +81,7 @@ void removeImagePath()
     }
   }
 
- Future<void> savePetImagePath() async {
+  Future<void> savePetImagePath() async {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
@@ -46,16 +90,13 @@ void removeImagePath()
 
     notifyListeners();
   }
-bool isActive=false;
 
-void setisActive(bool isActive)
-{
- this.isActive=isActive;
-  notifyListeners();
-}
+  bool isActive = false;
 
-
-
+  void setisActive(bool isActive) {
+    this.isActive = isActive;
+    notifyListeners();
+  }
 
   Future<void> getPets() async {
     try {
@@ -75,7 +116,8 @@ void setisActive(bool isActive)
         );
       }
     } catch (e, s) {
-      _globalService.logError("Error Occured When Renew User Token", e.toString(), s);
+      _globalService.logError(
+          "Error Occured When Renew User Token", e.toString(), s);
     } finally {
       notifyListeners();
       loading(false);
@@ -87,7 +129,8 @@ void setisActive(bool isActive)
       filteredPets = List.from(pets ?? []);
     } else {
       filteredPets = pets
-          ?.where((u) => u.userEmail!.toLowerCase().contains(pattern.toLowerCase()))
+          ?.where(
+              (u) => u.userEmail!.toLowerCase().contains(pattern.toLowerCase()))
           .toList();
     }
     notifyListeners();
@@ -98,81 +141,132 @@ void setisActive(bool isActive)
     notifyListeners();
   }
 
-  
-
-  void gotoEditPet(PetResponse adopter)async {
-  
-        // await _navigationService.pushModalBottom(Routes.donor_edit_modal,
-        //   data:DonorEditModal(user:adopter));
-      
+  void gotoEditPet(PetResponse pet) async {
+    path=null;
+    await _navigationService.pushModalBottom(Routes.pet_edit_modal,
+        data: PetEditModal(pet: pet));
   }
- Future<void> deletePet(String petId) async {
-   try{
-    loading(true,loadingText: "Deleting Pet");
-    bool res=await _dialogService.showAlertDialog(Message(description:"Do you Really want to delete Pet ?"));
-   if(res)
-   {
-   var resDelete= await _apiService.deletePet(SinglePet(petId: petId) );
-   if(resDelete.errorCode=="PA0004")
-   {
-    debugPrint("User Deleted Sucess Fully");
-   }
-   else{
-     await _dialogService.showApiError(
-                resDelete.data.status.toString(),
-                resDelete.data.message.toString(),
-                resDelete.data.error.toString());
-   }
-   }
-  
-   }catch(e)
-   {
-     loading(false);
-    debugPrint("Error => $e");
-   }
-   finally{
-     loading(false);
-   }
- }
 
-  void updatePet(String petId,String donorId,String name, String animalId,String breedId,int age,String gender,String description,String isApproved,String? rejectionReason,bool isLive)async {
-
-   try{
-    
-    loading(true);
-     var updatePetrRes=await _apiService.updatePet(
-    PetResponse(petId: petId, donorId: donorId, breedId: breedId, animalId: animalId)
-    );
-
-    if(updatePetrRes.errorCode=="PA0004")
-    {
-      debugPrint("User Updated Success Fully");
-      
+  Future<void> deletePet(String petId) async {
+    try {
+      loading(true, loadingText: "Deleting Pet");
+      bool res = await _dialogService.showAlertDialog(
+          Message(description: "Do you Really want to delete Pet ?"));
+      if (res) {
+        var resDelete = await _apiService.deletePet(SinglePet(petId: petId));
+        if (resDelete.errorCode == "PA0004") {
+          debugPrint("User Deleted Sucess Fully");
+        } else {
+          await _dialogService.showApiError(
+              resDelete.data.status.toString(),
+              resDelete.data.message.toString(),
+              resDelete.data.error.toString());
+        }
+      }
+    } catch (e) {
+      loading(false);
+      debugPrint("Error => $e");
+    } finally {
+      loading(false);
     }
-    else{
-      await _dialogService.showApiError(
-                updatePetrRes.data.status.toString(),
-                updatePetrRes.data.message.toString(),
-                updatePetrRes.data.error.toString());
+  }
 
+  void updatePet(
+    String name,
+    int age,
+    String description,
+    String? rejectionReason,
+  ) async {
+    try {
+      if (pet == null) {
+        return;
+      }
+      loading(true);
+      var updatePetrRes = await _apiService.updatePet(PetResponse(
+        petId: pet!.petId,
+        donorId: pet!.donorId,
+        breedId: pet!.breedId,
+        animalId: pet!.animalId,
+        name: name,
+        age: age,
+        gender: pet!.gender,
+        description: pet!.description,
+        isApproved: isApproved,
+        rejectionReason: rejectionReason,
+        isLive: pet!.isLive,
+        animal: pet!.animal,
+        breed: pet!.breed,
+        userEmail: pet!.userEmail,
+      ));
+
+      if (updatePetrRes.errorCode == "PA0004") {
+        debugPrint("User Updated Success Fully");
+      if(path!=null)
+      {
+        updatepetImage(pet!.petId);
+      }
+
+      } else {
+        await _dialogService.showApiError(
+            updatePetrRes.data.status.toString(),
+            updatePetrRes.data.message.toString(),
+            updatePetrRes.data.error.toString());
+      }
+    } catch (e) {
+      loading(false);
+      debugPrint(e.toString());
+    } finally {
+      loading(false);
     }
-   }
-   catch(e)
-   {
-    
-     loading(false);
-debugPrint(e.toString());
-   }
-   finally{
-    loading(false);
-   }
   }
 
-  void gotoPrevious() async{
-    await _navigationService.pushNamedAndRemoveUntil(Routes.admin, args: TransitionType.slideLeft);
+  void gotoPrevious() async {
+    await _navigationService.pushNamedAndRemoveUntil(Routes.admin,
+        args: TransitionType.slideLeft);
   }
-  
 
+  bool isEdit = false;
+  void setEdit() {
+    isEdit = !isEdit;
+    notifyListeners();
+  }
 
- 
+  void isLive() {
+    if (pet != null) {
+      pet!.isLive = !(pet!.isLive ?? false);
+    }
+    notifyListeners();
+  }
+
+  List<String> approvalStauts = ["Approved", "Pending", "Rejected"];
+  String isApproved = "Approved";
+
+  Color getColor() {
+    switch (isApproved) {
+      case "Approved":
+        return Colors.green;
+
+      case "Pending":
+        return Colors.grey;
+
+      case "Rejected":
+        return Colors.red;
+
+      default:
+        return Colors.grey;
+    }
+  }
+
+  getisApproved() async {
+    int index = await _dialogService.showSelect(Message(
+        description: "Select Status Of Application", items: approvalStauts));
+    if (index != -1 && index < approvalStauts.length) {
+      isApproved = approvalStauts[index];
+      notifyListeners();
+    }
+  }
+
+  void userInfo(String id) async {
+    _userModel.showLink(id,isAdmin: true);
+  }
 }

@@ -15,7 +15,7 @@ class User extends IHiveBaseModel<User> {
   String phoneNumber;
 
   @HiveField(3)
-  String password;
+  String? password;
 
   @HiveField(4)
   String role;
@@ -31,7 +31,7 @@ class User extends IHiveBaseModel<User> {
     required this.userId,
     required this.email,
     required this.phoneNumber,
-    required this.password,
+     this.password,
     required this.role,
     required this.deviceId,
     this.profileImage,

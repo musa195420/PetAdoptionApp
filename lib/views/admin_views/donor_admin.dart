@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:petadoption/custom_widgets/stateful_wrapper.dart';
 import 'package:petadoption/models/response_models/user_profile.dart';
-import 'package:petadoption/viewModel/admin_view_models/adopter_admin_view_model.dart';
 import 'package:petadoption/viewModel/admin_view_models/donor_admin_view_model.dart';
 import 'package:provider/provider.dart';
 

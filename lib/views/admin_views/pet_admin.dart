@@ -102,7 +102,7 @@ class PetAdmin extends StatelessWidget {
 
    Widget _buildUserCard(BuildContext context, PetResponse pets, PetAdminViewModel viewModel) {
       
-  String displayText = pets.isLive.toString() == 'true' ? "Live" : "Offline";
+  String displayText = pets.isLive.toString() == 'true' ? "Live" : "NotLive";
    Color     color = pets.isLive.toString() == 'true' ? Colors.green : Colors.red;
 
     return Card(

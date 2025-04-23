@@ -157,7 +157,7 @@ class UserAdmin extends StatelessWidget {
       IconButton(
         icon: Icon(Icons.link, color: Theme.of(context).colorScheme.secondary),
         onPressed: () {
-          viewModel.showLink(user);
+          viewModel.showLink(user.userId,role: user.role);
         },
       ),
     ],
