@@ -3,12 +3,15 @@
 import 'package:flutter/material.dart';
 import 'package:petadoption/views/admin_views/admin.dart';
 import 'package:petadoption/views/admin_views/adopter_admin.dart';
+import 'package:petadoption/views/admin_views/donor_admin.dart';
+import 'package:petadoption/views/admin_views/pet_admin.dart';
 import 'package:petadoption/views/admin_views/user_admin.dart';
 import 'package:petadoption/views/home.dart';
 import 'package:petadoption/views/login.dart';
-import 'package:petadoption/views/modals/adopter_edit_model.dart';
+import 'package:petadoption/views/modals/adopter_edit_modal.dart';
 import 'package:petadoption/views/modals/animalBreed_modal.dart';
 import 'package:petadoption/views/modals/animalType_modal.dart';
+import 'package:petadoption/views/modals/donor_edit_modal.dart';
 import 'package:petadoption/views/modals/user_edit_modal.dart';
 import 'package:petadoption/views/modals/userlink_modal.dart';
 import 'package:petadoption/views/not_supported.dart';
@@ -36,10 +39,12 @@ class Routes {
   static const String animalBreed_modal = "animalBreed_modal";
   static const String user_edit_modal = "user_edit_modal";
     static const String user_link_modal = "user_link_modal";
-    
+    static const String donor_edit_modal = "donor_edit_modal";
     static const String adopter_edit_modal = "adopter_edit_modal";
    static const String userAdmin = "userAdmin";
     static const String adopterAdmin = "adopterAdmin";
+     static const String donorAdmin = "donorAdmin";
+    static const String petAdmin = "petAdmin";
 }
 
 class NavigationService {
@@ -187,6 +192,18 @@ class NavigationService {
           );
         }
         break;
+        case Routes.donor_edit_modal:
+        {
+          showBarModalBottomSheet(
+            expand: true,
+            context: navigatorKey.currentContext!,
+            backgroundColor: Colors.transparent,
+            builder: (context) => DonorEditModal(
+              user: data.user,
+            ),
+          );
+        }
+        break;
     }
   }
 
@@ -275,6 +292,21 @@ class RouteManager {
             },
           );
         }
+ case Routes.petAdmin:
+        {
+          return PageRouteBuilder(
+            pageBuilder: (BuildContext context, Animation<double> animation,
+                Animation<double> secondaryAnimation) {
+              return PetAdmin();
+            },
+            transitionsBuilder: (BuildContext context,
+                Animation<double> animation,
+                Animation<double> secondaryAnimation,
+                Widget child) {
+              return _transitionsBuilder(transition, animation, child);
+            },
+          );
+        }
 
       case Routes.home:
         {
@@ -328,6 +360,21 @@ class RouteManager {
             pageBuilder: (BuildContext context, Animation<double> animation,
                 Animation<double> secondaryAnimation) {
               return AdopterAdmin();
+            },
+            transitionsBuilder: (BuildContext context,
+                Animation<double> animation,
+                Animation<double> secondaryAnimation,
+                Widget child) {
+              return _transitionsBuilder(transition, animation, child);
+            },
+          );
+        }
+        case Routes.donorAdmin:
+        {
+          return PageRouteBuilder(
+            pageBuilder: (BuildContext context, Animation<double> animation,
+                Animation<double> secondaryAnimation) {
+              return DonorAdmin();
             },
             transitionsBuilder: (BuildContext context,
                 Animation<double> animation,

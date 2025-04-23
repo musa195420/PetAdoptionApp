@@ -269,5 +269,8 @@ debugPrint(e.toString());
       } 
   }
 
- 
+  void gotoPrevious() async{
+    await _navigationService.pushNamedAndRemoveUntil(Routes.admin, args: TransitionType.slideLeft);
+  }
+  
 }

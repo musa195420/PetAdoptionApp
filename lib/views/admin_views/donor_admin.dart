@@ -4,20 +4,21 @@ import 'package:flutter/material.dart';
 import 'package:petadoption/custom_widgets/stateful_wrapper.dart';
 import 'package:petadoption/models/response_models/user_profile.dart';
 import 'package:petadoption/viewModel/admin_view_models/adopter_admin_view_model.dart';
+import 'package:petadoption/viewModel/admin_view_models/donor_admin_view_model.dart';
 import 'package:provider/provider.dart';
 
-class AdopterAdmin extends StatelessWidget {
-  AdopterAdmin({super.key});
+class DonorAdmin extends StatelessWidget {
+  DonorAdmin({super.key});
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final TextEditingController searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = context.watch<AdopterAdminViewModel>();
+    final viewModel = context.watch<DonorAdminViewModel>();
 
     return StatefulWrapper(
-      onInit: () => viewModel.getAdopters(),
+      onInit: () => viewModel.getDonors(),
       onDispose: () {},
       child: Scaffold(
         key: scaffoldKey,
@@ -25,9 +26,8 @@ class AdopterAdmin extends StatelessWidget {
         body: SafeArea(
           child: Column(
             children: [
-               
-  
-   Padding(
+         
+         Padding(
                padding: const EdgeInsets.all(8.0),
                child: Row(
                  mainAxisAlignment: MainAxisAlignment.start,
@@ -50,11 +50,12 @@ class AdopterAdmin extends StatelessWidget {
                        ),
                      ),
                    ),
-                   Expanded( child: Padding(
+                   Expanded( 
+              child:Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: TextField(
                   controller: searchController,
-                  onChanged: viewModel.filterAdopters,
+                  onChanged: viewModel.filterDonors,
                   decoration: InputDecoration(
                     hintText: "Search by Name",
                     prefixIcon: const Icon(Icons.search),
@@ -74,19 +75,19 @@ class AdopterAdmin extends StatelessWidget {
                     fillColor: Theme.of(context).cardColor,
                   ),
                 ),
-              ),  ),
+              ), ),
                  ],
                ),
 			     ),
               const SizedBox(height: 12),
               Expanded(
-                child: viewModel.filteredAdopters == null
+                child: viewModel.filteredDonors == null
                     ? const Center(child: Text("No users loaded."))
                     : ListView.builder(
                         padding: const EdgeInsets.all(2),
-                        itemCount: viewModel.filteredAdopters!.length,
+                        itemCount: viewModel.filteredDonors!.length,
                         itemBuilder: (context, index) {
-                          final user = viewModel.filteredAdopters![index];
+                          final user = viewModel.filteredDonors![index];
                           return _buildUserCard(context, user, viewModel);
                         },
                       ),
@@ -98,7 +99,7 @@ class AdopterAdmin extends StatelessWidget {
     );
   }
 
-  Widget _buildUserCard(BuildContext context, UserProfile user, AdopterAdminViewModel viewModel) {
+  Widget _buildUserCard(BuildContext context, UserProfile user, DonorAdminViewModel viewModel) {
     
   String displayText = user.isActive.toString() == 'true' ? "Live" : "Offline";
    Color     color = user.isActive.toString() == 'true' ? Colors.green : Colors.red;
@@ -158,7 +159,7 @@ class AdopterAdmin extends StatelessWidget {
       IconButton(
         icon: Icon(Icons.delete, color: Theme.of(context).colorScheme.error),
         onPressed: () {
-          viewModel.deleteAdopter(user.adopterId??"");
+          viewModel.deleteAdopter(user.donorId??"");
         },
       ),
       

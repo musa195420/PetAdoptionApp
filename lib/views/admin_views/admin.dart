@@ -45,7 +45,7 @@ class AdminPage extends StatelessWidget {
                       padding: EdgeInsets.all(8),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: Colors.brown,
+                        color:Color(0xFF5D1F00),
                       ),
                       child: Icon(
                         Icons.logout_rounded,
@@ -56,7 +56,7 @@ class AdminPage extends StatelessWidget {
                 ),
                 const Center(
                   child: Text(
-                    "Admin Dashboard",
+                    "Admin Dashboard  ",
                     style: TextStyle(
                       fontSize: 26,
                       fontWeight: FontWeight.bold,
@@ -66,7 +66,9 @@ class AdminPage extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 20),
+             const SizedBox(height: 20),
+            Divider(color:  Color(0xFF5D1F00),thickness: 2,),
+           
             Expanded(
               child: ListView(
                 children: listItems,

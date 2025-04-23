@@ -14,6 +14,7 @@ class PetResponse {
   final String? image;
   final String? animal;
   final String? breed;
+  final String? userEmail;
 
   PetResponse({
     required this.petId,
@@ -31,6 +32,7 @@ class PetResponse {
     this.image,
     this.animal,
     this.breed,
+    this.userEmail,
   });
 
   factory PetResponse.fromJson(Map<String, dynamic> json) {
@@ -50,6 +52,7 @@ class PetResponse {
       image: json['image'],
       animal: json['animal'],
       breed: json['breed'],
+      userEmail: json['user_email'],
     );
   }
 
@@ -70,6 +73,7 @@ class PetResponse {
       'image': image,
       'animal': animal,
       'breed': breed,
+      'user_email': userEmail,
     };
   }
 }

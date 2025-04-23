@@ -18,7 +18,7 @@ class AdminViewModel extends ChangeNotifier {
 
   final List<SelectionBox> boxes = [
     SelectionBox(id: 0, name: "User Config", image: "assets/images/user.png"),
-    SelectionBox(id: 1, name: "Pets Config", image: "assets/images/settings.png"),
+    SelectionBox(id: 1, name: "Pets Config", image: "assets/images/login.png"),
     SelectionBox(id: 4, name: "General Config", image: "assets/images/settings.png"),
     SelectionBox(id: 2, name: "Meetup Config", image: "assets/images/meetup.png"),
     SelectionBox(id: 3, name: "HealthInfo Config", image: "assets/images/health.png"),
@@ -43,10 +43,22 @@ class AdminViewModel extends ChangeNotifier {
     break;
  case 'config adopter':
     {
- await _navigationService.pushNamed(Routes.adopterAdmin, data: null, args:  TransitionType.slideLeft);
+ await _navigationService.pushNamed(Routes.adopterAdmin, data: null, args:  TransitionType.slideRight);
+    }
+    break;
+case 'config donor':
+    {
+ await _navigationService.pushNamed(Routes.donorAdmin, data: null, args:  TransitionType.slideRight);
     }
     break;
 
+    case 'pets config':
+    {
+ await _navigationService.pushNamed(Routes.petAdmin, data: null, args:  TransitionType.slideRight);
+    }
+    break;
+
+   
    }
   }
 

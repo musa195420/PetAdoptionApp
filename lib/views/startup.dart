@@ -15,7 +15,7 @@ class Startup extends StatelessWidget {
 
     return StatefulWrapper(
       onInit: () {
-       viewModel.doStartupLogic(context);
+        viewModel.doStartupLogic(context);
       },
       onDispose: () {},
       child: Scaffold(
@@ -23,38 +23,47 @@ class Startup extends StatelessWidget {
         backgroundColor: Colors.white,
         body: Container(
           decoration: const BoxDecoration(
-              image: DecorationImage(
-                  fit: BoxFit.cover,
-                  image: AssetImage('assets/images/bg.png'))),
+            image: DecorationImage(
+              fit: BoxFit.cover,
+              image: AssetImage('assets/images/bg.png'),
+            ),
+          ),
           padding: const EdgeInsets.all(20.0),
           child: Column(
             children: [
-              Expanded(child: Image.asset("assets/images/startup.png")),
-              Positioned(
-                top: 0,
-                
-  child: SizedBox(
-    width: 400,
-    child: Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(
-          'We are setting things up\nPlease Wait!',
-          textAlign: TextAlign.center,
-          style: const TextStyle(
-            color: Color.fromARGB(255, 146, 61, 5),
-            fontSize: 25,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        const SizedBox(height: 10),
-       const BlinkingDotsLoader(),
-      ],
-    ),
-  ),
-),
-
-           
+              Expanded(
+                child: Stack(
+                  children: [
+                    Center(
+                      child: Image.asset("assets/images/startup.png"),
+                    ),
+                    Positioned(
+                      bottom: 20,
+                      left: 0,
+                      right: 0,
+                      child: SizedBox(
+                        width: 400,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              'We are setting things up\nPlease Wait!',
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                color: Color.fromARGB(255, 146, 61, 5),
+                                fontSize: 25,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            const BlinkingDotsLoader(),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ),
@@ -62,5 +71,3 @@ class Startup extends StatelessWidget {
     );
   }
 }
-
-

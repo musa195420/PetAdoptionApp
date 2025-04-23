@@ -25,8 +25,33 @@ class UserAdmin extends StatelessWidget {
         body: SafeArea(
           child: Column(
             children: [
-              const SizedBox(height: 16),
-              Padding(
+           
+  
+   Padding(
+               padding: const EdgeInsets.all(8.0),
+               child: Row(
+                 mainAxisAlignment: MainAxisAlignment.start,
+                 children: [
+                   GestureDetector(
+                     onTap: () {
+                       viewModel.gotoPrevious();
+                     },
+                     child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(100),
+                        color:  const Color.fromARGB(255, 146, 61, 5),
+                      )
+                      ,
+                       padding: const EdgeInsets.all(3),
+                       child: Icon(
+                         Icons.arrow_back,
+                         size: 30,
+                         color:Colors.white,
+                       ),
+                     ),
+                   ),
+                   Expanded( 
+              child:Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: TextField(
                   controller: searchController,
@@ -50,7 +75,10 @@ class UserAdmin extends StatelessWidget {
                     fillColor: Theme.of(context).cardColor,
                   ),
                 ),
-              ),
+              ), ),
+                 ],
+               ),
+			     ),
               const SizedBox(height: 12),
               Expanded(
                 child: viewModel.filteredUsers == null

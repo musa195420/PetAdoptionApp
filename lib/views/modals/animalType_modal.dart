@@ -109,6 +109,7 @@ class AnimaltypeModal extends StatelessWidget {
           if (formKey.currentState!.validate()) {
             var addAnimalRes = await _apiService.addAnimalType(
                 AddAnimalType(name: petController.text.toString()));
+                
           }
         },
       ),

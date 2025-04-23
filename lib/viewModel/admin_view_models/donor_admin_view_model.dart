@@ -9,14 +9,15 @@ import 'package:petadoption/services/global_service.dart';
 import 'package:petadoption/services/navigation_service.dart';
 import 'package:petadoption/viewModel/base_view_model.dart';
 import 'package:petadoption/views/modals/adopter_edit_modal.dart';
-class AdopterAdminViewModel extends BaseViewModel {
+import 'package:petadoption/views/modals/donor_edit_modal.dart';
+class DonorAdminViewModel extends BaseViewModel {
   NavigationService get _navigationService => locator<NavigationService>();
   IDialogService get _dialogService => locator<IDialogService>();
   IAPIService get _apiService => locator<IAPIService>();
   GlobalService get _globalService => locator<GlobalService>();
  String ?path;
-  List<UserProfile>? adopters;
-  List<UserProfile>? filteredAdopters;
+  List<UserProfile>? donors;
+  List<UserProfile>? filteredDonors;
 
 bool isActive=false;
 
@@ -29,21 +30,21 @@ void setisActive(bool isActive)
 
 
 
-  Future<void> getAdopters() async {
+  Future<void> getDonors() async {
     try {
       loading(true);
-      var adoptersRes = await _apiService.getAdopters();
+      var donorsRes = await _apiService.getDonors();
 
-      if (adoptersRes.errorCode == "PA0004") {
-        adopters = (adoptersRes.data as List)
+      if (donorsRes.errorCode == "PA0004") {
+        donors = (donorsRes.data as List)
             .map((json) => UserProfile.fromJson(json as Map<String, dynamic>))
             .toList();
-        filteredAdopters = List.from(adopters!);
+        filteredDonors = List.from(donors!);
       } else {
         await _dialogService.showApiError(
-          adoptersRes.data.status.toString(),
-          adoptersRes.data.message.toString(),
-          adoptersRes.data.error.toString(),
+          donorsRes.data.status.toString(),
+          donorsRes.data.message.toString(),
+          donorsRes.data.error.toString(),
         );
       }
     } catch (e, s) {
@@ -54,11 +55,11 @@ void setisActive(bool isActive)
     }
   }
 
-  void filterAdopters(String pattern) {
+  void filterDonors(String pattern) {
     if (pattern.trim().isEmpty) {
-      filteredAdopters = List.from(adopters ?? []);
+      filteredDonors = List.from(donors ?? []);
     } else {
-      filteredAdopters = adopters
+      filteredDonors = donors
           ?.where((u) => u.name.toLowerCase().contains(pattern.toLowerCase()))
           .toList();
     }
@@ -66,7 +67,7 @@ void setisActive(bool isActive)
   }
 
   void resetFilter() {
-    filteredAdopters = List.from(adopters ?? []);
+    filteredDonors = List.from(donors ?? []);
     notifyListeners();
   }
 
@@ -74,8 +75,8 @@ void setisActive(bool isActive)
 
   void gotoEditAdopter(UserProfile adopter)async {
   
-        await _navigationService.pushModalBottom(Routes.adopter_edit_modal,
-          data: AdopterEditModal(user:adopter));
+        await _navigationService.pushModalBottom(Routes.donor_edit_modal,
+          data:DonorEditModal(user:adopter));
       
   }
  Future<void> deleteAdopter(String userId) async {
@@ -84,7 +85,7 @@ void setisActive(bool isActive)
     bool res=await _dialogService.showAlertDialog(Message(description:"Do you Really want to delete User ?"));
    if(res)
    {
-   var resDelete= await _apiService.deleteAdopter(SingleUser(userId:userId) );
+   var resDelete= await _apiService.deleteDonor(SingleUser(userId:userId) );
    if(resDelete.errorCode=="PA0004")
    {
     debugPrint("User Deleted Sucess Fully");
@@ -107,13 +108,13 @@ void setisActive(bool isActive)
    }
  }
 
-  void updatAdopter(String name, String location,UserProfile user)async {
+  void updateDonor(String name, String location,UserProfile user)async {
 
    try{
     
     loading(true);
-     var updateUserRes=await _apiService.updateAdopter(
-      UserProfile(adopterId: user.adopterId,name: name,location: location,isActive: isActive)
+     var updateUserRes=await _apiService.updateDonor(
+      UserProfile(donorId: user.donorId,name: name,location: location,isActive: isActive)
     );
 
     if(updateUserRes.errorCode=="PA0004")
@@ -140,9 +141,10 @@ debugPrint(e.toString());
    }
   }
 
-   void gotoPrevious() async{
+  void gotoPrevious() async{
     await _navigationService.pushNamedAndRemoveUntil(Routes.admin, args: TransitionType.slideLeft);
   }
   
+
  
 }

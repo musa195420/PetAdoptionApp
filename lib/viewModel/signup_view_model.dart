@@ -61,7 +61,7 @@ class SignupViewModel extends BaseViewModel {
   void Signup(
       String email, String password, String phoneNumber, String name) async {
     try {
-      //await _deviceId();
+     // await _deviceId();
 
       await loading(true);
       _globalService.init();
