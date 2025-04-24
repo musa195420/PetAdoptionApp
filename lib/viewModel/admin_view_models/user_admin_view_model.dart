@@ -13,10 +13,9 @@ import 'package:petadoption/services/navigation_service.dart';
 import 'package:petadoption/services/pref_service.dart';
 import 'package:petadoption/viewModel/base_view_model.dart';
 import 'package:petadoption/viewModel/startup_viewmodel.dart';
-import 'package:petadoption/views/modals/userlink_modal.dart';
 
-import '../../views/modals/user_edit_modal.dart';
-
+import '../../views/modals/admin_modals/user_edit_modal.dart';
+import '../../views/modals/admin_modals/userlink_modal.dart';
 class UserAdminViewModel extends BaseViewModel {
   // ignore: unused_element
   PrefService get _prefService => locator<PrefService>();

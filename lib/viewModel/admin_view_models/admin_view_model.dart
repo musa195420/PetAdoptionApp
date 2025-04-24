@@ -62,7 +62,10 @@ case 'config donor':
  await _navigationService.pushModalBottom(Routes.animal_config_modal, data: null);
     }
     break;
-   
+   case 'breeds':
+    {
+ await _navigationService.pushModalBottom(Routes.breed_config_modal, data: null);
+    }
    }
   }
 

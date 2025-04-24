@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:petadoption/custom_widgets/stateful_wrapper.dart';
+import 'package:petadoption/models/response_models/breed_reponse.dart';
 import 'package:petadoption/viewModel/admin_view_models/general_config_view_model.dart';
 import '../../../../custom_widgets/default_text_input.dart';
 import '../../../../helpers/locator.dart';
@@ -11,11 +12,11 @@ import '../../../services/navigation_service.dart';
 dynamic formKey = GlobalKey<FormState>();
 dynamic formKey2 = GlobalKey<FormState>();
 
-class AnimalConfigModal extends StatelessWidget {
-  AnimalConfigModal({super.key});
+class BreedConfigModal extends StatelessWidget {
+  BreedConfigModal({super.key});
   final scaffoldKey = GlobalKey<ScaffoldState>();
-  TextEditingController nameController = TextEditingController();
-  TextEditingController idController = TextEditingController();
+  TextEditingController animalController = TextEditingController();
+  TextEditingController breedController = TextEditingController();
   final TextEditingController searchController = TextEditingController();
 
   @override
@@ -23,10 +24,10 @@ class AnimalConfigModal extends StatelessWidget {
     final viewModel = context.watch<GeneralConfigViewModel>();
     return StatefulWrapper(
       onInit: () {
-        viewModel.getPets();
+        viewModel.getBreeds();
       },
       onDispose: () {
-        nameController.dispose();
+        animalController.dispose();
       },
       child: Scaffold(
         floatingActionButton: viewModel.showSearch == true
@@ -53,7 +54,8 @@ class AnimalConfigModal extends StatelessWidget {
   }
 
   Widget _buildAddAnimal(GeneralConfigViewModel viewModel) {
-
+     animalController=TextEditingController(text: viewModel.animalName);
+     breedController=TextEditingController(text: viewModel.breedName);
     return Form(
       key: formKey2,
       child: Padding(
@@ -127,40 +129,57 @@ class AnimalConfigModal extends StatelessWidget {
                 ),
           Expanded(
             flex: 3,
-            child: Column(children: [
+            child: Column(
+              spacing: 10,
+              children: [
               const SizedBox(height: 10),
+
+              DefaultTextInput(
+              controller: animalController,
+              labelText: "Animal Name",
+              hintText: "Animal Name",
+              icon: Icons.pets_outlined,
+              readOnly: true,
+              onTap:(){viewModel.getAnimals();},
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Enter Breed  Name Please';
+                }
+                return null;
+              },
+            ),
           if(viewModel.selectedIndex==0)
             DefaultTextInput(
-              controller: nameController,
-              labelText: "Name",
-              hintText: "Name",
+              controller: breedController,
+              labelText: "Breed Name",
+              hintText: "Breed Name",
               icon: Icons.pets_outlined,
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Enter Your Name Please';
+                  return 'Enter Breed  Name Please';
                 }
                 return null;
               },
             ),
              if(viewModel.selectedIndex==1)
             DefaultTextInput(
-              controller: nameController,
-              labelText: "Add Names In Bulk",
+              controller: breedController,
+              labelText: "Add Breed  Names In Bulk",
               hintText: "Separate By Commas For Example Leopard,Lion",
               maxLines: 5,
               icon: Icons.pets_outlined,
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Enter animal names';
+                  return 'Enter Breed  animal names';
                 }
                 return null;
               },
             ),
           ],)),
-            _buildButton(viewModel, "Add Animal", () {
+            _buildButton(viewModel, "Add Breeds", () {
               if (formKey2.currentState!.validate()) {
-                viewModel.animalName = nameController.text;
-               viewModel.addAnimal(nameController.text);
+                viewModel.animalName = breedController.text;
+               viewModel.addBreeds(breedController.text);
               }
             }),
           ],
@@ -170,8 +189,8 @@ class AnimalConfigModal extends StatelessWidget {
   }
 
   Widget _buildEditAnimal(GeneralConfigViewModel viewModel) {
-    nameController = TextEditingController(text: viewModel.animalName);
-    idController = TextEditingController(text: viewModel.animalId);
+    breedController = TextEditingController(text: viewModel.breedName);
+    animalController = TextEditingController(text: viewModel.animalName??"");
 
     return Form(
       key: formKey,
@@ -208,25 +227,27 @@ class AnimalConfigModal extends StatelessWidget {
             const Divider(thickness: 2, color: Color.fromARGB(255, 146, 61, 5)),
             const SizedBox(height: 10),
             DefaultTextInput(
-              controller: idController,
-              labelText: "ID",
-              hintText: "ID",
+              controller: animalController,
+              labelText: "Animal",
+              hintText: "Animal",
               readOnly: true,
-              enabled: false,
+              onTap: (){
+                viewModel.getAnimals();
+              },
               icon: Icons.unarchive,
               validator: (value) => value == null || value.isEmpty ? 'ID required' : null,
             ),
             DefaultTextInput(
-              controller: nameController,
-              labelText: "Name",
-              hintText: "Name",
+              controller: breedController,
+              labelText: "Breed Name",
+              hintText: "Breed Name",
               icon: Icons.pets_outlined,
-              validator: (value) => value == null || value.isEmpty ? 'Name required' : null,
+              validator: (value) => value == null || value.isEmpty ? 'Breed Name required' : null,
             ),
-            _buildButton(viewModel, "Update Animal", () {
+            _buildButton(viewModel, "Update Breed", () {
               if (formKey.currentState!.validate()) {
-                viewModel.animalName = nameController.text;
-                viewModel.updateAnimal(idController.text, nameController.text);
+                viewModel.animalName = breedController.text;
+                viewModel.updateBreed(breedController.text, animalController.text,);
               }
             }),
           ],
@@ -253,78 +274,137 @@ class AnimalConfigModal extends StatelessWidget {
   }
 
   Widget _buildSearchBox(GeneralConfigViewModel viewModel) {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            children: [
-              GestureDetector(
-                onTap: () {
-                  viewModel.gotoPrevious();
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(100),
-                    color: const Color.fromARGB(255, 146, 61, 5),
+  return Column(
+    children: [
+      Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          children: [
+            GestureDetector(
+              onTap: () {
+                viewModel.gotoPrevious();
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(100),
+                  color: const Color.fromARGB(255, 146, 61, 5),
+                ),
+                padding: const EdgeInsets.all(3),
+                child: const Icon(Icons.arrow_back, size: 30, color: Colors.white),
+              ),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: TextField(
+                  style: const TextStyle(color: Colors.black),
+                  controller: searchController,
+                  onChanged: viewModel.filtereBreeds,
+                  decoration: InputDecoration(
+                    hintText: "Search by Name",
+                    prefixIcon: const Icon(Icons.search),
+                    suffixIcon: searchController.text.isNotEmpty
+                        ? IconButton(
+                            icon: const Icon(Icons.clear),
+                            onPressed: () {
+                              searchController.clear();
+                              viewModel.resetFilterBreed();
+                            },
+                          )
+                        : null,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    filled: true,
                   ),
-                  padding: const EdgeInsets.all(3),
-                  child: const Icon(Icons.arrow_back, size: 30, color: Colors.white),
                 ),
               ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: TextField(
-                    style: const TextStyle(color: Colors.black),
-                    controller: searchController,
-                    onChanged: viewModel.filteredAnimal,
-                    decoration: InputDecoration(
-                      hintText: "Search by Owner Email",
-                      prefixIcon: const Icon(Icons.search),
-                      suffixIcon: searchController.text.isNotEmpty
-                          ? IconButton(
-                              icon: const Icon(Icons.clear),
-                              onPressed: () {
-                                searchController.clear();
-                                viewModel.resetFilter();
-                              },
-                            )
-                          : null,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      filled: true,
+            ),
+          ],
+        ),
+      ),
+      const SizedBox(height: 12),
+
+      // Only show the filter list if animalSelection is not empty
+      if (viewModel.animalSelection.isNotEmpty)
+        SizedBox(
+          height: 50,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: viewModel.animalSelection.length,
+            itemBuilder: (context, index) {
+              final animal = viewModel.animalSelection[index];
+              final isSelected = viewModel.selectedAnimal == animal;
+
+              return GestureDetector(
+                onTap: () {
+                  viewModel.filteredSelection(animal);
+                },
+                child: Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 6),
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  decoration: BoxDecoration(
+                    color: isSelected ? Colors.brown : Colors.transparent,
+                    border: Border.all(
+                      color: Colors.brown,
+                      width: 1.5,
+                    ),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    animal,
+                    style: TextStyle(
+                      color: isSelected ? Colors.white : Colors.brown,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ),
-              ),
-            ],
+              );
+            },
           ),
         ),
-        const SizedBox(height: 12),
-        Expanded(
-          child: viewModel.filteredAnimals == null || viewModel.filteredAnimals!.isEmpty              ? const Center(child: Text("No Animals loaded."))
-              : ListView.builder(
-                  padding: const EdgeInsets.all(2),
-                  itemCount: viewModel.filteredAnimals!.length,
-                  itemBuilder: (context, index) {
-                    final animals = viewModel.filteredAnimals![index];
-                    return _buildUserCard(context, animals, viewModel);
-                  },
-                ),
-        ),
-      ],
-    );
-  }
 
-  Widget _buildUserCard(BuildContext context, AnimalType animals, GeneralConfigViewModel viewModel) {
+      const SizedBox(height: 10),
+
+      Expanded(
+        child: viewModel.filteredBreeds == null || viewModel.filteredBreeds!.isEmpty
+            ? const Center(child: Text("No Animals loaded."))
+            : ListView.builder(
+                padding: const EdgeInsets.all(2),
+                itemCount: viewModel.filteredBreeds!.length,
+                itemBuilder: (context, index) {
+                  final breeds = viewModel.filteredBreeds![index];
+                  return _buildUserCard(context, breeds, viewModel);
+                },
+              ),
+      ),
+    ],
+  );
+}
+
+
+  Widget _buildUserCard(BuildContext context, BreedResponse animals, GeneralConfigViewModel viewModel) {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       elevation: 4,
       margin: const EdgeInsets.symmetric(vertical: 8),
       child: ListTile(
-  title: Text("⦾   ${animals.name}"),
+  title: Row(
+    spacing: 10,
+    children: [
+      Container(
+       padding: EdgeInsets.all(3),
+        decoration: BoxDecoration(
+        
+        color:  const Color.fromARGB(255, 146, 61, 5),
+        borderRadius: BorderRadius.circular(10),
+        
+      ),
+      child:Text(animals.animal??"",style: TextStyle(color: Colors.white,fontWeight: FontWeight.w400),) ,
+      ),
+      Text(animals.name),
+    ],
+  ),
   trailing: Row(
     mainAxisSize: MainAxisSize.min, // <-- Add this line
     children: [
@@ -332,13 +412,13 @@ class AnimalConfigModal extends StatelessWidget {
       IconButton(
         icon: const Icon(Icons.edit),
         onPressed: () {
-          viewModel.gotoEditAnimal(animals);
+          viewModel.gotoEditBreed(animals);
         },
       ),
        IconButton(
         icon: const Icon(Icons.delete, color: Colors.red),
         onPressed: () {
-          viewModel.deleteAnimal(animals.animalId);
+          viewModel.deleteBreed(animals.breedId);
         },
       )
     ],

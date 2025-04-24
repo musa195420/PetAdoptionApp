@@ -8,7 +8,8 @@ import 'package:petadoption/services/dialog_service.dart';
 import 'package:petadoption/services/global_service.dart';
 import 'package:petadoption/services/navigation_service.dart';
 import 'package:petadoption/viewModel/base_view_model.dart';
-import 'package:petadoption/views/modals/donor_edit_modal.dart';
+
+import '../../views/modals/admin_modals/donor_edit_modal.dart';
 class DonorAdminViewModel extends BaseViewModel {
   NavigationService get _navigationService => locator<NavigationService>();
   IDialogService get _dialogService => locator<IDialogService>();

@@ -129,7 +129,7 @@ class PetViewModel extends BaseViewModel {
             if (selectedIndex >= 0 &&
                 selectedIndex < breeds!.length) {
               // Assign selected animal_id
-              selectedBreedId = breeds![selectedIndex].animalId;
+              selectedBreedId = breeds![selectedIndex].breedId;
               selectedBreedName = breeds![selectedIndex].name;
 
               return BreedSelection(selectedBreedId: selectedBreedId!, selectedBreedName: selectedBreedName!);

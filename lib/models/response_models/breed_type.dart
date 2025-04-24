@@ -1,20 +1,19 @@
 class BreedType {
-  final String animalId;
+  final String breedId;
   final String name;
 
-  BreedType({required this.animalId, required this.name});
+  BreedType({required this.breedId, required this.name});
 
   factory BreedType.fromJson(Map<String, dynamic> json) {
     return BreedType(
-      animalId: json['breed_id'],
+      breedId: json['breed_id'],
       name: json['name'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'breed_id': animalId,
-      'name': name,
+      'breed_id': breedId,
     };
   }
 }

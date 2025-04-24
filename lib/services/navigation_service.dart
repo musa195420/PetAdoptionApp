@@ -9,12 +9,12 @@ import 'package:petadoption/views/admin_views/user_admin.dart';
 import 'package:petadoption/views/home.dart';
 import 'package:petadoption/views/login.dart';
 import 'package:petadoption/views/modals/admin_modals/adopter_edit_modal.dart';
+import 'package:petadoption/views/modals/admin_modals/breed_config_modal.dart';
+import 'package:petadoption/views/modals/admin_modals/pet_edit_modal.dart';
+import 'package:petadoption/views/modals/admin_modals/user_edit_modal.dart';
 import 'package:petadoption/views/modals/animalBreed_modal.dart';
 import 'package:petadoption/views/modals/animalType_modal.dart';
 import 'package:petadoption/views/modals/admin_modals/animal_config_modal.dart';
-import 'package:petadoption/views/modals/donor_edit_modal.dart';
-import 'package:petadoption/views/modals/user_edit_modal.dart';
-import 'package:petadoption/views/modals/userlink_modal.dart';
 import 'package:petadoption/views/not_supported.dart';
 import 'package:petadoption/views/pet_page.dart';
 import 'package:petadoption/views/signup.dart';
@@ -22,7 +22,8 @@ import 'package:petadoption/views/startup.dart';
 
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import '../helpers/locator.dart';
-import '../views/modals/pet_edit_modal.dart';
+import '../views/modals/admin_modals/donor_edit_modal.dart';
+import '../views/modals/admin_modals/userlink_modal.dart';
 import 'global_service.dart';
 
 class Routes {
@@ -49,6 +50,7 @@ class Routes {
      static const String donorAdmin = "donorAdmin";
     static const String petAdmin = "petAdmin";
      static const String animal_config_modal = "animal_config_modal";
+      static const String breed_config_modal= "breed_config_modal";
 }
 
 class NavigationService {
@@ -230,6 +232,16 @@ class NavigationService {
             builder: (context) => AnimalConfigModal(
               
             ),
+          );
+        }
+        break;
+          case Routes.breed_config_modal:
+        {
+          showBarModalBottomSheet(
+            expand: true,
+            context: navigatorKey.currentContext!,
+            backgroundColor: Colors.transparent,
+            builder: (context) => BreedConfigModal()
           );
         }
         break;

@@ -2,9 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:petadoption/custom_widgets/stateful_wrapper.dart';
-import 'package:petadoption/models/response_models/pet_response.dart';
-
 import '../../../models/hive_models/user.dart';
+import '../../../models/response_models/pet_response.dart';
 import '../../../models/response_models/user_profile.dart';
 
 class UserLinkModal extends StatelessWidget {
@@ -134,17 +133,19 @@ class UserLinkModal extends StatelessWidget {
   }
 
   Widget _profileImage(String? imageUrl, {String defaultAsset = "assets/images/noprofile.png"}) {
-    return ClipOval(
-      child: imageUrl != null
-          ? Image.network(
-              imageUrl,
-              width: 60,
-              height: 60,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) => Image.asset(defaultAsset, width: 60, height: 60),
-            )
-          : Image.asset(defaultAsset, width: 60, height: 60),
-    );
+    return ClipRRect(
+  borderRadius: BorderRadius.circular(40),
+  child: imageUrl != null
+      ? Image.network(
+          imageUrl,
+          width: 80,
+          height: 80,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) =>
+              Image.asset(defaultAsset, width: 60, height: 60, fit: BoxFit.cover),
+        )
+      : Image.asset(defaultAsset, width: 60, height: 60, fit: BoxFit.cover),
+);
   }
 
   Widget _infoRow(String label, String? value) {

@@ -10,7 +10,7 @@ import 'package:petadoption/services/global_service.dart';
 import 'package:petadoption/services/navigation_service.dart';
 import 'package:petadoption/viewModel/base_view_model.dart';
 import 'package:petadoption/viewModel/pet_view_model.dart';
-import 'package:petadoption/views/modals/pet_edit_modal.dart';
+import 'package:petadoption/views/modals/admin_modals/pet_edit_modal.dart';
 
 import 'user_admin_view_model.dart';
 
