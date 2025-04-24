@@ -16,6 +16,7 @@ import "package:petadoption/models/request_models/pet_request.dart";
 import "package:petadoption/models/request_models/refresh_token_request.dart";
 import "package:petadoption/models/request_models/signup_request.dart";
 import "package:petadoption/models/request_models/single_pet.dart";
+import "package:petadoption/models/request_models/update_animal.dart";
 import "package:petadoption/models/request_models/userinforequest.dart";
 import "package:petadoption/models/response_models/user_profile.dart";
 import "package:petadoption/services/dialog_service.dart";
@@ -824,6 +825,57 @@ class APIService implements IAPIService {
     }
   }
 
+
+
+  
+  @override
+  Future<ApiStatus> updateAnimalType(UpdateAnimal animal) async {
+    try {
+      var response =
+          await _httpService.patchData("api/animal/", animal.toJson());
+      if (response.statusCode == 404) {
+        return ApiStatus(data: null, errorCode: "PA0002");
+      }
+      if (response.statusCode == 401) {
+        return ApiStatus(data: null, errorCode: "PA0001");
+      }
+      ApiResponse res = ApiResponse.fromJson(json.decode(response.body));
+      if (response.statusCode == 200) {
+        if (res.success ?? false) {
+          return ApiStatus(
+            data: null,
+            errorCode: "PA0004",
+          );
+        } else {
+          return ApiStatus(
+              data: ErrorResponse.fromJson(res.toJson()),
+              errorCode: res.status.toString());
+        }
+      } else {
+        debugPrint(response.statusCode);
+        return ApiStatus(
+            data: ErrorResponse.fromJson(res.toJson()),
+            errorCode: res.status.toString());
+      }
+    } on HttpException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0013");
+    } on FormatException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0007");
+    } on TimeoutException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0003");
+    } catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0006");
+    }
+  }
+
   @override
   Future<ApiStatus> updateDonor(UserProfile user) async {
     try {
@@ -1305,6 +1357,8 @@ abstract class IAPIService {
   Future<ApiStatus> addPet(PetRequest pet);
   Future<ApiStatus> addAnimalBreed(AddAnimalBreed animal);
   Future<ApiStatus> addAnimalType(AddAnimalType animal);
+  
+    Future<ApiStatus> updateAnimalType(UpdateAnimal animal);
   Future<ApiStatus> getAnimalType();
   Future<ApiStatus> getAnimalBreed(GetAnimalBreed breed);
   Future<ApiStatus> uploadProfileImage(String filePath, String userId);

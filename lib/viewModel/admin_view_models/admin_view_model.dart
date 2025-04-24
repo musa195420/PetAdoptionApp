@@ -13,7 +13,7 @@ class AdminViewModel extends ChangeNotifier {
     1: ['Pets Config'],
     2: ['Secure Meetup'],
     3: ['HealthInfo Config'],
-    4: ['Breeds', 'Vaccination', 'Disease', 'Disability'],
+    4: ['Animal Type','Breeds', 'Vaccination', 'Disease', 'Disability'],
   };
 
   final List<SelectionBox> boxes = [
@@ -57,7 +57,11 @@ case 'config donor':
  await _navigationService.pushNamed(Routes.petAdmin, data: null, args:  TransitionType.slideRight);
     }
     break;
-
+ case 'animal type':
+    {
+ await _navigationService.pushModalBottom(Routes.animal_config_modal, data: null);
+    }
+    break;
    
    }
   }

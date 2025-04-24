@@ -8,9 +8,10 @@ import 'package:petadoption/views/admin_views/pet_admin.dart';
 import 'package:petadoption/views/admin_views/user_admin.dart';
 import 'package:petadoption/views/home.dart';
 import 'package:petadoption/views/login.dart';
-import 'package:petadoption/views/modals/adopter_edit_modal.dart';
+import 'package:petadoption/views/modals/admin_modals/adopter_edit_modal.dart';
 import 'package:petadoption/views/modals/animalBreed_modal.dart';
 import 'package:petadoption/views/modals/animalType_modal.dart';
+import 'package:petadoption/views/modals/admin_modals/animal_config_modal.dart';
 import 'package:petadoption/views/modals/donor_edit_modal.dart';
 import 'package:petadoption/views/modals/user_edit_modal.dart';
 import 'package:petadoption/views/modals/userlink_modal.dart';
@@ -47,6 +48,7 @@ class Routes {
     static const String adopterAdmin = "adopterAdmin";
      static const String donorAdmin = "donorAdmin";
     static const String petAdmin = "petAdmin";
+     static const String animal_config_modal = "animal_config_modal";
 }
 
 class NavigationService {
@@ -214,6 +216,19 @@ class NavigationService {
             backgroundColor: Colors.transparent,
             builder: (context) => PetEditModal(
               pet: data.pet,
+            ),
+          );
+        }
+        break;
+
+         case Routes.animal_config_modal:
+        {
+          showBarModalBottomSheet(
+            expand: true,
+            context: navigatorKey.currentContext!,
+            backgroundColor: Colors.transparent,
+            builder: (context) => AnimalConfigModal(
+              
             ),
           );
         }

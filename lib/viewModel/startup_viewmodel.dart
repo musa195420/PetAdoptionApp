@@ -83,6 +83,10 @@ class StartupViewModel extends BaseViewModel {
       }
     } catch (e) {
       debugPrint(e.toString());
+      _navigationService.pushNamedAndRemoveUntil(
+          Routes.login,
+          args: TransitionType.fade,
+        );
     } finally {
       await loading(false);
     }

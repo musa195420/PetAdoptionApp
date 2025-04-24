@@ -1,22 +1,22 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
-import 'package:petadoption/custom_widgets/default_text_input.dart';
-import 'package:petadoption/viewModel/admin_view_models/adopter_admin_view_model.dart';
-import '../../helpers/locator.dart';
-import '../../models/response_models/user_profile.dart';
-import '../../services/api_service.dart';
+import 'package:petadoption/viewModel/admin_view_models/donor_admin_view_model.dart';
+import '../../../custom_widgets/default_text_input.dart';
+import '../../../helpers/locator.dart';
+import '../../../models/response_models/user_profile.dart';
+import '../../../services/api_service.dart';
 import 'package:provider/provider.dart';
 
-class AdopterEditModal extends StatefulWidget {
+class DonorEditModal extends StatefulWidget {
   final UserProfile user;
-  const AdopterEditModal({super.key, required this.user});
+  const DonorEditModal({super.key, required this.user});
 
   @override
-  State<AdopterEditModal> createState() => _AdopterEditModalState();
+  State<DonorEditModal> createState() => _DonorEditModalState();
 }
 
-class _AdopterEditModalState extends State<AdopterEditModal> {
+class _DonorEditModalState extends State<DonorEditModal> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -30,7 +30,7 @@ class _AdopterEditModalState extends State<AdopterEditModal> {
   void initState() {
     super.initState();
 
-    final viewModel = context.read<AdopterAdminViewModel>();
+    final viewModel = context.read<DonorAdminViewModel>();
 
     nameController = TextEditingController(text: widget.user.name);
     locationController = TextEditingController(text: widget.user.location);
@@ -47,7 +47,7 @@ class _AdopterEditModalState extends State<AdopterEditModal> {
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = context.watch<AdopterAdminViewModel>();
+    final viewModel = context.watch<DonorAdminViewModel>();
 
     return Scaffold(
       key: scaffoldKey,
@@ -88,14 +88,14 @@ class _AdopterEditModalState extends State<AdopterEditModal> {
                       ),
                       child: Column(
                         children: [
-                          _buildUpdateAdopter(viewModel),
+                          _buildUpdateDonor(viewModel),
                           const SizedBox(height: 10),
                               _buildLiveStatusButton(viewModel), 
                           const SizedBox(height: 20),
                           InkWell(
                             onTap: () {
                               if (formKey.currentState!.validate()) {
-                                viewModel.updatAdopter(
+                                viewModel.updateDonor(
                                   nameController.text,
                                   locationController.text,
                                  widget.user
@@ -104,7 +104,7 @@ class _AdopterEditModalState extends State<AdopterEditModal> {
                             },
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: _buildUpdateAdopterButton(),
+                              child: _buildUpdateDonorButton(),
                             ),
                           ),
                         ],
@@ -120,7 +120,7 @@ class _AdopterEditModalState extends State<AdopterEditModal> {
     );
   }
 
-  Widget _buildLiveStatusButton(AdopterAdminViewModel viewModel) {
+  Widget _buildLiveStatusButton(DonorAdminViewModel viewModel) {
  bool isActive = viewModel.isActive;
 
   return GestureDetector(
@@ -157,7 +157,7 @@ class _AdopterEditModalState extends State<AdopterEditModal> {
   );
 }
 
-  Widget _buildUpdateAdopter(AdopterAdminViewModel viewModel) {
+  Widget _buildUpdateDonor(DonorAdminViewModel viewModel) {
     return Form(
       key: formKey,
 
@@ -195,7 +195,7 @@ class _AdopterEditModalState extends State<AdopterEditModal> {
 
   
 
-  Widget _buildUpdateAdopterButton() {
+  Widget _buildUpdateDonorButton() {
     return Container(
       padding: const EdgeInsets.fromLTRB(60, 10, 60, 10),
       decoration: BoxDecoration(
@@ -203,7 +203,7 @@ class _AdopterEditModalState extends State<AdopterEditModal> {
         color: Colors.deepOrange,
       ),
       child: const Text(
-        "Update Adopter",
+        "Update Donor",
         style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
       ),
     );

@@ -8,7 +8,7 @@ import 'package:petadoption/services/dialog_service.dart';
 import 'package:petadoption/services/global_service.dart';
 import 'package:petadoption/services/navigation_service.dart';
 import 'package:petadoption/viewModel/base_view_model.dart';
-import 'package:petadoption/views/modals/adopter_edit_modal.dart';
+import 'package:petadoption/views/modals/admin_modals/adopter_edit_modal.dart';
 class AdopterAdminViewModel extends BaseViewModel {
   NavigationService get _navigationService => locator<NavigationService>();
   IDialogService get _dialogService => locator<IDialogService>();
