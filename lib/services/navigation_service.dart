@@ -9,6 +9,9 @@ import 'package:petadoption/views/admin_views/user_admin.dart';
 import 'package:petadoption/views/home.dart';
 import 'package:petadoption/views/login.dart';
 import 'package:petadoption/views/modals/admin_modals/adopter_edit_modal.dart';
+import 'package:petadoption/views/modals/admin_modals/disease_config_modal.dart';
+import 'package:petadoption/views/modals/admin_modals/disability_config_modal.dart';
+import 'package:petadoption/views/modals/admin_modals/vaccination_config_modal.dart';
 import 'package:petadoption/views/modals/admin_modals/breed_config_modal.dart';
 import 'package:petadoption/views/modals/admin_modals/pet_edit_modal.dart';
 import 'package:petadoption/views/modals/admin_modals/user_edit_modal.dart';
@@ -51,6 +54,9 @@ class Routes {
     static const String petAdmin = "petAdmin";
      static const String animal_config_modal = "animal_config_modal";
       static const String breed_config_modal= "breed_config_modal";
+       static const String vaccination_config_modal= " vaccination_config_modal";
+       static const String disease_config_modal="disease_config_modal";
+        static const String disability_config_modal="disability_config_modal";
 }
 
 class NavigationService {
@@ -242,6 +248,37 @@ class NavigationService {
             context: navigatorKey.currentContext!,
             backgroundColor: Colors.transparent,
             builder: (context) => BreedConfigModal()
+          );
+        }
+        break;
+
+          case Routes.vaccination_config_modal:
+        {
+          showBarModalBottomSheet(
+            expand: true,
+            context: navigatorKey.currentContext!,
+            backgroundColor: Colors.transparent,
+            builder: (context) => VaccinationConfig()
+          );
+        }
+        break;
+          case Routes.disease_config_modal:
+        {
+          showBarModalBottomSheet(
+            expand: true,
+            context: navigatorKey.currentContext!,
+            backgroundColor: Colors.transparent,
+            builder: (context) => DiseaseConfigModal()
+          );
+        }
+        break;
+          case Routes.disability_config_modal:
+        {
+          showBarModalBottomSheet(
+            expand: true,
+            context: navigatorKey.currentContext!,
+            backgroundColor: Colors.transparent,
+            builder: (context) => DisabilityConfigModal()
           );
         }
         break;

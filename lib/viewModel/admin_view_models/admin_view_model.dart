@@ -66,6 +66,19 @@ case 'config donor':
     {
  await _navigationService.pushModalBottom(Routes.breed_config_modal, data: null);
     }
+
+    case 'vaccination':
+    {
+ await _navigationService.pushModalBottom(Routes.vaccination_config_modal, data: null);
+    }
+    case 'disease':
+    {
+ await _navigationService.pushModalBottom(Routes.disease_config_modal, data: null);
+    }
+      case 'disability':
+    {
+ await _navigationService.pushModalBottom(Routes.disability_config_modal, data: null);
+    }
    }
   }
 

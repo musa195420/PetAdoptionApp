@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable, file_names
+
 import 'package:flutter/material.dart';
 import 'package:petadoption/custom_widgets/default_text_input.dart';
 import 'package:petadoption/custom_widgets/stateful_wrapper.dart';
