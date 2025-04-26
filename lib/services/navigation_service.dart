@@ -1,16 +1,19 @@
 // ignore_for_file: constant_identifier_names
 
 import 'package:flutter/material.dart';
+import 'package:petadoption/models/response_models/secure_meetup.dart';
 import 'package:petadoption/views/admin_views/admin.dart';
 import 'package:petadoption/views/admin_views/adopter_admin.dart';
 import 'package:petadoption/views/admin_views/donor_admin.dart';
 import 'package:petadoption/views/admin_views/pet_admin.dart';
+import 'package:petadoption/views/admin_views/secure_admin_view.dart';
 import 'package:petadoption/views/admin_views/user_admin.dart';
 import 'package:petadoption/views/home.dart';
 import 'package:petadoption/views/login.dart';
 import 'package:petadoption/views/modals/admin_modals/adopter_edit_modal.dart';
 import 'package:petadoption/views/modals/admin_modals/disease_config_modal.dart';
 import 'package:petadoption/views/modals/admin_modals/disability_config_modal.dart';
+import 'package:petadoption/views/modals/admin_modals/secure_edit_modal.dart';
 import 'package:petadoption/views/modals/admin_modals/vaccination_config_modal.dart';
 import 'package:petadoption/views/modals/admin_modals/breed_config_modal.dart';
 import 'package:petadoption/views/modals/admin_modals/pet_edit_modal.dart';
@@ -52,11 +55,13 @@ class Routes {
     static const String adopterAdmin = "adopterAdmin";
      static const String donorAdmin = "donorAdmin";
     static const String petAdmin = "petAdmin";
+   static const String secureAdmin ="secureAdmin";
      static const String animal_config_modal = "animal_config_modal";
       static const String breed_config_modal= "breed_config_modal";
        static const String vaccination_config_modal= " vaccination_config_modal";
        static const String disease_config_modal="disease_config_modal";
         static const String disability_config_modal="disability_config_modal";
+        static const String securemeetup_config_modal="securemeetup_config_modal";
 }
 
 class NavigationService {
@@ -282,6 +287,19 @@ class NavigationService {
           );
         }
         break;
+
+           case Routes.securemeetup_config_modal:
+        {
+          showBarModalBottomSheet(
+            expand: true,
+            context: navigatorKey.currentContext!,
+            backgroundColor: Colors.transparent,
+            builder: (context) => SecureEdit(
+              meetup: data.meetup,
+            )
+          );
+        }
+        break;
     }
   }
 
@@ -453,6 +471,22 @@ class RouteManager {
             pageBuilder: (BuildContext context, Animation<double> animation,
                 Animation<double> secondaryAnimation) {
               return DonorAdmin();
+            },
+            transitionsBuilder: (BuildContext context,
+                Animation<double> animation,
+                Animation<double> secondaryAnimation,
+                Widget child) {
+              return _transitionsBuilder(transition, animation, child);
+            },
+          );
+        }
+
+  case Routes.secureAdmin:
+        {
+          return PageRouteBuilder(
+            pageBuilder: (BuildContext context, Animation<double> animation,
+                Animation<double> secondaryAnimation) {
+              return SecureAdminView();
             },
             transitionsBuilder: (BuildContext context,
                 Animation<double> animation,

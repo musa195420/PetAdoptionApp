@@ -13,6 +13,7 @@ import "package:petadoption/models/request_models/animal_breed.dart";
 import "package:petadoption/models/request_models/animal_breed_request.dart";
 import "package:petadoption/models/request_models/delete_user.dart";
 import "package:petadoption/models/request_models/pet_request.dart";
+import "package:petadoption/models/request_models/proof_image.dart";
 import "package:petadoption/models/request_models/refresh_token_request.dart";
 import "package:petadoption/models/request_models/signup_request.dart";
 import "package:petadoption/models/request_models/single_disease.dart";
@@ -39,6 +40,7 @@ import "../models/response_models/get_disease.dart";
 import "../models/response_models/get_vaccines.dart";
 import "../models/response_models/pet_response.dart";
 import "../models/response_models/refresh_token_response.dart";
+import "../models/response_models/secure_meetup.dart";
 
 class APIService implements IAPIService {
   HttpService get _httpService => locator<HttpService>();
@@ -614,6 +616,54 @@ class APIService implements IAPIService {
   Future<ApiStatus> getPets() async {
     try {
       var response = await _httpService.getData("api/pet/email");
+      if (response.statusCode == 404) {
+        return ApiStatus(data: null, errorCode: "PA0002");
+      }
+      if (response.statusCode == 401) {
+        return ApiStatus(data: null, errorCode: "PA0001");
+      }
+      ApiResponse res = ApiResponse.fromJson(json.decode(response.body));
+      if (response.statusCode == 200) {
+        if (res.success ?? true) {
+          return ApiStatus(
+            data: res.data,
+            errorCode: "PA0004",
+          );
+        } else {
+          return ApiStatus(
+              data: ErrorResponse.fromJson(res.toJson()),
+              errorCode: res.status.toString());
+        }
+      } else {
+        return ApiStatus(
+            data: ErrorResponse.fromJson(res.toJson()),
+            errorCode: res.status.toString());
+      }
+    } on HttpException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0013");
+    } on FormatException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0007");
+    } on TimeoutException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0003");
+    } catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0006");
+    }
+  }
+
+
+  
+  @override
+  Future<ApiStatus> getSecureMeetups() async {
+    try {
+      var response = await _httpService.getData("api/secureMeetup/");
       if (response.statusCode == 404) {
         return ApiStatus(data: null, errorCode: "PA0002");
       }
@@ -1559,6 +1609,50 @@ class APIService implements IAPIService {
     }
   }
 
+
+  
+  @override
+  Future<ApiStatus> updateSecureMeetup(SecureMeetup secure)async {
+    try {
+      var response = await _httpService.patchData("api/secureMeetup", secure.toJson());
+      var data = secure.toJson();
+      ApiResponse res = ApiResponse.fromJson(json.decode(response.body));
+      if (response.statusCode == 200) {
+        if (res.success ?? false) {
+          return ApiStatus(
+            data: null,
+            errorCode: "PA0004",
+          );
+        } else {
+          return ApiStatus(
+              data: ErrorResponse.fromJson(res.toJson()),
+              errorCode: res.status.toString());
+        }
+      } else {
+        debugPrint(response.statusCode);
+        return ApiStatus(
+            data: ErrorResponse.fromJson(res.toJson()),
+            errorCode: res.status.toString());
+      }
+    } on HttpException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0013");
+    } on FormatException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0007");
+    } on TimeoutException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0003");
+    } catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0006");
+    }
+  }
+
   @override
   Future<ApiStatus> deleteUser(SingleUser user) async {
     try {
@@ -1800,6 +1894,53 @@ class APIService implements IAPIService {
   Future<ApiStatus> deleteDonor(SingleUser user) async {
     try {
       var response = await _httpService.deleteData("api/donor/", user.toJson());
+      if (response.statusCode == 404) {
+        return ApiStatus(data: null, errorCode: "PA0002");
+      }
+      if (response.statusCode == 401) {
+        return ApiStatus(data: null, errorCode: "PA0001");
+      }
+      ApiResponse res = ApiResponse.fromJson(json.decode(response.body));
+      if (response.statusCode == 200) {
+        if (res.success ?? false) {
+          return ApiStatus(
+            data: null,
+            errorCode: "PA0004",
+          );
+        } else {
+          return ApiStatus(
+              data: ErrorResponse.fromJson(res.toJson()),
+              errorCode: res.status.toString());
+        }
+      } else {
+        return ApiStatus(
+            data: ErrorResponse.fromJson(res.toJson()),
+            errorCode: res.status.toString());
+      }
+    } on HttpException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0013");
+    } on FormatException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0007");
+    } on TimeoutException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0003");
+    } catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0006");
+    }
+  }
+
+  
+  @override
+  Future<ApiStatus> deleteSecureMeetup(SecureMeetup meetup) async {
+    try {
+      var response = await _httpService.deleteData("api/secureMeetup", meetup.toJson());
       if (response.statusCode == 404) {
         return ApiStatus(data: null, errorCode: "PA0002");
       }
@@ -2349,9 +2490,31 @@ class APIService implements IAPIService {
       return ApiStatus(data: e, errorCode: "PA0006");
     }
   }
+@override
+  Future<ApiStatus> uploadSecureMeetupImages( ProofImages proofImages,) async {
+  try {
+    final response = await _httpService.uploadMultipleImages(
+      'api/secureMeetup/uploadimages',
+      {'meetup_id': proofImages.meetupId},
+      proofImages.toImageJson()..remove('meetup_id'), // Remove meetup_id from images map
+    );
+
+    if (response.statusCode == 200) {
+      final body = await response.stream.bytesToString();
+      return ApiStatus(data: jsonDecode(body), errorCode: "PA0004");
+    } else {
+      return ApiStatus(
+          data: null, errorCode: "SM_UPLOAD_FAIL_${response.statusCode}");
+    }
+  } catch (e, s) {
+    _globalService.logError("Upload Secure Meetup Images Error", e.toString(), s);
+    return ApiStatus(data: e, errorCode: "SM_UPLOAD_EXCEPTION");
+  }
+}
 }
 
 abstract class IAPIService {
+  Future<ApiStatus> uploadSecureMeetupImages(ProofImages image);
    Future<ApiStatus> getVaccines();
     Future<ApiStatus> addVaccine(AddInBulk vaccine);
     Future<ApiStatus> addVaccineBulk(AddInBulk vaccines);
@@ -2369,7 +2532,7 @@ abstract class IAPIService {
     Future<ApiStatus> addDisabilityBulk(AddInBulk disability);
     Future<ApiStatus> updateDisability(Disability disability);
      Future<ApiStatus> deleteDisability(SingleDisability disability);
-
+ Future<ApiStatus> getSecureMeetups();
 
     Future<ApiStatus> getPets();
   Future<ApiStatus> deletePet(SinglePet pet);
@@ -2380,8 +2543,10 @@ abstract class IAPIService {
   Future<ApiStatus> deleteAdopter(SingleUser user);
   Future<ApiStatus> updateAdopter(UserProfile user);
   Future<ApiStatus> getDonors();
+  Future<ApiStatus> deleteSecureMeetup(SecureMeetup meetup);
   Future<ApiStatus> deleteDonor(SingleUser user);
   Future<ApiStatus> updateDonor(UserProfile user);
+   Future<ApiStatus> updateSecureMeetup(SecureMeetup secure);
   Future<ApiStatus> getUsers();
   Future<ApiStatus> addAdopter(AddAdopter adopter);
   Future<ApiStatus> addDonor(AddDonor donor);

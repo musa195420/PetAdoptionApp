@@ -4,6 +4,7 @@ import 'package:petadoption/helpers/locator.dart';
 import 'package:petadoption/models/message.dart';
 import 'package:petadoption/models/request_models/single_pet.dart';
 import 'package:petadoption/models/response_models/pet_response.dart';
+import 'package:petadoption/models/response_models/secure_meetup.dart';
 import 'package:petadoption/services/api_service.dart';
 import 'package:petadoption/services/dialog_service.dart';
 import 'package:petadoption/services/global_service.dart';
@@ -238,7 +239,7 @@ class PetAdminViewModel extends BaseViewModel {
     notifyListeners();
   }
 
-  List<String> approvalStauts = ["Approved", "Pending", "Rejected"];
+  List<String> approvalStatus = ["Approved", "Pending", "Rejected"];
   String isApproved = "Approved";
 
   Color getColor() {
@@ -259,9 +260,9 @@ class PetAdminViewModel extends BaseViewModel {
 
   getisApproved() async {
     int index = await _dialogService.showSelect(Message(
-        description: "Select Status Of Application", items: approvalStauts));
-    if (index != -1 && index < approvalStauts.length) {
-      isApproved = approvalStauts[index];
+        description: "Select Status Of Application", items: approvalStatus));
+    if (index != -1 && index < approvalStatus.length) {
+      isApproved = approvalStatus[index];
       notifyListeners();
     }
   }
@@ -269,4 +270,5 @@ class PetAdminViewModel extends BaseViewModel {
   void userInfo(String id) async {
     _userModel.showLink(id,isAdmin: true);
   }
+
 }

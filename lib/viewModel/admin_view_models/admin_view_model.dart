@@ -79,6 +79,11 @@ case 'config donor':
     {
  await _navigationService.pushModalBottom(Routes.disability_config_modal, data: null);
     }
+
+    case 'secure meetup':
+    {
+ await _navigationService.pushNamedAndRemoveUntil(Routes.secureAdmin, args: TransitionType.slideRight);
+    }
    }
   }
 
