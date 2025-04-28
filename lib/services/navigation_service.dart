@@ -29,6 +29,7 @@ import 'package:petadoption/views/startup.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import '../helpers/locator.dart';
 import '../views/modals/admin_modals/donor_edit_modal.dart';
+import '../views/modals/admin_modals/meetup_edit_modal.dart';
 import '../views/modals/admin_modals/userlink_modal.dart';
 import 'global_service.dart';
 
@@ -62,6 +63,7 @@ class Routes {
        static const String disease_config_modal="disease_config_modal";
         static const String disability_config_modal="disability_config_modal";
         static const String securemeetup_config_modal="securemeetup_config_modal";
+         static const String meetup_edit_modal="meetup_edit_modal";
 }
 
 class NavigationService {
@@ -295,6 +297,18 @@ class NavigationService {
             context: navigatorKey.currentContext!,
             backgroundColor: Colors.transparent,
             builder: (context) => SecureEdit(
+              meetup: data.meetup,
+            )
+          );
+        }
+        break;
+          case Routes.meetup_edit_modal:
+        {
+          showBarModalBottomSheet(
+            expand: true,
+            context: navigatorKey.currentContext!,
+            backgroundColor: Colors.transparent,
+            builder: (context) => MeetupEdit(
               meetup: data.meetup,
             )
           );

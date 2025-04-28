@@ -25,7 +25,7 @@ class SecureEdit extends StatelessWidget {
   Widget build(BuildContext context) {
     SecuremeetupAdminViewModel viewModel =
         context.watch<SecuremeetupAdminViewModel>();
-    viewModel.setMeetup(meetup);
+    viewModel.setSecureMeetup(meetup);
     phoneNumberController =
         TextEditingController(text: viewModel.meetup!.phoneNumber ?? "");
     currentAddressController =
@@ -399,7 +399,7 @@ Widget _buildAdminEdit(SecuremeetupAdminViewModel viewModel) {
             alignment: Alignment.centerRight,
             child: TextButton(
               onPressed: () {
-                //viewModel.userInfo(meetup.donorId);
+                viewModel.getMeetup(meetup.meetupId??"");
               },
               child: Text(
                 "Meetup  Information",

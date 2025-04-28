@@ -167,7 +167,7 @@ class SecureAdminView extends StatelessWidget {
       IconButton(
         icon: Icon(Icons.delete, color: Theme.of(context).colorScheme.error),
         onPressed: () {
-        //  viewModel.deleteAdopter(user.donorId??"");
+         viewModel.deleteSecureMeetup(secure.secureMeetupId??"");
         },
       ),
       

@@ -4,17 +4,18 @@ import 'package:petadoption/custom_widgets/stateful_wrapper.dart';
 import 'package:provider/provider.dart';
 import '../viewModel/authentication_view_model.dart';
 
-dynamic formKey = GlobalKey<FormState>();
+
 
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
   final scaffoldKey = GlobalKey<ScaffoldState>();
-
+dynamic formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
+    
     AuthenticationViewModel viewModel =
         context.watch<AuthenticationViewModel>();
 
