@@ -457,7 +457,7 @@ class DialogService implements IDialogService {
     context: _navigationService.navigatorKey.currentContext!,
     barrierDismissible: false, // prevent closing manually
     builder: (BuildContext dialogContext) {
-      Future.delayed(const Duration(seconds: 1), () {
+      Future.delayed(const Duration(seconds: 2), () {
         if (dialogContext.mounted) {
           Navigator.of(dialogContext).maybePop();
         }

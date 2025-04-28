@@ -1,11 +1,11 @@
-class GetAnimalBreed {
+class GetAnimal {
   String id;
 
-  GetAnimalBreed({required this.id});
+  GetAnimal({required this.id});
 
   // Factory constructor to create an object from JSON
-  factory GetAnimalBreed.fromJson(Map<String, dynamic> json) {
-    return GetAnimalBreed(
+  factory GetAnimal.fromJson(Map<String, dynamic> json) {
+    return GetAnimal(
       id: json['animal_id'],
     );
   }

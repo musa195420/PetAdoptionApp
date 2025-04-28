@@ -1,6 +1,7 @@
 // ignore_for_file: constant_identifier_names
 
 import 'package:flutter/material.dart';
+import 'package:petadoption/models/health_info.dart';
 import 'package:petadoption/models/response_models/secure_meetup.dart';
 import 'package:petadoption/views/admin_views/admin.dart';
 import 'package:petadoption/views/admin_views/adopter_admin.dart';
@@ -8,6 +9,7 @@ import 'package:petadoption/views/admin_views/donor_admin.dart';
 import 'package:petadoption/views/admin_views/pet_admin.dart';
 import 'package:petadoption/views/admin_views/secure_admin_view.dart';
 import 'package:petadoption/views/admin_views/user_admin.dart';
+import 'package:petadoption/views/health_info.dart';
 import 'package:petadoption/views/home.dart';
 import 'package:petadoption/views/login.dart';
 import 'package:petadoption/views/modals/admin_modals/adopter_edit_modal.dart';
@@ -19,8 +21,11 @@ import 'package:petadoption/views/modals/admin_modals/breed_config_modal.dart';
 import 'package:petadoption/views/modals/admin_modals/pet_edit_modal.dart';
 import 'package:petadoption/views/modals/admin_modals/user_edit_modal.dart';
 import 'package:petadoption/views/modals/animalBreed_modal.dart';
+import 'package:petadoption/views/modals/animalDisability_modal.dart';
+import 'package:petadoption/views/modals/animalDisease_modal.dart';
 import 'package:petadoption/views/modals/animalType_modal.dart';
 import 'package:petadoption/views/modals/admin_modals/animal_config_modal.dart';
+import 'package:petadoption/views/modals/animal_Vaccination_modal.dart';
 import 'package:petadoption/views/not_supported.dart';
 import 'package:petadoption/views/pet_page.dart';
 import 'package:petadoption/views/signup.dart';
@@ -45,25 +50,29 @@ class Routes {
   static const String signup = "signup";
   static const String admin = "admin";
   static const String petpage = "petpage";
+  static const String healthinfo = "healthinfo";
   static const String animalType_modal = "animalType_modal";
   static const String animalBreed_modal = "animalBreed_modal";
   static const String user_edit_modal = "user_edit_modal";
-    static const String user_link_modal = "user_link_modal";
-    static const String donor_edit_modal = "donor_edit_modal";
-    static const String adopter_edit_modal = "adopter_edit_modal";
-    static const String pet_edit_modal = "pet_edit_modal";
-   static const String userAdmin = "userAdmin";
-    static const String adopterAdmin = "adopterAdmin";
-     static const String donorAdmin = "donorAdmin";
-    static const String petAdmin = "petAdmin";
-   static const String secureAdmin ="secureAdmin";
-     static const String animal_config_modal = "animal_config_modal";
-      static const String breed_config_modal= "breed_config_modal";
-       static const String vaccination_config_modal= " vaccination_config_modal";
-       static const String disease_config_modal="disease_config_modal";
-        static const String disability_config_modal="disability_config_modal";
-        static const String securemeetup_config_modal="securemeetup_config_modal";
-         static const String meetup_edit_modal="meetup_edit_modal";
+  static const String user_link_modal = "user_link_modal";
+  static const String donor_edit_modal = "donor_edit_modal";
+  static const String adopter_edit_modal = "adopter_edit_modal";
+  static const String pet_edit_modal = "pet_edit_modal";
+  static const String userAdmin = "userAdmin";
+  static const String adopterAdmin = "adopterAdmin";
+  static const String donorAdmin = "donorAdmin";
+  static const String petAdmin = "petAdmin";
+  static const String secureAdmin = "secureAdmin";
+  static const String animal_config_modal = "animal_config_modal";
+  static const String breed_config_modal = "breed_config_modal";
+  static const String vaccination_config_modal = " vaccination_config_modal";
+  static const String disease_config_modal = "disease_config_modal";
+  static const String disability_config_modal = "disability_config_modal";
+  static const String securemeetup_config_modal = "securemeetup_config_modal";
+  static const String meetup_edit_modal = "meetup_edit_modal";
+  static const String vaccination_modal = "vaccination_modal";
+  static const String disability_modal = "disability_modal";
+  static const String disease_modal = "disease_modal";
 }
 
 class NavigationService {
@@ -160,28 +169,29 @@ class NavigationService {
           );
         }
         break;
-         case Routes.adopter_edit_modal:
+      case Routes.adopter_edit_modal:
         {
           showBarModalBottomSheet(
             expand: true,
             context: navigatorKey.currentContext!,
             backgroundColor: Colors.transparent,
             builder: (context) => AdopterEditModal(
-                user: data.user,
-                ),
+              user: data.user,
+            ),
           );
         }
         break;
-         case Routes.user_link_modal:
+      case Routes.user_link_modal:
         {
           showBarModalBottomSheet(
             expand: true,
             context: navigatorKey.currentContext!,
             backgroundColor: Colors.transparent,
-            builder: (context) => UserLinkModal(user: data.user,
-            userProfile: data.userProfile,pets: data.pets,
-                //  invoice: data,
-                ),
+            builder: (context) => UserLinkModal(
+              user: data.user,
+              userProfile: data.userProfile, pets: data.pets,
+              //  invoice: data,
+            ),
           );
         }
         break;
@@ -199,7 +209,7 @@ class NavigationService {
         }
         break;
 
-          case Routes.user_edit_modal:
+      case Routes.user_edit_modal:
         {
           showBarModalBottomSheet(
             expand: true,
@@ -211,7 +221,7 @@ class NavigationService {
           );
         }
         break;
-        case Routes.donor_edit_modal:
+      case Routes.donor_edit_modal:
         {
           showBarModalBottomSheet(
             expand: true,
@@ -223,7 +233,7 @@ class NavigationService {
           );
         }
         break;
-         case Routes.pet_edit_modal:
+      case Routes.pet_edit_modal:
         {
           showBarModalBottomSheet(
             expand: true,
@@ -236,82 +246,103 @@ class NavigationService {
         }
         break;
 
-         case Routes.animal_config_modal:
+      case Routes.animal_config_modal:
         {
           showBarModalBottomSheet(
             expand: true,
             context: navigatorKey.currentContext!,
             backgroundColor: Colors.transparent,
-            builder: (context) => AnimalConfigModal(
-              
-            ),
+            builder: (context) => AnimalConfigModal(),
           );
         }
         break;
-          case Routes.breed_config_modal:
+      case Routes.breed_config_modal:
         {
           showBarModalBottomSheet(
-            expand: true,
-            context: navigatorKey.currentContext!,
-            backgroundColor: Colors.transparent,
-            builder: (context) => BreedConfigModal()
-          );
+              expand: true,
+              context: navigatorKey.currentContext!,
+              backgroundColor: Colors.transparent,
+              builder: (context) => BreedConfigModal());
         }
         break;
 
-          case Routes.vaccination_config_modal:
+      case Routes.vaccination_config_modal:
         {
           showBarModalBottomSheet(
-            expand: true,
-            context: navigatorKey.currentContext!,
-            backgroundColor: Colors.transparent,
-            builder: (context) => VaccinationConfig()
-          );
+              expand: true,
+              context: navigatorKey.currentContext!,
+              backgroundColor: Colors.transparent,
+              builder: (context) => VaccinationConfig());
         }
         break;
-          case Routes.disease_config_modal:
+      case Routes.disease_config_modal:
         {
           showBarModalBottomSheet(
-            expand: true,
-            context: navigatorKey.currentContext!,
-            backgroundColor: Colors.transparent,
-            builder: (context) => DiseaseConfigModal()
-          );
+              expand: true,
+              context: navigatorKey.currentContext!,
+              backgroundColor: Colors.transparent,
+              builder: (context) => DiseaseConfigModal());
         }
         break;
-          case Routes.disability_config_modal:
+      case Routes.disability_config_modal:
         {
           showBarModalBottomSheet(
-            expand: true,
-            context: navigatorKey.currentContext!,
-            backgroundColor: Colors.transparent,
-            builder: (context) => DisabilityConfigModal()
-          );
+              expand: true,
+              context: navigatorKey.currentContext!,
+              backgroundColor: Colors.transparent,
+              builder: (context) => DisabilityConfigModal());
         }
         break;
 
-           case Routes.securemeetup_config_modal:
+      case Routes.securemeetup_config_modal:
         {
           showBarModalBottomSheet(
-            expand: true,
-            context: navigatorKey.currentContext!,
-            backgroundColor: Colors.transparent,
-            builder: (context) => SecureEdit(
-              meetup: data.meetup,
-            )
-          );
+              expand: true,
+              context: navigatorKey.currentContext!,
+              backgroundColor: Colors.transparent,
+              builder: (context) => SecureEdit(
+                    meetup: data.meetup,
+                  ));
         }
         break;
-          case Routes.meetup_edit_modal:
+      case Routes.meetup_edit_modal:
         {
           showBarModalBottomSheet(
-            expand: true,
-            context: navigatorKey.currentContext!,
-            backgroundColor: Colors.transparent,
-            builder: (context) => MeetupEdit(
-              meetup: data.meetup,
-            )
-          );
+              expand: true,
+              context: navigatorKey.currentContext!,
+              backgroundColor: Colors.transparent,
+              builder: (context) => MeetupEdit(
+                    meetup: data.meetup,
+                  ));
+        }
+        break;
+
+      case Routes.disability_modal:
+        {
+          showBarModalBottomSheet(
+              expand: true,
+              context: navigatorKey.currentContext!,
+              backgroundColor: Colors.transparent,
+              builder: (context) => AnimalDisabilityModal(animalId: data.animalId));
+        }
+        break;
+
+      case Routes.disease_modal:
+        {
+          showBarModalBottomSheet(
+              expand: true,
+              context: navigatorKey.currentContext!,
+              backgroundColor: Colors.transparent,
+              builder: (context) => AnimalDiseaseModal(animalId: data.animalId));
+        }
+        break;
+      case Routes.vaccination_modal:
+        {
+          showBarModalBottomSheet(
+              expand: true,
+              context: navigatorKey.currentContext!,
+              backgroundColor: Colors.transparent,
+              builder: (context) => AnimalVaccinationModal(animalId: data.animalId));
         }
         break;
     }
@@ -362,10 +393,12 @@ class RouteManager {
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     TransitionType transition;
+    dynamic data;
     if (settings.arguments != null) {
       var args = settings.arguments as List<dynamic>;
       transition = args[0] as TransitionType;
       if (args.length > 1) {
+        data = args[1];
       }
     } else {
       transition = TransitionType.fade;
@@ -402,7 +435,7 @@ class RouteManager {
             },
           );
         }
- case Routes.petAdmin:
+      case Routes.petAdmin:
         {
           return PageRouteBuilder(
             pageBuilder: (BuildContext context, Animation<double> animation,
@@ -464,7 +497,7 @@ class RouteManager {
           );
         }
 
-          case Routes.adopterAdmin:
+      case Routes.adopterAdmin:
         {
           return PageRouteBuilder(
             pageBuilder: (BuildContext context, Animation<double> animation,
@@ -479,7 +512,7 @@ class RouteManager {
             },
           );
         }
-        case Routes.donorAdmin:
+      case Routes.donorAdmin:
         {
           return PageRouteBuilder(
             pageBuilder: (BuildContext context, Animation<double> animation,
@@ -495,7 +528,7 @@ class RouteManager {
           );
         }
 
-  case Routes.secureAdmin:
+      case Routes.secureAdmin:
         {
           return PageRouteBuilder(
             pageBuilder: (BuildContext context, Animation<double> animation,
@@ -511,21 +544,23 @@ class RouteManager {
           );
         }
 
-      // case Routes.dashboard:
-      //   {
-      //     return PageRouteBuilder(
-      //       pageBuilder: (BuildContext context, Animation<double> animation,
-      //           Animation<double> secondaryAnimation) {
-      //         return DetailInvoicePage(data as Invoice);
-      //       },
-      //       transitionsBuilder: (BuildContext context,
-      //           Animation<double> animation,
-      //           Animation<double> secondaryAnimation,
-      //           Widget child) {
-      //         return _transitionsBuilder(transition, animation, child);
-      //       },
-      //     );
-      //   }
+      case Routes.healthinfo:
+        {
+          return PageRouteBuilder(
+            pageBuilder: (BuildContext context, Animation<double> animation,
+                Animation<double> secondaryAnimation) {
+              return HealthInfo(
+                info: data as HealthInfoModel,
+              );
+            },
+            transitionsBuilder: (BuildContext context,
+                Animation<double> animation,
+                Animation<double> secondaryAnimation,
+                Widget child) {
+              return _transitionsBuilder(transition, animation, child);
+            },
+          );
+        }
 
       case Routes.admin:
         {
@@ -557,7 +592,7 @@ class RouteManager {
             },
           );
         }
-         case Routes.userAdmin:
+      case Routes.userAdmin:
         {
           return PageRouteBuilder(
             pageBuilder: (BuildContext context, Animation<double> animation,

@@ -53,6 +53,8 @@ class StartupViewModel extends BaseViewModel {
               _prefService.setString(
                   PrefKey.refreshToken, response.refreshToken ?? "");
 
+                 
+
               // Update with new expiry timestamp and current time
               DateTime newExpiryTime = DateTime.now().add(
                 Duration(
@@ -121,7 +123,7 @@ class StartupViewModel extends BaseViewModel {
     try {
       User? userResponse =
           await locator<IHiveService<User>>().getFirstOrDefault();
-
+_globalService.setuser(userResponse);
       if (userResponse == null) {
         await logout();
         await _navigationService.pushNamedAndRemoveUntil(

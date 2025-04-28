@@ -136,7 +136,7 @@ class GeneralConfigViewModel extends BaseViewModel {
       if (res) {
         loading(true, loadingText: "Updating Animal");
         var deleteRes =
-            await _apiService.deleteAnimalType(GetAnimalBreed(id: id));
+            await _apiService.deleteAnimalType(GetAnimal(id: id));
         loading(false);
         if (deleteRes.errorCode == "PA0004") {
           await _dialogService.showSuccess(text: "Animal Deleted Successfully");

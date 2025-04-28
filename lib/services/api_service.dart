@@ -7,6 +7,7 @@ import "dart:io";
 import "package:flutter/material.dart";
 import "package:petadoption/models/api_status.dart";
 import "package:petadoption/models/error_models/error_reponse.dart";
+import "package:petadoption/models/health_info.dart";
 import "package:petadoption/models/request_models/add_donor.dart";
 import "package:petadoption/models/request_models/animalType_request.dart";
 import "package:petadoption/models/request_models/animal_breed.dart";
@@ -286,7 +287,7 @@ class APIService implements IAPIService {
   }
 
   @override
-  Future<ApiStatus> getAnimalBreed(GetAnimalBreed breed) async {
+  Future<ApiStatus> getAnimalBreed(GetAnimal breed) async {
     try {
       var response =
           await _httpService.postData("api/breed/animal", breed.toJson());
@@ -331,6 +332,7 @@ class APIService implements IAPIService {
       return ApiStatus(data: e, errorCode: "PA0006");
     }
   }
+
 
   @override
   Future<ApiStatus> getAnimalBreeds() async {
@@ -516,6 +518,55 @@ class APIService implements IAPIService {
     }
   }
 
+
+  
+  @override
+  Future<ApiStatus> getAnimalVaccineById(GetAnimal breed) async {
+    try {
+      var response = await _httpService.postData("api/vaccination/animal",breed.toJson());
+      if (response.statusCode == 404) {
+        return ApiStatus(data: null, errorCode: "PA0002");
+      }
+      if (response.statusCode == 401) {
+        return ApiStatus(data: null, errorCode: "PA0001");
+      }
+      ApiResponse res = ApiResponse.fromJson(json.decode(response.body));
+      if (response.statusCode == 200) {
+        if (res.success ?? true) {
+          return ApiStatus(
+            data: res.data,
+            errorCode: "PA0004",
+          );
+        } else {
+          return ApiStatus(
+              data: ErrorResponse.fromJson(res.toJson()),
+              errorCode: res.status.toString());
+        }
+      } else {
+        return ApiStatus(
+            data: ErrorResponse.fromJson(res.toJson()),
+            errorCode: res.status.toString());
+      }
+    } on HttpException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0013");
+    } on FormatException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0007");
+    } on TimeoutException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0003");
+    } catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0006");
+    }
+  }
+
+
   @override
   Future<ApiStatus> getDiseases() async {
     try {
@@ -562,10 +613,102 @@ class APIService implements IAPIService {
     }
   }
 
+
+  @override
+   Future<ApiStatus> getAnimalDiseaseById(GetAnimal disease)async {
+    try {
+      var response = await _httpService.postData("api/disease/animal",disease.toJson());
+      if (response.statusCode == 404) {
+        return ApiStatus(data: null, errorCode: "PA0002");
+      }
+      if (response.statusCode == 401) {
+        return ApiStatus(data: null, errorCode: "PA0001");
+      }
+      ApiResponse res = ApiResponse.fromJson(json.decode(response.body));
+      if (response.statusCode == 200) {
+        if (res.success ?? true) {
+          return ApiStatus(
+            data: res.data,
+            errorCode: "PA0004",
+          );
+        } else {
+          return ApiStatus(
+              data: ErrorResponse.fromJson(res.toJson()),
+              errorCode: res.status.toString());
+        }
+      } else {
+        return ApiStatus(
+            data: ErrorResponse.fromJson(res.toJson()),
+            errorCode: res.status.toString());
+      }
+    } on HttpException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0013");
+    } on FormatException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0007");
+    } on TimeoutException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0003");
+    } catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0006");
+    }
+  }
   @override
   Future<ApiStatus> getDisability() async {
     try {
       var response = await _httpService.getData("api/disability");
+      if (response.statusCode == 404) {
+        return ApiStatus(data: null, errorCode: "PA0002");
+      }
+      if (response.statusCode == 401) {
+        return ApiStatus(data: null, errorCode: "PA0001");
+      }
+      ApiResponse res = ApiResponse.fromJson(json.decode(response.body));
+      if (response.statusCode == 200) {
+        if (res.success ?? true) {
+          return ApiStatus(
+            data: res.data,
+            errorCode: "PA0004",
+          );
+        } else {
+          return ApiStatus(
+              data: ErrorResponse.fromJson(res.toJson()),
+              errorCode: res.status.toString());
+        }
+      } else {
+        return ApiStatus(
+            data: ErrorResponse.fromJson(res.toJson()),
+            errorCode: res.status.toString());
+      }
+    } on HttpException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0013");
+    } on FormatException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0007");
+    } on TimeoutException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0003");
+    } catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0006");
+    }
+  }
+
+  @override
+  Future<ApiStatus> getAnimalDisabilityById(GetAnimal disablility) async {
+    try {
+      var response = await _httpService.postData("api/disability/animal/",disablility.toJson());
       if (response.statusCode == 404) {
         return ApiStatus(data: null, errorCode: "PA0002");
       }
@@ -1962,7 +2105,7 @@ class APIService implements IAPIService {
   }
 
   @override
-  Future<ApiStatus> deleteAnimalType(GetAnimalBreed animal) async {
+  Future<ApiStatus> deleteAnimalType(GetAnimal animal) async {
     try {
       var response =
           await _httpService.deleteData("api/animal", animal.toJson());
@@ -2610,6 +2753,52 @@ class APIService implements IAPIService {
   }
 
   @override
+   Future<ApiStatus> addHealthInfo(HealthInfoModel health) async {
+    try {
+      var response = await _httpService.postData("api/health", health.toJson());
+      if (response.statusCode == 404) {
+        return ApiStatus(data: null, errorCode: "PA0002");
+      }
+      if (response.statusCode == 401) {
+        return ApiStatus(data: null, errorCode: "PA0001");
+      }
+      ApiResponse res = ApiResponse.fromJson(json.decode(response.body));
+      if (response.statusCode == 200) {
+        if (res.success ?? true) {
+          return ApiStatus(
+            data: null,
+            errorCode: "PA0004",
+          );
+        } else {
+          return ApiStatus(
+              data: ErrorResponse.fromJson(res.toJson()),
+              errorCode: res.status.toString());
+        }
+      } else {
+        return ApiStatus(
+            data: ErrorResponse.fromJson(res.toJson()),
+            errorCode: res.status.toString());
+      }
+    } on HttpException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0013");
+    } on FormatException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0007");
+    } on TimeoutException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0003");
+    } catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0006");
+    }
+  }
+
+  @override
   Future<ApiStatus> addAdopter(AddAdopter adopter) async {
     try {
       var response =
@@ -2879,10 +3068,10 @@ abstract class IAPIService {
   Future<ApiStatus> deleteVaccine(SingleVaccine vaccine);
 
   Future<ApiStatus> getDiseases();
-  Future<ApiStatus> addDisease(AddInBulk vaccine);
-  Future<ApiStatus> addDiseasesBulk(AddInBulk vaccines);
-  Future<ApiStatus> updateDisease(Disease vaccine);
-  Future<ApiStatus> deleteDisease(SingleDisease vaccine);
+  Future<ApiStatus> addDisease(AddInBulk disease);
+  Future<ApiStatus> addDiseasesBulk(AddInBulk diseases);
+  Future<ApiStatus> updateDisease(Disease disease);
+  Future<ApiStatus> deleteDisease(SingleDisease disease);
 
   Future<ApiStatus> addMeetup(Meetup meetup);
   Future<ApiStatus> updateMeetup(Meetup meetup);
@@ -2917,19 +3106,23 @@ abstract class IAPIService {
   Future<ApiStatus> updateSecureMeetup(SecureMeetup secure);
   Future<ApiStatus> getUsers();
   Future<ApiStatus> addAdopter(AddAdopter adopter);
+    Future<ApiStatus> addHealthInfo(HealthInfoModel health);
   Future<ApiStatus> addDonor(AddDonor donor);
   Future<ApiStatus> addPet(PetRequest pet);
   Future<ApiStatus> addAnimalBreedBulk(AddAnimalBreed animal);
   Future<ApiStatus> addAnimalBreed(AddAnimalBreed animal);
   Future<ApiStatus> addAnimalType(AddAnimalType animal);
   Future<ApiStatus> addAnimalTypeBulk(AddAnimalType animal);
-  Future<ApiStatus> deleteAnimalType(GetAnimalBreed breed);
+  Future<ApiStatus> deleteAnimalType(GetAnimal breed);
   Future<ApiStatus> deleteAnimalBreed(BreedType breed);
   Future<ApiStatus> updateAnimalType(UpdateAnimal animal);
   Future<ApiStatus> updateBreed(UpdateBreed animal);
   Future<ApiStatus> getAnimalType();
   Future<ApiStatus> getAnimalBreeds();
-  Future<ApiStatus> getAnimalBreed(GetAnimalBreed breed);
+  Future<ApiStatus> getAnimalVaccineById(GetAnimal vaccine);
+  Future<ApiStatus> getAnimalDiseaseById(GetAnimal disease);
+  Future<ApiStatus> getAnimalDisabilityById(GetAnimal disablility);
+  Future<ApiStatus> getAnimalBreed(GetAnimal breed);
   Future<ApiStatus> uploadProfileImage(String filePath, String userId);
   Future<ApiStatus> signUp(SignupRequest signup);
   Future<ApiStatus> refreshToken(RefreshTokenRequest token);

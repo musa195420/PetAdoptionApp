@@ -55,6 +55,24 @@ class PetPage extends StatelessWidget {
                   child: Column(
                     children: [
                       // Character image at top, overlapping the container
+                      Row(children: [
+ GestureDetector(
+                    onTap: () {
+                      viewModel.logout();
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color:Color(0xFF5D1F00),
+                      ),
+                      child: Icon(
+                        Icons.logout_rounded,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                      ],),
                    _buildCharacterImage(viewModel),
       
                       // Padding to make space for the image
@@ -105,6 +123,8 @@ class PetPage extends StatelessWidget {
     return Column(
       spacing: 5,
       children: [
+
+       
         Container(
           padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
           decoration: BoxDecoration(
