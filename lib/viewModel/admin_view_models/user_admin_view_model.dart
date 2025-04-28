@@ -132,7 +132,8 @@ class UserAdminViewModel extends BaseViewModel {
         var resDelete =
             await _apiService.deleteUser(SingleUser(userId: userId));
         if (resDelete.errorCode == "PA0004") {
-          debugPrint("User Deleted Sucess Fully");
+             _dialogService.showSuccess(text: "User Deleted Sucess Fully");
+          
         } else {
           await _dialogService.showApiError(
               resDelete.data.status.toString(),

@@ -23,7 +23,6 @@ import '../../models/request_models/animalType_request.dart';
 import '../../models/request_models/animal_breed.dart';
 import '../../models/response_models/animal_Type.dart';
 import '../../models/response_models/get_disability.dart';
-import 'user_admin_view_model.dart';
 
 class GeneralConfigViewModel extends BaseViewModel {
   NavigationService get _navigationService => locator<NavigationService>();
@@ -32,7 +31,6 @@ class GeneralConfigViewModel extends BaseViewModel {
   GlobalService get _globalService => locator<GlobalService>();
   PetViewModel get _petViewModel => locator<PetViewModel>();
 
-  UserAdminViewModel get _userModel => locator<UserAdminViewModel>();
   List<AnimalType>? animals;
   List<AnimalType>? filteredAnimals;
   AnimalType? animal;
@@ -141,7 +139,8 @@ class GeneralConfigViewModel extends BaseViewModel {
             await _apiService.deleteAnimalType(GetAnimalBreed(id: id));
         loading(false);
         if (deleteRes.errorCode == "PA0004") {
-          debugPrint("Animal Deleted Success Fully");
+          await _dialogService.showSuccess(text: "Animal Deleted Successfully");
+
           await getPets();
           showSearch = true;
           notifyListeners();
@@ -167,7 +166,8 @@ class GeneralConfigViewModel extends BaseViewModel {
           .updateAnimalType(UpdateAnimal(animalId: id, name: name));
       loading(false);
       if (updateRes.errorCode == "PA0004") {
-        debugPrint("Animal Updated Success Fully");
+        await _dialogService.showSuccess(text: "Animal Updated Successfully");
+
         await getPets();
         showSearch = true;
         notifyListeners();
@@ -194,7 +194,8 @@ class GeneralConfigViewModel extends BaseViewModel {
 
         // Check response for bulk addition if needed
         if (addAnimalRes.errorCode == "PA0004") {
-          debugPrint("Animals Added Successfully");
+          await _dialogService.showSuccess(text: "Animal Added Successfully");
+
           await getPets();
           showSearch = true;
           notifyListeners();
@@ -209,7 +210,8 @@ class GeneralConfigViewModel extends BaseViewModel {
             await _apiService.addAnimalType(AddAnimalType(name: name));
 
         if (addAnimalRes.errorCode == "PA0004") {
-          debugPrint("Animal Added Successfully");
+          await _dialogService.showSuccess(text: "Animal Added Successfully");
+
           await getPets();
           showSearch = true;
           notifyListeners();
@@ -315,7 +317,9 @@ class GeneralConfigViewModel extends BaseViewModel {
           animalId: animalId ?? "", breedId: breedId ?? "", name: breedName));
       loading(false);
       if (updateRes.errorCode == "PA0004") {
-        debugPrint("Animal Updated Success Fully");
+        await _dialogService.showSuccess(
+            text: "Animal Breed Updated Successfully");
+
         await getBreeds();
         showSearch = true;
         notifyListeners();
@@ -348,7 +352,9 @@ class GeneralConfigViewModel extends BaseViewModel {
             .deleteAnimalBreed(BreedType(breedId: id, name: breedName ?? ""));
         loading(false);
         if (deleteRes.errorCode == "PA0004") {
-          debugPrint("Animal Deleted Success Fully");
+          await _dialogService.showSuccess(
+              text: "Animal Breed Deleted Successfully");
+
           await getBreeds();
           showSearch = true;
           notifyListeners();
@@ -385,7 +391,8 @@ class GeneralConfigViewModel extends BaseViewModel {
               AddAnimalBreed(animalId: animalId!, names: breedObjects));
 
           if (addAnimalRes.errorCode == "PA0004") {
-            debugPrint("Animals Added Successfully");
+            await _dialogService.showSuccess(
+                text: "Animal Breed Added Successfully");
             await getPets();
             showSearch = true;
             notifyListeners();
@@ -400,7 +407,9 @@ class GeneralConfigViewModel extends BaseViewModel {
               AddAnimalBreed(animalId: animalId ?? "", name: name));
 
           if (addBreedRes.errorCode == "PA0004") {
-            debugPrint("Animal Added Successfully");
+            await _dialogService.showSuccess(
+                text: "Animal Breed Added Successfully");
+
             await getPets();
             showSearch = true;
             notifyListeners();
@@ -507,7 +516,9 @@ class GeneralConfigViewModel extends BaseViewModel {
             await _apiService.deleteVaccine(SingleVaccine(vaccineId: id));
         loading(false);
         if (deleteRes.errorCode == "PA0004") {
-          debugPrint("Animal Deleted Success Fully");
+          await _dialogService.showSuccess(
+              text: "Vaccines Deleted Success Fully");
+
           await getVaccinations();
           showSearch = true;
           notifyListeners();
@@ -537,6 +548,7 @@ class GeneralConfigViewModel extends BaseViewModel {
       ));
       loading(false);
       if (updateRes.errorCode == "PA0004") {
+        await _dialogService.showSuccess(text: "Vaccines Updated Successfully");
         await getVaccinations();
         showSearch = true;
         notifyListeners();
@@ -571,7 +583,8 @@ class GeneralConfigViewModel extends BaseViewModel {
               description: description));
 
           if (addAnimalRes.errorCode == "PA0004") {
-            debugPrint("Animals Added Successfully");
+            await _dialogService.showSuccess(
+                text: "Vaccines Added Successfully");
             await getVaccinations();
             showSearch = true;
             notifyListeners();
@@ -586,7 +599,8 @@ class GeneralConfigViewModel extends BaseViewModel {
               .addVaccine(AddInBulk(animalId: animalId ?? "", name: name));
 
           if (addBreedRes.errorCode == "PA0004") {
-            debugPrint("Animal Added Successfully");
+            await _dialogService.showSuccess(
+                text: "Vaccines Added Successfully");
             await getVaccinations();
             showSearch = true;
             notifyListeners();
@@ -605,8 +619,6 @@ class GeneralConfigViewModel extends BaseViewModel {
     }
   }
 
-
-  
 //====================================================GetDiseases=======================================>
 
   List<Disease>? filteredDisease;
@@ -614,8 +626,7 @@ class GeneralConfigViewModel extends BaseViewModel {
   String? diseaseId;
   String? diseaseName;
 
-
-Future<void> getDiseases() async {
+  Future<void> getDiseases() async {
     try {
       loading(true);
       var diseaseRes = await _apiService.getDiseases();
@@ -662,7 +673,8 @@ Future<void> getDiseases() async {
     filteredDisease = List.from(diseases ?? []);
     notifyListeners();
   }
-void filteredDiseases(String pattern) {
+
+  void filteredDiseases(String pattern) {
     if (pattern.trim().isEmpty) {
       filteredDisease = List.from(diseases ?? []);
     } else {
@@ -672,6 +684,7 @@ void filteredDiseases(String pattern) {
     }
     notifyListeners();
   }
+
   void filteredSelectionDisease(String name) {
     selectedAnimal = name;
     if (name.trim().isEmpty) {
@@ -695,7 +708,9 @@ void filteredDiseases(String pattern) {
           // 🔥 Create a list of AddAnimalBreed objects from breed names
           List<AddInBulk> diseaseObject = namesList.map((diseaseName) {
             return AddInBulk(
-                animalId: animalId!, name: diseaseName, description: description);
+                animalId: animalId!,
+                name: diseaseName,
+                description: description);
           }).toList();
 
           // 👇 Pass this as the `names` (which is actually 'breeds') parameter
@@ -705,8 +720,8 @@ void filteredDiseases(String pattern) {
               description: description));
 
           if (addAnimalRes.errorCode == "PA0004") {
-            debugPrint("Animals Added Successfully");
-           await getDiseases();
+            await _dialogService.showSuccess(text: "Animal Added Successfully");
+            await getDiseases();
             showSearch = true;
             notifyListeners();
           } else {
@@ -720,7 +735,8 @@ void filteredDiseases(String pattern) {
               .addDisease(AddInBulk(animalId: animalId ?? "", name: name));
 
           if (addDiseaseRes.errorCode == "PA0004") {
-            debugPrint("Animal Added Successfully");
+            await _dialogService.showSuccess(text: "Animal Added Successfully");
+
             await getDiseases();
             showSearch = true;
             notifyListeners();
@@ -739,7 +755,7 @@ void filteredDiseases(String pattern) {
     }
   }
 
-   void updateDisease(String diseaseName, String description) async {
+  void updateDisease(String diseaseName, String description) async {
     try {
       loading(true, loadingText: "Updating Disease");
       var updateRes = await _apiService.updateDisease(Disease(
@@ -773,7 +789,8 @@ void filteredDiseases(String pattern) {
             await _apiService.deleteDisease(SingleDisease(diseaseId: id));
         loading(false);
         if (deleteRes.errorCode == "PA0004") {
-          debugPrint("Animal Deleted Success Fully");
+          _dialogService.showSuccess(text: "Disease Deleted Success Fully");
+
           await getDiseases();
           showSearch = true;
           notifyListeners();
@@ -798,8 +815,7 @@ void filteredDiseases(String pattern) {
   String? disabilityId;
   String? disabilityName;
 
-
-Future<void> getDisabilities() async {
+  Future<void> getDisabilities() async {
     try {
       loading(true);
       var disabilityRes = await _apiService.getDisability();
@@ -846,7 +862,8 @@ Future<void> getDisabilities() async {
     filteredDisability = List.from(disabilities ?? []);
     notifyListeners();
   }
-void filteredDisabilities(String pattern) {
+
+  void filteredDisabilities(String pattern) {
     if (pattern.trim().isEmpty) {
       filteredDisability = List.from(disabilities ?? []);
     } else {
@@ -856,6 +873,7 @@ void filteredDisabilities(String pattern) {
     }
     notifyListeners();
   }
+
   void filteredSelectionDisabilities(String name) {
     selectedAnimal = name;
     if (name.trim().isEmpty) {
@@ -879,7 +897,9 @@ void filteredDisabilities(String pattern) {
           // 🔥 Create a list of AddAnimalBreed objects from breed names
           List<AddInBulk> diseaseObject = namesList.map((disabilityName) {
             return AddInBulk(
-                animalId: animalId!, name: disabilityName, description: description);
+                animalId: animalId!,
+                name: disabilityName,
+                description: description);
           }).toList();
 
           // 👇 Pass this as the `names` (which is actually 'breeds') parameter
@@ -889,8 +909,9 @@ void filteredDisabilities(String pattern) {
               description: description));
 
           if (addAnimalRes.errorCode == "PA0004") {
-            debugPrint("Animals Added Successfully");
-           await getDisabilities();
+            _dialogService.showSuccess(
+                text: "Disabilities Added Successfully SuccessFully");
+            await getDisabilities();
             showSearch = true;
             notifyListeners();
           } else {
@@ -904,7 +925,9 @@ void filteredDisabilities(String pattern) {
               .addDisability(AddInBulk(animalId: animalId ?? "", name: name));
 
           if (addDiseaseRes.errorCode == "PA0004") {
-            debugPrint("Animal Added Successfully");
+            _dialogService.showSuccess(
+                text: "Disabilities Added Successfully SuccessFully");
+
             await getDisabilities();
             showSearch = true;
             notifyListeners();
@@ -923,7 +946,7 @@ void filteredDisabilities(String pattern) {
     }
   }
 
-   void updateDisability(String disabilityName, String description) async {
+  void updateDisability(String disabilityName, String description) async {
     try {
       loading(true, loadingText: "Updating Disease");
       var updateRes = await _apiService.updateDisability(Disability(
@@ -952,12 +975,12 @@ void filteredDisabilities(String pattern) {
       bool res = await _dialogService.showAlertDialog(
           Message(description: "Do you Really Want To Delete This Vaccine"));
       if (res) {
-        loading(true, loadingText: "Deleting Vaccine");
-        var deleteRes =
-            await _apiService.deleteDisability(SingleDisability(disabilityId: id));
+        loading(true, loadingText: "Deleting Disability");
+        var deleteRes = await _apiService
+            .deleteDisability(SingleDisability(disabilityId: id));
         loading(false);
         if (deleteRes.errorCode == "PA0004") {
-          debugPrint("Animal Deleted Success Fully");
+          _dialogService.showSuccess(text: "Deleted Disability SuccessFully");
           await getDiseases();
           showSearch = true;
           notifyListeners();

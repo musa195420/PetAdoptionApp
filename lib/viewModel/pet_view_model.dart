@@ -221,6 +221,8 @@ class PetViewModel extends BaseViewModel {
   }
 
   Future<void> addPet(String name, int age, String description) async {
+    try{
+      
     var addpetRes = await _apiService.addPet(PetRequest(
       donorId: _globalService.getuser()!.userId,
       name: name,
@@ -236,12 +238,21 @@ class PetViewModel extends BaseViewModel {
       if (path != null) {
         _uploadPetImage(path!, pet.petId!);
       }
+      _dialogService.showSuccess(text: "Pet Added SuccessFully");
     } else {
       await _dialogService.showApiError(
         addpetRes.data.status.toString(),
         addpetRes.data.message.toString(),
         addpetRes.data.error.toString(),
       );
+    }
+    }
+    catch(e)
+    {
+       loading(false);
+ debugPrint(e.toString());
+    }finally{
+      loading(false);
     }
   }
 

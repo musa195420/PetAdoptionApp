@@ -152,6 +152,7 @@ class SecuremeetupAdminViewModel extends BaseViewModel {
 
         await _updateImages(secure.meetupId!);
         await getSecureMeetups();
+           _dialogService.showSuccess(text: "Secure Updated Success Fully");
       } else {
         await _dialogService.showApiError(updateRes.data.status.toString(),
             updateRes.data.message.toString(), updateRes.data.error.toString());

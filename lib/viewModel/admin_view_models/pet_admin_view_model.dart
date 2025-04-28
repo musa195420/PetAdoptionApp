@@ -156,7 +156,7 @@ class PetAdminViewModel extends BaseViewModel {
       if (res) {
         var resDelete = await _apiService.deletePet(SinglePet(petId: petId));
         if (resDelete.errorCode == "PA0004") {
-          debugPrint("User Deleted Sucess Fully");
+            _dialogService.showSuccess(text: "Deleted Pet SuccessFully");
         } else {
           await _dialogService.showApiError(
               resDelete.data.status.toString(),
@@ -201,7 +201,8 @@ class PetAdminViewModel extends BaseViewModel {
       ));
 
       if (updatePetrRes.errorCode == "PA0004") {
-        debugPrint("User Updated Success Fully");
+        _dialogService.showSuccess(text: "Updated Pet SuccessFully");
+        
       if(path!=null)
       {
         updatepetImage(pet!.petId);
