@@ -70,9 +70,7 @@ class StartupViewModel extends BaseViewModel {
             }
           } else {
             await _dialogService.showApiError(
-                refreshRes.data.status.toString(),
-                refreshRes.data.message.toString(),
-                refreshRes.data.error.toString());
+                refreshRes.data);
             await logout();
             await _navigationService.pushNamedAndRemoveUntil(
               Routes.login,
@@ -154,7 +152,7 @@ _globalService.setuser(userResponse);
         case "Donor":
           {
             _navigationService.pushNamedAndRemoveUntil(
-              Routes.petpage,
+              Routes.home,
               args: TransitionType.fade,
             );
           }

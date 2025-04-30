@@ -2020,7 +2020,6 @@ class APIService implements IAPIService {
     try {
       var response =
           await _httpService.patchData("api/secureMeetup", secure.toJson());
-      var data = secure.toJson();
       ApiResponse res = ApiResponse.fromJson(json.decode(response.body));
       if (response.statusCode == 200) {
         if (res.success ?? false) {

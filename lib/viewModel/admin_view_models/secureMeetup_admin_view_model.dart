@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:petadoption/helpers/locator.dart';
 import 'package:petadoption/models/message.dart';
-import 'package:petadoption/models/request_models/delete_user.dart';
 import 'package:petadoption/models/request_models/proof_image.dart';
 import 'package:petadoption/models/request_models/single_pet.dart';
 import 'package:petadoption/models/response_models/meetup.dart';
-import 'package:petadoption/models/response_models/user_profile.dart';
 import 'package:petadoption/services/api_service.dart';
 import 'package:petadoption/services/dialog_service.dart';
 import 'package:petadoption/services/global_service.dart';
@@ -15,10 +13,8 @@ import 'package:petadoption/viewModel/base_view_model.dart';
 import 'package:petadoption/views/modals/admin_modals/meetup_edit_modal.dart';
 import 'package:petadoption/views/modals/admin_modals/secure_edit_modal.dart';
 
-import '../../models/error_models/error_reponse.dart';
 import '../../models/response_models/pet_response.dart';
 import '../../models/response_models/secure_meetup.dart';
-import '../../views/modals/admin_modals/donor_edit_modal.dart';
 import '../../views/modals/admin_modals/pet_edit_modal.dart';
 import 'user_admin_view_model.dart';
 
@@ -75,9 +71,7 @@ class SecuremeetupAdminViewModel extends BaseViewModel {
         filteredSecure = List.from(secureMeetups!);
       } else {
         await _dialogService.showApiError(
-          secureRes.data.status.toString(),
-          secureRes.data.message.toString(),
-          secureRes.data.error.toString(),
+          secureRes.data
         );
       }
     } catch (e, s) {
@@ -118,9 +112,7 @@ class SecuremeetupAdminViewModel extends BaseViewModel {
           debugPrint("SecureMeetup Deleted Sucess Fully");
         } else {
           await _dialogService.showApiError(
-              resDelete.data.status.toString(),
-              resDelete.data.message.toString(),
-              resDelete.data.error.toString());
+              resDelete.data);
         }
       }
     } catch (e) {
@@ -154,8 +146,7 @@ class SecuremeetupAdminViewModel extends BaseViewModel {
         await getSecureMeetups();
            _dialogService.showSuccess(text: "Secure Updated Success Fully");
       } else {
-        await _dialogService.showApiError(updateRes.data.status.toString(),
-            updateRes.data.message.toString(), updateRes.data.error.toString());
+        await _dialogService.showApiError(updateRes.data);
       }
     } catch (e) {
       loading(false);
@@ -183,9 +174,8 @@ class SecuremeetupAdminViewModel extends BaseViewModel {
         if (res.errorCode == "PA0004") {
           debugPrint("Secure Updated Success Fully");
         } else {
-          ErrorResponse error = res.data as ErrorResponse;
-          await _dialogService.showApiError(error.status.toString(),
-              error.message.toString(), error.error.toString());
+         
+          await _dialogService.showApiError(res.data);
         }
       }
     } catch (e) {
@@ -286,9 +276,7 @@ loading(true,loadingText: "Getting Meetup ....");
          await _navigationService.pushModalBottom(Routes.meetup_edit_modal,data: MeetupEdit(meetup: meets!));
           debugPrint("Secure Updated Success Fully");
         } else {
-          ErrorResponse error = res.data as ErrorResponse;
-          await _dialogService.showApiError(error.status.toString(),
-              error.message.toString(), error.error.toString());
+            await _dialogService.showApiError(res.data);
         }
 }catch(e)
 {

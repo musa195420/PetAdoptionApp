@@ -41,9 +41,7 @@ void setisActive(bool isActive)
         filteredAdopters = List.from(adopters!);
       } else {
         await _dialogService.showApiError(
-          adoptersRes.data.status.toString(),
-          adoptersRes.data.message.toString(),
-          adoptersRes.data.error.toString(),
+         adoptersRes.data
         );
       }
     } catch (e, s) {
@@ -91,9 +89,7 @@ void setisActive(bool isActive)
    }
    else{
      await _dialogService.showApiError(
-                resDelete.data.status.toString(),
-                resDelete.data.message.toString(),
-                resDelete.data.error.toString());
+                resDelete.data);
    }
    }
   
@@ -123,9 +119,7 @@ void setisActive(bool isActive)
     }
     else{
       await _dialogService.showApiError(
-                updateUserRes.data.status.toString(),
-                updateUserRes.data.message.toString(),
-                updateUserRes.data.error.toString());
+                updateUserRes.data);
 
     }
    }

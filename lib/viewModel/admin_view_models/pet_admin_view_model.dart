@@ -4,7 +4,6 @@ import 'package:petadoption/helpers/locator.dart';
 import 'package:petadoption/models/message.dart';
 import 'package:petadoption/models/request_models/single_pet.dart';
 import 'package:petadoption/models/response_models/pet_response.dart';
-import 'package:petadoption/models/response_models/secure_meetup.dart';
 import 'package:petadoption/services/api_service.dart';
 import 'package:petadoption/services/dialog_service.dart';
 import 'package:petadoption/services/global_service.dart';
@@ -111,9 +110,7 @@ class PetAdminViewModel extends BaseViewModel {
         filteredPets = List.from(pets!);
       } else {
         await _dialogService.showApiError(
-          petRes.data.status.toString(),
-          petRes.data.message.toString(),
-          petRes.data.error.toString(),
+          petRes.data
         );
       }
     } catch (e, s) {
@@ -159,9 +156,7 @@ class PetAdminViewModel extends BaseViewModel {
             _dialogService.showSuccess(text: "Deleted Pet SuccessFully");
         } else {
           await _dialogService.showApiError(
-              resDelete.data.status.toString(),
-              resDelete.data.message.toString(),
-              resDelete.data.error.toString());
+              resDelete.data);
         }
       }
     } catch (e) {
@@ -210,9 +205,7 @@ class PetAdminViewModel extends BaseViewModel {
 
       } else {
         await _dialogService.showApiError(
-            updatePetrRes.data.status.toString(),
-            updatePetrRes.data.message.toString(),
-            updatePetrRes.data.error.toString());
+            updatePetrRes.data);
       }
     } catch (e) {
       loading(false);

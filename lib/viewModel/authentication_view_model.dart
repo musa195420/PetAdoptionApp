@@ -11,6 +11,7 @@ import 'package:petadoption/services/navigation_service.dart';
 import 'package:petadoption/services/pref_service.dart';
 import 'package:petadoption/viewModel/base_view_model.dart';
 
+import '../models/error_models/error_reponse.dart';
 import '../models/hive_models/user.dart';
 import '../models/request_models/login_request.dart';
 import '../models/request_models/refresh_token_request.dart';
@@ -85,21 +86,17 @@ class AuthenticationViewModel extends BaseViewModel {
             _gotoNextPage(userResponse);
           } else {
             await _dialogService.showApiError(
-                loginRes.data.status.toString(),
-                loginRes.data.message.toString(),
-                loginRes.data.error.toString());
+                loginRes.data);
 
             _globalService.log('Client ($email) Login Fail');
           }
         } else {
-          await _dialogService.showApiError(loginRes.data.status.toString(),
-              loginRes.data.message.toString(), loginRes.data.error.toString());
+          await _dialogService.showApiError(loginRes.data);
 
           _globalService.log('Client ($email) Login Fail');
         }
       } else {
-        await _dialogService.showApiError(loginRes.data.status.toString(),
-            loginRes.data.message.toString(), loginRes.data.error.toString());
+        await _dialogService.showApiError(loginRes.data);
         _globalService.log('Client ($email) Login Fail');
       }
     } catch (e, s) {
@@ -121,8 +118,7 @@ class AuthenticationViewModel extends BaseViewModel {
           return response;
         }
       }
-      await _dialogService.showApiError(refreshRes.data.status.toString(),
-          refreshRes.data.message.toString(), refreshRes.data.error.toString());
+      await _dialogService.showApiError(refreshRes.data);
     } catch (e, s) {
       _globalService.logError(
           "Error Occured When Renew User Token", e.toString(), s);
@@ -170,7 +166,7 @@ class AuthenticationViewModel extends BaseViewModel {
         case "Donor":
           {
             _navigationService.pushNamedAndRemoveUntil(
-              Routes.petpage,
+              Routes.home,
               args: TransitionType.fade,
             );
           }

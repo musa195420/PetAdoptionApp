@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:petadoption/models/health_info.dart';
-import 'package:petadoption/models/response_models/secure_meetup.dart';
 import 'package:petadoption/views/admin_views/admin.dart';
 import 'package:petadoption/views/admin_views/adopter_admin.dart';
 import 'package:petadoption/views/admin_views/donor_admin.dart';
@@ -456,7 +455,7 @@ class RouteManager {
           return PageRouteBuilder(
             pageBuilder: (BuildContext context, Animation<double> animation,
                 Animation<double> secondaryAnimation) {
-              return HomePage();
+              return Home();
             },
             transitionsBuilder: (BuildContext context,
                 Animation<double> animation,

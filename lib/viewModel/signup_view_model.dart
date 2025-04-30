@@ -147,8 +147,7 @@ String deviceId="";
           );
         }
       } else {
-        await _dialogService.showApiError(signupRes.data.status.toString(),
-            signupRes.data.message.toString(), signupRes.data.error.toString());
+        await _dialogService.showApiError(signupRes.data);
         _globalService.log('Client ($email) Login Fail');
       }
     } catch (e, s) {
@@ -171,9 +170,7 @@ String deviceId="";
         }
       } else {
         await _dialogService.showApiError(
-            refreshRes.data.status.toString(),
-            refreshRes.data.message.toString(),
-            refreshRes.data.error.toString());
+            refreshRes.data);
       }
     } catch (e, s) {
       _globalService.logError(
@@ -222,9 +219,7 @@ Future<void> _setnextConfig(String name) async {
             debugPrint(res.data.toString());
           } else {
             await _dialogService.showApiError(
-              res.data.status.toString(),
-              res.data.message.toString(),
-              res.data.error.toString(),
+              res.data
             );
           }
         }
@@ -242,9 +237,7 @@ Future<void> _setnextConfig(String name) async {
             debugPrint(res.data.toString());
           } else {
             await _dialogService.showApiError(
-              res.data.status.toString(),
-              res.data.message.toString(),
-              res.data.error.toString(),
+              res.data
             );
           }
         }

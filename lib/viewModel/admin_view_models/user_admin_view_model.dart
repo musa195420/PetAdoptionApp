@@ -74,9 +74,7 @@ class UserAdminViewModel extends BaseViewModel {
         filteredUsers = List.from(users!);
       } else {
         await _dialogService.showApiError(
-          usersRes.data.status.toString(),
-          usersRes.data.message.toString(),
-          usersRes.data.error.toString(),
+          usersRes.data
         );
       }
     } catch (e, s) {
@@ -136,9 +134,7 @@ class UserAdminViewModel extends BaseViewModel {
           
         } else {
           await _dialogService.showApiError(
-              resDelete.data.status.toString(),
-              resDelete.data.message.toString(),
-              resDelete.data.error.toString());
+              resDelete.data);
         }
       }
     } catch (e) {
@@ -168,9 +164,7 @@ class UserAdminViewModel extends BaseViewModel {
         }
       } else {
         await _dialogService.showApiError(
-            updateUserRes.data.status.toString(),
-            updateUserRes.data.message.toString(),
-            updateUserRes.data.error.toString());
+            updateUserRes.data);
       }
     } catch (e) {
       loading(false);

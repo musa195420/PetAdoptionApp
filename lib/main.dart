@@ -3,6 +3,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:petadoption/services/db_service.dart';
@@ -44,7 +45,7 @@ void main() async {
 
       await configSettings();
       HttpOverrides.global = CustomHttpOverrides();
-
+ SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
       WidgetsFlutterBinding.ensureInitialized();
       runApp(const MyApp());
     },

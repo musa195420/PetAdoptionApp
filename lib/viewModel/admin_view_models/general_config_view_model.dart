@@ -56,9 +56,7 @@ class GeneralConfigViewModel extends BaseViewModel {
         filteredAnimals = List.from(animals!);
       } else {
         await _dialogService.showApiError(
-          animalRes.data.status.toString(),
-          animalRes.data.message.toString(),
-          animalRes.data.error.toString(),
+          animalRes.data
         );
       }
     } catch (e, s) {
@@ -146,9 +144,7 @@ class GeneralConfigViewModel extends BaseViewModel {
           notifyListeners();
         } else {
           await _dialogService.showApiError(
-              deleteRes.data.status.toString(),
-              deleteRes.data.message.toString(),
-              deleteRes.data.error.toString());
+              deleteRes.data);
         }
       }
     } catch (e) {
@@ -172,8 +168,7 @@ class GeneralConfigViewModel extends BaseViewModel {
         showSearch = true;
         notifyListeners();
       } else {
-        await _dialogService.showApiError(updateRes.data.status.toString(),
-            updateRes.data.message.toString(), updateRes.data.error.toString());
+        await _dialogService.showApiError(updateRes.data);
       }
     } catch (e) {
       debugPrint("Error General Config viewModel =${e.toString()}");
@@ -201,9 +196,7 @@ class GeneralConfigViewModel extends BaseViewModel {
           notifyListeners();
         } else {
           await _dialogService.showApiError(
-              addAnimalRes.data.status.toString(),
-              addAnimalRes.data.message.toString(),
-              addAnimalRes.data.error.toString());
+              addAnimalRes.data);
         }
       } else {
         var addAnimalRes =
@@ -217,9 +210,7 @@ class GeneralConfigViewModel extends BaseViewModel {
           notifyListeners();
         } else {
           await _dialogService.showApiError(
-              addAnimalRes.data.status.toString(),
-              addAnimalRes.data.message.toString(),
-              addAnimalRes.data.error.toString());
+              addAnimalRes.data);
         }
       }
     } catch (e) {
@@ -256,9 +247,7 @@ class GeneralConfigViewModel extends BaseViewModel {
         }
       } else {
         await _dialogService.showApiError(
-          breedRes.data.status.toString(),
-          breedRes.data.message.toString(),
-          breedRes.data.error.toString(),
+          breedRes.data
         );
       }
     } catch (e, s) {
@@ -324,8 +313,7 @@ class GeneralConfigViewModel extends BaseViewModel {
         showSearch = true;
         notifyListeners();
       } else {
-        await _dialogService.showApiError(updateRes.data.status.toString(),
-            updateRes.data.message.toString(), updateRes.data.error.toString());
+        await _dialogService.showApiError(updateRes.data);
       }
     } catch (e) {
       debugPrint("Error General Config viewModel =${e.toString()}");
@@ -360,9 +348,7 @@ class GeneralConfigViewModel extends BaseViewModel {
           notifyListeners();
         } else {
           await _dialogService.showApiError(
-              deleteRes.data.status.toString(),
-              deleteRes.data.message.toString(),
-              deleteRes.data.error.toString());
+              deleteRes.data);
         }
       }
     } catch (e) {
@@ -398,9 +384,7 @@ class GeneralConfigViewModel extends BaseViewModel {
             notifyListeners();
           } else {
             await _dialogService.showApiError(
-                addAnimalRes.data.status.toString(),
-                addAnimalRes.data.message.toString(),
-                addAnimalRes.data.error.toString());
+                addAnimalRes.data);
           }
         } else {
           var addBreedRes = await _apiService.addAnimalBreed(
@@ -415,9 +399,7 @@ class GeneralConfigViewModel extends BaseViewModel {
             notifyListeners();
           } else {
             await _dialogService.showApiError(
-                addBreedRes.data.status.toString(),
-                addBreedRes.data.message.toString(),
-                addBreedRes.data.error.toString());
+                addBreedRes.data);
           }
         }
       }
@@ -464,9 +446,7 @@ class GeneralConfigViewModel extends BaseViewModel {
         }
       } else {
         await _dialogService.showApiError(
-          vaccineRes.data.status.toString(),
-          vaccineRes.data.message.toString(),
-          vaccineRes.data.error.toString(),
+          vaccineRes.data
         );
       }
     } catch (e, s) {
@@ -524,9 +504,7 @@ class GeneralConfigViewModel extends BaseViewModel {
           notifyListeners();
         } else {
           await _dialogService.showApiError(
-              deleteRes.data.status.toString(),
-              deleteRes.data.message.toString(),
-              deleteRes.data.error.toString());
+              deleteRes.data);
         }
       }
     } catch (e) {
@@ -553,8 +531,7 @@ class GeneralConfigViewModel extends BaseViewModel {
         showSearch = true;
         notifyListeners();
       } else {
-        await _dialogService.showApiError(updateRes.data.status.toString(),
-            updateRes.data.message.toString(), updateRes.data.error.toString());
+        await _dialogService.showApiError(updateRes.data);
       }
     } catch (e) {
       debugPrint("Error General Config viewModel =${e.toString()}");
@@ -590,9 +567,7 @@ class GeneralConfigViewModel extends BaseViewModel {
             notifyListeners();
           } else {
             await _dialogService.showApiError(
-                addAnimalRes.data.status.toString(),
-                addAnimalRes.data.message.toString(),
-                addAnimalRes.data.error.toString());
+                addAnimalRes.data);
           }
         } else {
           var addBreedRes = await _apiService
@@ -606,9 +581,7 @@ class GeneralConfigViewModel extends BaseViewModel {
             notifyListeners();
           } else {
             await _dialogService.showApiError(
-                addBreedRes.data.status.toString(),
-                addBreedRes.data.message.toString(),
-                addBreedRes.data.error.toString());
+                addBreedRes.data);
           }
         }
       }
@@ -645,9 +618,7 @@ class GeneralConfigViewModel extends BaseViewModel {
         }
       } else {
         await _dialogService.showApiError(
-          diseaseRes.data.status.toString(),
-          diseaseRes.data.message.toString(),
-          diseaseRes.data.error.toString(),
+          diseaseRes.data
         );
       }
     } catch (e, s) {
@@ -726,9 +697,7 @@ class GeneralConfigViewModel extends BaseViewModel {
             notifyListeners();
           } else {
             await _dialogService.showApiError(
-                addAnimalRes.data.status.toString(),
-                addAnimalRes.data.message.toString(),
-                addAnimalRes.data.error.toString());
+                addAnimalRes.data);
           }
         } else {
           var addDiseaseRes = await _apiService
@@ -742,9 +711,7 @@ class GeneralConfigViewModel extends BaseViewModel {
             notifyListeners();
           } else {
             await _dialogService.showApiError(
-                addDiseaseRes.data.status.toString(),
-                addDiseaseRes.data.message.toString(),
-                addDiseaseRes.data.error.toString());
+                addDiseaseRes.data);
           }
         }
       }
@@ -770,8 +737,7 @@ class GeneralConfigViewModel extends BaseViewModel {
         showSearch = true;
         notifyListeners();
       } else {
-        await _dialogService.showApiError(updateRes.data.status.toString(),
-            updateRes.data.message.toString(), updateRes.data.error.toString());
+        await _dialogService.showApiError(updateRes.data);
       }
     } catch (e) {
       debugPrint("Error General Config viewModel =${e.toString()}");
@@ -796,9 +762,7 @@ class GeneralConfigViewModel extends BaseViewModel {
           notifyListeners();
         } else {
           await _dialogService.showApiError(
-              deleteRes.data.status.toString(),
-              deleteRes.data.message.toString(),
-              deleteRes.data.error.toString());
+              deleteRes.data);
         }
       }
     } catch (e) {
@@ -834,9 +798,7 @@ class GeneralConfigViewModel extends BaseViewModel {
         }
       } else {
         await _dialogService.showApiError(
-          disabilityRes.data.status.toString(),
-          disabilityRes.data.message.toString(),
-          disabilityRes.data.error.toString(),
+          disabilityRes.data
         );
       }
     } catch (e, s) {
@@ -916,9 +878,7 @@ class GeneralConfigViewModel extends BaseViewModel {
             notifyListeners();
           } else {
             await _dialogService.showApiError(
-                addAnimalRes.data.status.toString(),
-                addAnimalRes.data.message.toString(),
-                addAnimalRes.data.error.toString());
+                addAnimalRes.data);
           }
         } else {
           var addDiseaseRes = await _apiService
@@ -933,9 +893,7 @@ class GeneralConfigViewModel extends BaseViewModel {
             notifyListeners();
           } else {
             await _dialogService.showApiError(
-                addDiseaseRes.data.status.toString(),
-                addDiseaseRes.data.message.toString(),
-                addDiseaseRes.data.error.toString());
+                addDiseaseRes.data);
           }
         }
       }
@@ -961,8 +919,7 @@ class GeneralConfigViewModel extends BaseViewModel {
         showSearch = true;
         notifyListeners();
       } else {
-        await _dialogService.showApiError(updateRes.data.status.toString(),
-            updateRes.data.message.toString(), updateRes.data.error.toString());
+        await _dialogService.showApiError(updateRes.data);
       }
     } catch (e) {
       debugPrint("Error General Config viewModel =${e.toString()}");
@@ -986,9 +943,7 @@ class GeneralConfigViewModel extends BaseViewModel {
           notifyListeners();
         } else {
           await _dialogService.showApiError(
-              deleteRes.data.status.toString(),
-              deleteRes.data.message.toString(),
-              deleteRes.data.error.toString());
+              deleteRes.data);
         }
       }
     } catch (e) {

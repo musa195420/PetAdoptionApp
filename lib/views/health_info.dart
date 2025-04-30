@@ -74,7 +74,7 @@ class HealthInfo extends StatelessWidget {
                       ClipRRect(
                         borderRadius: BorderRadius.circular(10),
                         child: Image.asset(
-                          "assets/images/health.png",
+                          "assets/images/health_info.png",
                           width: 150,
                           height: 150,
                         ),

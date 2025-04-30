@@ -83,9 +83,7 @@ class PetViewModel extends BaseViewModel {
         }
       } else {
         await _dialogService.showApiError(
-          animalRes.data.status.toString(),
-          animalRes.data.message.toString(),
-          animalRes.data.error.toString(),
+          animalRes.data
         );
       }
     } catch (e, s) {
@@ -150,9 +148,7 @@ class PetViewModel extends BaseViewModel {
           }
         } else {
           await _dialogService.showApiError(
-            breedRes.data.status.toString(),
-            breedRes.data.message.toString(),
-            breedRes.data.error.toString(),
+            breedRes.data
           );
         }
       } else {
@@ -249,9 +245,7 @@ class PetViewModel extends BaseViewModel {
  
       } else {
         await _dialogService.showApiError(
-          addpetRes.data.status.toString(),
-          addpetRes.data.message.toString(),
-          addpetRes.data.error.toString(),
+          addpetRes.data
         );
       }
     } catch (e) {
@@ -268,9 +262,7 @@ class PetViewModel extends BaseViewModel {
       debugPrint(res.toString());
     } else {
       await _dialogService.showApiError(
-        res.data.status.toString(),
-        res.data.message.toString(),
-        res.data.error.toString(),
+        res.data
       );
     }
   }
@@ -324,9 +316,7 @@ class PetViewModel extends BaseViewModel {
           }
         } else {
           await _dialogService.showApiError(
-            res.data.status.toString(),
-            res.data.message.toString(),
-            res.data.error.toString(),
+            res.data
           );
         }
       } else {
@@ -388,9 +378,7 @@ class PetViewModel extends BaseViewModel {
           }
         } else {
           await _dialogService.showApiError(
-            res.data.status.toString(),
-            res.data.message.toString(),
-            res.data.error.toString(),
+            res.data
           );
         }
       } else {
@@ -452,9 +440,7 @@ class PetViewModel extends BaseViewModel {
           }
         } else {
           await _dialogService.showApiError(
-            res.data.status.toString(),
-            res.data.message.toString(),
-            res.data.error.toString(),
+            res.data
           );
         }
       } else {
@@ -500,9 +486,7 @@ class PetViewModel extends BaseViewModel {
           await _navigationService.pushNamedAndRemoveUntil(Routes.home, args: TransitionType.slideTop);
         } else {
           await _dialogService.showApiError(
-            res.data.status.toString(),
-            res.data.message.toString(),
-            res.data.error.toString(),
+            res.data
           );
         }
       } else {
