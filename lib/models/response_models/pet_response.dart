@@ -15,6 +15,7 @@ class PetResponse {
    String? animal;
    String? breed;
    String? userEmail;
+     String? location;
 
   PetResponse({
     required this.petId,
@@ -33,6 +34,7 @@ class PetResponse {
     this.animal,
     this.breed,
     this.userEmail,
+    this.location,
   });
 
   factory PetResponse.fromJson(Map<String, dynamic> json) {
@@ -53,6 +55,7 @@ class PetResponse {
       animal: json['animal'],
       breed: json['breed'],
       userEmail: json['user_email'],
+      location: json['location']
     );
   }
 
@@ -74,6 +77,7 @@ class PetResponse {
       'animal': animal,
       'breed': breed,
       'user_email': userEmail,
+      'location':location,
     };
   }
 }

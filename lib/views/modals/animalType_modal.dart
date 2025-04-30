@@ -6,6 +6,7 @@ import 'package:petadoption/custom_widgets/stateful_wrapper.dart';
 import '../../helpers/locator.dart';
 import '../../models/request_models/animalType_request.dart';
 import '../../services/api_service.dart';
+import '../../services/dialog_service.dart';
 
 dynamic formKey = GlobalKey<FormState>();
 
@@ -13,6 +14,7 @@ class AnimaltypeModal extends StatelessWidget {
   AnimaltypeModal({super.key});
   final scaffoldKey = GlobalKey<ScaffoldState>();
   IAPIService get _apiService => locator<IAPIService>();
+    IDialogService get _dialogService => locator< IDialogService>();
   final TextEditingController petController = TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -111,6 +113,11 @@ class AnimaltypeModal extends StatelessWidget {
           if (formKey.currentState!.validate()) {
             var addAnimalRes = await _apiService.addAnimalType(
                 AddAnimalType(name: petController.text.toString()));
+
+                if(addAnimalRes.errorCode=="PA0004")
+                {
+           await   _dialogService.showSuccess(text: "Animal Added Successfully");
+                }
                 
           }
         },

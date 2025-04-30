@@ -483,16 +483,19 @@ class PetViewModel extends BaseViewModel {
             .addHealthInfo(HealthInfoModel(petId: petId,vaccinationId: selectedVaccinationId,diseaseId: selectedDiseaseId,disabilityId: selectedDisabilityId));
 
         if (res.errorCode == "PA0004") {
-          await _navigationService.pushNamedAndRemoveUntil(Routes.home, args: TransitionType.slideTop);
+        
         } else {
+         
           await _dialogService.showApiError(
             res.data
           );
+           return;
         }
       } else {
         await _dialogService.showAlert(
             Message(description: "Please Select The All Info Again \n You migh Be Missing Something"));
         loading(false);
+         return;
       }
     } catch (e, s) {
         loading(false);
@@ -502,6 +505,7 @@ class PetViewModel extends BaseViewModel {
       debugPrint(e.toString());
     } finally {
       notifyListeners();
+        await _navigationService.pushNamedAndRemoveUntil(Routes.home, args: TransitionType.slideTop);
       loading(false);
     }
   }
