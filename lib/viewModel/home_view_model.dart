@@ -34,6 +34,7 @@ List<PetResponse>? filteredPets;
  Future<void> getPets() async {
     try {
       loading(true);
+      selectedAnimal="";
       var petRes = await _apiService.getPets();
 
        if (petRes.errorCode == "PA0004") {
@@ -65,6 +66,34 @@ List<PetResponse>? filteredPets;
   
 
 }
+
+void unfilterAnimals()
+{
+      filteredPets = List.from(pets ?? []);
+  
+}
+String  selectedAnimal ="";
+
+  void filteredSelection(String name) {
+    if(name==selectedAnimal)
+    {
+      selectedAnimal="";
+       unfilterAnimals();
+       notifyListeners();
+      return;
+    }
+    selectedAnimal = name;
+    if (name.trim().isEmpty) {
+    unfilterAnimals();
+    } else {
+      filteredPets = pets
+          ?.where((u) => u.animal!.toLowerCase().contains(name.toLowerCase()))
+          .toList();
+    }
+    notifyListeners();
+  }
+
+
 
 String getSvgs(String name)
 {

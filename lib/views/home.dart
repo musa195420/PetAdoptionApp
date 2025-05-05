@@ -72,7 +72,7 @@ class Home extends StatelessWidget {
           viewModel.tabIndex = index;
           pageController.jumpToPage(viewModel.tabIndex);
         },
-        padding: const EdgeInsets.only(left: 5, right: 5, bottom: 10),
+        padding: const EdgeInsets.only(left: 0, right: 0, bottom: 0),
         cornerRadius: const BorderRadius.only(
           topLeft: Radius.circular(8),
           topRight: Radius.circular(8),
