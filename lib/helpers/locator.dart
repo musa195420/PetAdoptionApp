@@ -22,54 +22,51 @@ import 'package:petadoption/viewModel/home_view_model.dart';
 import '../viewModel/admin_view_models/adopter_admin_view_model.dart';
 import '../viewModel/admin_view_models/donor_admin_view_model.dart';
 import '../viewModel/admin_view_models/user_admin_view_model.dart';
+import '../viewModel/detail_view_model.dart';
 import '../viewModel/pet_view_model.dart';
 import '../viewModel/signup_view_model.dart';
 import '../viewModel/startup_viewmodel.dart';
-
 
 GetIt locator = GetIt.instance;
 
 class LocatorInjector {
   static Future<void> setupLocator() async {
-   try{
-     locator.registerLazySingleton(() => GlobalService());
-    //locator.registerLazySingleton(() => ScheduleService());
-    locator.registerLazySingleton(() => NetworkService());
-     locator.registerLazySingleton(() => NavigationService());
-    locator.registerLazySingleton(() => PrefService());
-    locator.registerLazySingleton(() => HttpService());
-        locator.registerLazySingleton(() => LoggingService());
-    locator.registerLazySingleton<IAPIService>(() => APIService());
-      locator.registerLazySingleton<IErrorReportingService>(() => ErrorReportingService());
-    locator.registerLazySingleton<IDialogService>(() => DialogService());
-    
+    try {
+      locator.registerLazySingleton(() => GlobalService());
+      //locator.registerLazySingleton(() => ScheduleService());
+      locator.registerLazySingleton(() => NetworkService());
+      locator.registerLazySingleton(() => NavigationService());
+      locator.registerLazySingleton(() => PrefService());
+      locator.registerLazySingleton(() => HttpService());
+      locator.registerLazySingleton(() => LoggingService());
+      locator.registerLazySingleton<IAPIService>(() => APIService());
+      locator.registerLazySingleton<IErrorReportingService>(
+          () => ErrorReportingService());
+      locator.registerLazySingleton<IDialogService>(() => DialogService());
 
-
-    // ViewModels
-    // locator.registerLazySingleton(() => HomeViewModel());
-     locator.registerLazySingleton(() => AuthenticationViewModel());
+      // ViewModels
+      // locator.registerLazySingleton(() => HomeViewModel());
+      locator.registerLazySingleton(() => AuthenticationViewModel());
       locator.registerLazySingleton(() => SignupViewModel());
-       locator.registerLazySingleton(() => StartupViewModel());
-       locator.registerLazySingleton(() => HomeViewModel());
-   
-       locator.registerLazySingleton(() => PetViewModel());
-           locator.registerLazySingleton(() => AdminViewModel());
-             locator.registerLazySingleton(() => UserAdminViewModel());
-                 locator.registerLazySingleton(() => AdopterAdminViewModel());
-                  locator.registerLazySingleton(() => DonorAdminViewModel());
-                    locator.registerLazySingleton(() => PetAdminViewModel());
-                        locator.registerLazySingleton(() => GeneralConfigViewModel());
-                         locator.registerLazySingleton(() => SecuremeetupAdminViewModel());
-    
+      locator.registerLazySingleton(() => StartupViewModel());
+      locator.registerLazySingleton(() => HomeViewModel());
 
-    // Repos
-    
-    locator.registerLazySingleton<IHiveService<User>>(() => UserRepo());
-    //locator.registerLazySingleton<IHiveService<APIQueue>>(() => APIQueueRepo());
-    
-   }catch(e)
-   {
-    debugPrint("Error ==> ${e.toString()}");
-   }
+      locator.registerLazySingleton(() => PetViewModel());
+      locator.registerLazySingleton(() => AdminViewModel());
+      locator.registerLazySingleton(() => UserAdminViewModel());
+      locator.registerLazySingleton(() => AdopterAdminViewModel());
+      locator.registerLazySingleton(() => DonorAdminViewModel());
+      locator.registerLazySingleton(() => PetAdminViewModel());
+      locator.registerLazySingleton(() => GeneralConfigViewModel());
+      locator.registerLazySingleton(() => SecuremeetupAdminViewModel());
+      locator.registerLazySingleton(() => DetailViewModel());
+
+      // Repos
+
+      locator.registerLazySingleton<IHiveService<User>>(() => UserRepo());
+      //locator.registerLazySingleton<IHiveService<APIQueue>>(() => APIQueueRepo());
+    } catch (e) {
+      debugPrint("Error ==> ${e.toString()}");
+    }
   }
 }

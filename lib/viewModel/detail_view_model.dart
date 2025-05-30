@@ -4,23 +4,47 @@ import 'package:petadoption/services/api_service.dart';
 import 'package:petadoption/services/global_service.dart';
 import 'package:petadoption/viewModel/base_view_model.dart';
 import 'package:petadoption/viewModel/startup_viewmodel.dart';
-import 'package:petadoption/views/modals/detail_modal.dart';
 
+import '../models/hive_models/user.dart';
+import '../models/request_models/delete_user.dart';
+import '../models/request_models/userinforequest.dart';
 import '../services/dialog_service.dart';
 import '../services/navigation_service.dart';
 
-class HomeViewModel extends BaseViewModel {
+class DetailViewModel extends BaseViewModel {
   NavigationService get _navigationService => locator<NavigationService>();
   IDialogService get _dialogService => locator<IDialogService>();
   IAPIService get _apiService => locator<IAPIService>();
   GlobalService get _globalService => locator<GlobalService>();
   StartupViewModel get _startupViewModel => locator<StartupViewModel>();
-  final List<String> imagePaths = [
-    'assets/carousel/carousel1.png',
-    'assets/carousel/carousel2.png',
-    'assets/carousel/carousel3.png',
-    'assets/carousel/carousel4.png',
-  ];
+
+  PetResponse? pet;
+  User? user;
+
+  void goBack() async {
+    await _navigationService.pushNamedAndRemoveUntil(Routes.home,
+        args: TransitionType.slideLeft);
+  }
+
+  Future<void> getData(PetResponse pet) async {
+    this.pet = pet;
+    await getUser(pet.userEmail);
+  }
+
+  Future<void> getUser(String? userEmail) async {
+    if (userEmail != null) {
+      var userRes =
+          await _apiService.userInfo(UserInfoRequest(email: userEmail));
+
+      if (userRes.errorCode == "PA0004") {
+        user = userRes.data as User;
+        notifyListeners();
+      } else {
+        await _dialogService.showApiError(userRes.data);
+      }
+    }
+  }
+
   bool checkVersion = true;
   Future<void> logout() async {
     await _startupViewModel.logout();
@@ -33,7 +57,7 @@ class HomeViewModel extends BaseViewModel {
   Future<void> getPets() async {
     try {
       loading(true);
-      selectedAnimal = "";
+
       var petRes = await _apiService.getPets();
 
       if (petRes.errorCode == "PA0004") {
@@ -58,60 +82,5 @@ class HomeViewModel extends BaseViewModel {
       notifyListeners();
       loading(false);
     }
-  }
-
-  void unfilterAnimals() {
-    filteredPets = List.from(pets ?? []);
-  }
-
-  String selectedAnimal = "";
-
-  void filteredSelection(String name) {
-    if (name == selectedAnimal) {
-      selectedAnimal = "";
-      unfilterAnimals();
-      notifyListeners();
-      return;
-    }
-    selectedAnimal = name;
-    if (name.trim().isEmpty) {
-      unfilterAnimals();
-    } else {
-      filteredPets = pets
-          ?.where((u) => u.animal!.toLowerCase().contains(name.toLowerCase()))
-          .toList();
-    }
-    notifyListeners();
-  }
-
-  String getSvgs(String name) {
-    switch (name.toLowerCase()) {
-      case "cat":
-        return "assets/svg/cat.png";
-      case "dog":
-        return "assets/svg/dog.png";
-      case "bear":
-        return "assets/svg/bear.png";
-      case "cow":
-        return "assets/svg/cow.png";
-      case "tiger":
-        return "assets/svg/tiger.png";
-      case "rabbit":
-        return "assets/svg/rabbit.png";
-      default:
-        return "assets/svg/animal.png";
-    }
-  }
-
-  int _tabIndex = 2;
-  int get tabIndex => _tabIndex;
-  set tabIndex(int v) {
-    _tabIndex = v;
-    notifyListeners();
-  }
-
-  Future<void> gotoDetail(PetResponse pet) async {
-    await _navigationService.pushModalBottom(Routes.detail_modal,
-        data: DetailModal(pet: pet));
   }
 }

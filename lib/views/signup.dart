@@ -8,15 +8,14 @@ import 'package:petadoption/viewModel/signup_view_model.dart';
 import 'package:provider/provider.dart';
 
 dynamic formKey = GlobalKey<FormState>();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController numberController = TextEditingController();
+final TextEditingController emailController = TextEditingController();
+final TextEditingController passwordController = TextEditingController();
+final TextEditingController nameController = TextEditingController();
+final TextEditingController numberController = TextEditingController();
+
 class SignupPage extends StatelessWidget {
   SignupPage({super.key});
   final scaffoldKey = GlobalKey<ScaffoldState>();
-
-
 
   List<String> roles = ["Adopter", "Donor", "Admin"];
 
@@ -25,15 +24,8 @@ class SignupPage extends StatelessWidget {
     SignupViewModel viewModel = context.watch<SignupViewModel>();
 
     return StatefulWrapper(
-      onDispose: (){
-        emailController.dispose();
-        passwordController.dispose();
-        nameController.dispose();
-        numberController.dispose();
-      },
-      onInit: (){
-
-      },
+      onDispose: () {},
+      onInit: () {},
       child: Scaffold(
         key: scaffoldKey,
         body: Stack(
@@ -53,7 +45,7 @@ class SignupPage extends StatelessWidget {
                     children: [
                       // Character image at top
                       _buildCharacterImage(),
-      
+
                       Container(
                         decoration: BoxDecoration(
                           color: const Color.fromARGB(255, 255, 247, 240),
@@ -73,8 +65,8 @@ class SignupPage extends StatelessWidget {
                             const SizedBox(height: 10),
                             Text(
                               "What You Are Select The Role?",
-                              style:
-                                  TextStyle(color: Colors.black54, fontSize: 13),
+                              style: TextStyle(
+                                  color: Colors.black54, fontSize: 13),
                             ),
                             const SizedBox(height: 5),
                             buildRoleSelector(

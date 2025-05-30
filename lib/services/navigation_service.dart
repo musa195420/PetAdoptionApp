@@ -35,6 +35,7 @@ import '../helpers/locator.dart';
 import '../views/modals/admin_modals/donor_edit_modal.dart';
 import '../views/modals/admin_modals/meetup_edit_modal.dart';
 import '../views/modals/admin_modals/userlink_modal.dart';
+import '../views/modals/detail_modal.dart';
 import 'global_service.dart';
 
 class Routes {
@@ -72,6 +73,7 @@ class Routes {
   static const String vaccination_modal = "vaccination_modal";
   static const String disability_modal = "disability_modal";
   static const String disease_modal = "disease_modal";
+  static const String detail_modal = "detail_modal";
 }
 
 class NavigationService {
@@ -322,7 +324,8 @@ class NavigationService {
               expand: true,
               context: navigatorKey.currentContext!,
               backgroundColor: Colors.transparent,
-              builder: (context) => AnimalDisabilityModal(animalId: data.animalId));
+              builder: (context) =>
+                  AnimalDisabilityModal(animalId: data.animalId));
         }
         break;
 
@@ -332,7 +335,8 @@ class NavigationService {
               expand: true,
               context: navigatorKey.currentContext!,
               backgroundColor: Colors.transparent,
-              builder: (context) => AnimalDiseaseModal(animalId: data.animalId));
+              builder: (context) =>
+                  AnimalDiseaseModal(animalId: data.animalId));
         }
         break;
       case Routes.vaccination_modal:
@@ -341,7 +345,17 @@ class NavigationService {
               expand: true,
               context: navigatorKey.currentContext!,
               backgroundColor: Colors.transparent,
-              builder: (context) => AnimalVaccinationModal(animalId: data.animalId));
+              builder: (context) =>
+                  AnimalVaccinationModal(animalId: data.animalId));
+        }
+        break;
+      case Routes.detail_modal:
+        {
+          showBarModalBottomSheet(
+              expand: true,
+              context: navigatorKey.currentContext!,
+              backgroundColor: Colors.transparent,
+              builder: (context) => DetailModal(pet: data.pet));
         }
         break;
     }

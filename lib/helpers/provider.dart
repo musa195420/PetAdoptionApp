@@ -12,6 +12,7 @@ import '../viewModel/admin_view_models/admin_view_model.dart';
 import '../viewModel/admin_view_models/adopter_admin_view_model.dart';
 import '../viewModel/admin_view_models/pet_admin_view_model.dart';
 import '../viewModel/admin_view_models/user_admin_view_model.dart';
+import '../viewModel/detail_view_model.dart';
 import '../viewModel/home_view_model.dart';
 import '../viewModel/pet_view_model.dart';
 
@@ -25,21 +26,22 @@ class ProviderInjector {
   static final List<SingleChildWidget> _independentServices = [
     // ViewModels
     ChangeNotifierProvider(create: (_) => locator<AuthenticationViewModel>()),
-     ChangeNotifierProvider(create: (_) => locator<SignupViewModel>()),
-     ChangeNotifierProvider(create: (_) => locator<AdminViewModel>()),
-      ChangeNotifierProvider(create: (_) => locator<UserAdminViewModel>()),
-        ChangeNotifierProvider(create: (_) => locator<HomeViewModel>()),
-     ChangeNotifierProvider(create: (_) => locator<AdopterAdminViewModel>()),
-     ChangeNotifierProvider(create: (_) => locator<DonorAdminViewModel>()),
-     ChangeNotifierProvider(create: (_) => locator<StartupViewModel>()),
-      ChangeNotifierProvider(create: (_) => locator<PetViewModel>()),
-        ChangeNotifierProvider(create: (_) => locator<PetAdminViewModel>()),
-              ChangeNotifierProvider(create: (_) => locator<GeneralConfigViewModel>()),
-                 ChangeNotifierProvider(create: (_) => locator<SecuremeetupAdminViewModel>()),
-  
+    ChangeNotifierProvider(create: (_) => locator<SignupViewModel>()),
+    ChangeNotifierProvider(create: (_) => locator<AdminViewModel>()),
+    ChangeNotifierProvider(create: (_) => locator<UserAdminViewModel>()),
+    ChangeNotifierProvider(create: (_) => locator<HomeViewModel>()),
+    ChangeNotifierProvider(create: (_) => locator<AdopterAdminViewModel>()),
+    ChangeNotifierProvider(create: (_) => locator<DonorAdminViewModel>()),
+    ChangeNotifierProvider(create: (_) => locator<StartupViewModel>()),
+    ChangeNotifierProvider(create: (_) => locator<PetViewModel>()),
+    ChangeNotifierProvider(create: (_) => locator<PetAdminViewModel>()),
+    ChangeNotifierProvider(create: (_) => locator<GeneralConfigViewModel>()),
+    ChangeNotifierProvider(
+        create: (_) => locator<SecuremeetupAdminViewModel>()),
+    ChangeNotifierProvider(create: (_) => locator<DetailViewModel>()),
   ];
 
   static final List<SingleChildWidget> _dependentServices = [];
-  
+
   static final List<SingleChildWidget> _consumableServices = [];
 }

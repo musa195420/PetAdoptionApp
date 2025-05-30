@@ -106,7 +106,7 @@ class HomePage extends StatelessWidget {
                                                 Text(
                                                   "Adopt a \npet ❤️",
                                                   style: TextStyle(
-                                                     height: 1.2,
+                                                    height: 1.2,
                                                     color: const Color.fromARGB(
                                                         255, 83, 36, 6),
                                                     fontSize: 30,
@@ -118,7 +118,6 @@ class HomePage extends StatelessWidget {
                                                   "Find Your New \nBest Friend",
                                                   textAlign: TextAlign.start,
                                                   style: TextStyle(
-                                                    
                                                     color: const Color.fromARGB(
                                                         255, 83, 36, 6),
                                                     fontSize: 14,
@@ -292,141 +291,174 @@ class HomePage extends StatelessWidget {
                     ),
 
                     // Place this after SizedBox(height: 20)
-                    Container(
-                      margin: EdgeInsets.fromLTRB(0, 0, 0, 50),
-                      height: MediaQuery.of(context).size.height * 0.37,
-                      child: viewModel.filteredPets == null
-                          ? const Center(child: CircularProgressIndicator())
-                          : ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: viewModel.filteredPets!.length,
-                              itemBuilder: (context, index) {
-                                final pet = viewModel.filteredPets![index];
-                                final screenWidth =
-                                    MediaQuery.of(context).size.height;
-                                final cardWidth = screenWidth * 0.20;
+                    LayoutBuilder(
+                      builder: (context, constraints) {
+                        final isSmallScreen = constraints.maxWidth < 600;
 
-                                return Container(
-                                  width: cardWidth,
-                                  margin: const EdgeInsets.symmetric(
-                                      horizontal: 12, vertical: 10),
-                                  child: Card(
-                                    elevation: 5,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(15),
-                                    ),
-                                    clipBehavior: Clip.antiAlias,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Hero(
-                                          tag:
-                                              'petImage${pet.petId}', // Ensure `id` is unique
-                                          child: pet.image != null
-                                              ? Image.network(
-                                                  pet.image!,
-                                                  height: 120,
-                                                  width: double.infinity,
-                                                  fit: BoxFit.cover,
-                                                )
-                                              : Container(
-                                                  height: 120,
-                                                  width: double.infinity,
-                                                  color: Colors.grey[300],
-                                                  child: const Icon(Icons.pets,
-                                                      size: 50),
-                                                ),
-                                        ),
-                                        Container(
-                                          padding: const EdgeInsets.all(12),
-                                          decoration: BoxDecoration(
-                                            gradient: LinearGradient(
-                                              colors: [
-                                                Colors.white,
-                                                Colors.grey.shade100
-                                              ],
-                                              begin: Alignment.topCenter,
-                                              end: Alignment.bottomCenter,
-                                            ),
+                        return Container(
+                          margin: const EdgeInsets.fromLTRB(0, 0, 0, 50),
+                          height: MediaQuery.of(context).size.height * 0.37,
+                          child: viewModel.filteredPets == null
+                              ? const Center(child: CircularProgressIndicator())
+                              : ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: viewModel.filteredPets!.length,
+                                  itemBuilder: (context, index) {
+                                    final pet = viewModel.filteredPets![index];
+                                    final screenWidth =
+                                        MediaQuery.of(context).size.width;
+                                    final cardWidth = isSmallScreen
+                                        ? screenWidth * 0.5
+                                        : screenWidth * 0.25;
+
+                                    return Container(
+                                      width: cardWidth,
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: 12, vertical: 10),
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          viewModel.gotoDetail(pet);
+                                        },
+                                        child: Card(
+                                          elevation: 5,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(15),
                                           ),
+                                          clipBehavior: Clip.antiAlias,
                                           child: Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              Row(
-                                                children: [
-                                                  Expanded(
-                                                    child: Text(
-                                                      pet.name ?? 'No Name',
-                                                      style: const TextStyle(
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.bold,
+                                              Hero(
+                                                tag: 'petImage${pet.petId}',
+                                                child: pet.image != null
+                                                    ? Image.network(
+                                                        pet.image!,
+                                                        height: 120,
+                                                        width: double.infinity,
+                                                        fit: BoxFit.cover,
+                                                      )
+                                                    : Container(
+                                                        height: 120,
+                                                        width: double.infinity,
+                                                        color: Colors.grey[300],
+                                                        child: const Icon(
+                                                            Icons.pets,
+                                                            size: 50),
                                                       ),
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
+                                              ),
+                                              Expanded(
+                                                child: Container(
+                                                  padding:
+                                                      const EdgeInsets.all(12),
+                                                  decoration: BoxDecoration(
+                                                    gradient: LinearGradient(
+                                                      colors: [
+                                                        Colors.white,
+                                                        Colors.grey.shade100
+                                                      ],
+                                                      begin:
+                                                          Alignment.topCenter,
+                                                      end: Alignment
+                                                          .bottomCenter,
                                                     ),
                                                   ),
-                                                  Icon(
-                                                    pet.gender?.toLowerCase() ==
-                                                            'male'
-                                                        ? Icons.male
-                                                        : Icons.female,
-                                                    size: 20,
-                                                    color: pet.gender
-                                                                ?.toLowerCase() ==
-                                                            'male'
-                                                        ? Colors.blue
-                                                        : Colors.pink,
-                                                  )
-                                                ],
-                                              ),
-                                              const SizedBox(height: 6),
-                                              Text(
-                                                pet.breed ?? 'Unknown Breed',
-                                                style: TextStyle(
-                                                  fontSize: 13,
-                                                  color: Colors.grey.shade600,
-                                                ),
-                                              ),
-                                              const SizedBox(height: 6),
-                                              Text(
-                                                '${pet.age ?? 0} years old',
-                                                style: TextStyle(
-                                                  fontSize: 13,
-                                                  color: Colors.grey.shade600,
-                                                ),
-                                              ),
-                                              const SizedBox(height: 8),
-                                              Row(
-                                                children: [
-                                                  const Icon(Icons.location_on,
-                                                      size: 14,
-                                                      color: Colors.redAccent),
-                                                  const SizedBox(width: 4),
-                                                  Expanded(
-                                                    child: Text(
-                                                      pet.location ?? 'Unknown',
-                                                      style: const TextStyle(
-                                                        fontSize: 12,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceAround,
+                                                    children: [
+                                                      Row(
+                                                        children: [
+                                                          Expanded(
+                                                            child: Text(
+                                                              pet.name ??
+                                                                  'No Name',
+                                                              style:
+                                                                  const TextStyle(
+                                                                fontSize: 18,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                            ),
+                                                          ),
+                                                          Icon(
+                                                            pet.gender?.toLowerCase() ==
+                                                                    'male'
+                                                                ? Icons.male
+                                                                : Icons.female,
+                                                            size: 20,
+                                                            color: pet.gender
+                                                                        ?.toLowerCase() ==
+                                                                    'male'
+                                                                ? Colors.blue
+                                                                : Colors.pink,
+                                                          )
+                                                        ],
                                                       ),
-                                                    ),
+                                                      Text(
+                                                        pet.breed ??
+                                                            'Unknown Breed',
+                                                        style: TextStyle(
+                                                          fontSize: 13,
+                                                          color: Colors
+                                                              .grey.shade600,
+                                                        ),
+                                                      ),
+                                                      Text(
+                                                        '${pet.age ?? 0} years old',
+                                                        style: TextStyle(
+                                                          fontSize: 13,
+                                                          color: Colors
+                                                              .grey.shade600,
+                                                        ),
+                                                      ),
+                                                      Row(
+                                                        children: [
+                                                          const Icon(
+                                                              Icons.location_on,
+                                                              size: 14,
+                                                              color: Colors
+                                                                  .redAccent),
+                                                          const SizedBox(
+                                                              width: 4),
+                                                          Expanded(
+                                                            child: Text(
+                                                              pet.location ??
+                                                                  'Unknown',
+                                                              style:
+                                                                  const TextStyle(
+                                                                fontSize: 12,
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
                                                   ),
-                                                ],
+                                                ),
                                               ),
                                             ],
                                           ),
                                         ),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                    ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                        );
+                      },
+                    )
                   ],
                 ),
               ),

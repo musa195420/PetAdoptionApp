@@ -4,26 +4,22 @@ import 'package:petadoption/custom_widgets/stateful_wrapper.dart';
 import 'package:provider/provider.dart';
 import '../viewModel/authentication_view_model.dart';
 
+final TextEditingController emailController = TextEditingController();
+final TextEditingController passwordController = TextEditingController();
 
-
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
   final scaffoldKey = GlobalKey<ScaffoldState>();
-dynamic formKey = GlobalKey<FormState>();
+  dynamic formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-    
     AuthenticationViewModel viewModel =
         context.watch<AuthenticationViewModel>();
 
     return StatefulWrapper(
-      onInit: (){},
-      onDispose: (){
-     
-      },
+      onInit: () {},
+      onDispose: () {},
       child: Scaffold(
         key: scaffoldKey,
         body: Stack(
@@ -76,7 +72,7 @@ dynamic formKey = GlobalKey<FormState>();
                         ),
                       ),
                     ),
-      
+
                     // Character image on top
                     Align(
                       alignment: Alignment.topCenter,
