@@ -44,43 +44,4 @@ class DetailViewModel extends BaseViewModel {
       }
     }
   }
-
-  bool checkVersion = true;
-  Future<void> logout() async {
-    await _startupViewModel.logout();
-  }
-
-  List<PetResponse>? pets;
-  List<String> petSelection = [];
-  List<PetResponse>? filteredPets;
-
-  Future<void> getPets() async {
-    try {
-      loading(true);
-
-      var petRes = await _apiService.getPets();
-
-      if (petRes.errorCode == "PA0004") {
-        pets = (petRes.data as List)
-            .map((json) => PetResponse.fromJson(json as Map<String, dynamic>))
-            .toList();
-        filteredPets = List.from(pets!);
-
-        for (var d in pets!) {
-          final animal = d.animal;
-          if (animal != null && !petSelection.contains(animal)) {
-            petSelection.add(animal);
-          }
-        }
-      } else {
-        await _dialogService.showApiError(petRes.data);
-      }
-    } catch (e, s) {
-      _globalService.logError(
-          "Error Occured When Renew User Token", e.toString(), s);
-    } finally {
-      notifyListeners();
-      loading(false);
-    }
-  }
 }

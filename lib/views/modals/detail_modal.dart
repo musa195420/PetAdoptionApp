@@ -96,184 +96,182 @@ class DetailModal extends StatelessWidget {
 
   Widget info(
       double screenHeight, double screenWidth, DetailViewModel viewModel) {
-    return Expanded(
-      child: SingleChildScrollView(
-        padding: EdgeInsets.only(bottom: screenHeight * 0.02),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              pet.name ?? "Unknown",
-              style: TextStyle(
-                fontSize: screenHeight * 0.035,
-                fontWeight: FontWeight.bold,
-                color: const Color(0xFF522501),
-              ),
+    return SingleChildScrollView(
+      padding: EdgeInsets.only(bottom: screenHeight * 0.02),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            pet.name ?? "Unknown",
+            style: TextStyle(
+              fontSize: screenHeight * 0.035,
+              fontWeight: FontWeight.bold,
+              color: const Color(0xFF522501),
             ),
-            SizedBox(height: screenHeight * 0.005),
-            Row(
-              children: [
-                Icon(Icons.location_on,
-                    color: const Color(0xFFF7992C), size: screenWidth * 0.045),
-                SizedBox(width: screenWidth * 0.01),
-                Text(
-                  pet.location ?? "Not Specified",
-                  style: TextStyle(fontSize: screenHeight * 0.02),
+          ),
+          SizedBox(height: screenHeight * 0.005),
+          Row(
+            children: [
+              Icon(Icons.location_on,
+                  color: const Color(0xFFF7992C), size: screenWidth * 0.045),
+              SizedBox(width: screenWidth * 0.01),
+              Text(
+                pet.location ?? "Not Specified",
+                style: TextStyle(fontSize: screenHeight * 0.02),
+              ),
+              SizedBox(width: screenWidth * 0.015),
+              Text(
+                "(NearBy)",
+                style: TextStyle(fontSize: screenHeight * 0.02),
+              ),
+            ],
+          ),
+          SizedBox(height: screenHeight * 0.02),
+
+          // Info Tags Row
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: _buildInfoTag(
+                  screenWidth,
+                  screenHeight,
+                  "Age",
+                  pet.age?.toString() ?? "N/A",
                 ),
-                SizedBox(width: screenWidth * 0.015),
-                Text(
-                  "(NearBy)",
-                  style: TextStyle(fontSize: screenHeight * 0.02),
+              ),
+              SizedBox(width: screenWidth * 0.02),
+              Expanded(
+                child: _buildInfoTag(
+                  screenWidth,
+                  screenHeight,
+                  "Type",
+                  pet.animal ?? "N/A",
+                ),
+              ),
+              SizedBox(width: screenWidth * 0.02),
+              Expanded(
+                child: _buildInfoTag(
+                  screenWidth,
+                  screenHeight,
+                  "Gender",
+                  pet.gender ?? "N/A",
+                ),
+              ),
+              SizedBox(width: screenWidth * 0.02),
+              Expanded(
+                child: _buildInfoTag(
+                  screenWidth,
+                  screenHeight,
+                  "Breed",
+                  pet.breed ?? "N/A",
+                ),
+              ),
+            ],
+          ),
+
+          SizedBox(height: screenHeight * 0.03),
+
+          // Owner Info Section
+          Container(
+            padding: EdgeInsets.all(screenWidth * 0.04),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: const [
+                BoxShadow(
+                  color: Colors.black12,
+                  blurRadius: 6,
+                  offset: Offset(0, 2),
                 ),
               ],
             ),
-            SizedBox(height: screenHeight * 0.02),
-
-            // Info Tags Row
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
-                  child: _buildInfoTag(
-                    screenWidth,
-                    screenHeight,
-                    "Age",
-                    pet.age?.toString() ?? "N/A",
-                  ),
-                ),
-                SizedBox(width: screenWidth * 0.02),
-                Expanded(
-                  child: _buildInfoTag(
-                    screenWidth,
-                    screenHeight,
-                    "Type",
-                    pet.animal ?? "N/A",
-                  ),
-                ),
-                SizedBox(width: screenWidth * 0.02),
-                Expanded(
-                  child: _buildInfoTag(
-                    screenWidth,
-                    screenHeight,
-                    "Gender",
-                    pet.gender ?? "N/A",
-                  ),
-                ),
-                SizedBox(width: screenWidth * 0.02),
-                Expanded(
-                  child: _buildInfoTag(
-                    screenWidth,
-                    screenHeight,
-                    "Breed",
-                    pet.breed ?? "N/A",
-                  ),
-                ),
-              ],
-            ),
-
-            SizedBox(height: screenHeight * 0.03),
-
-            // Owner Info Section
-            Container(
-              padding: EdgeInsets.all(screenWidth * 0.04),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(24),
-                boxShadow: const [
-                  BoxShadow(
-                    color: Colors.black12,
-                    blurRadius: 6,
-                    offset: Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      CircleAvatar(
-                        radius: screenWidth * 0.08,
-                        backgroundColor: Colors.grey[200],
-                        child: ClipOval(
-                          child: Image.network(
-                            viewModel.user!.profileImage ?? "",
-                            fit: BoxFit.cover,
-                            width: screenWidth * 0.16,
-                            height: screenWidth * 0.16,
-                            errorBuilder: (context, error, stackTrace) {
-                              return Image.asset("assets/images/noprofile.png");
-                            },
-                          ),
+                Row(
+                  children: [
+                    CircleAvatar(
+                      radius: screenWidth * 0.08,
+                      backgroundColor: Colors.grey[200],
+                      child: ClipOval(
+                        child: Image.network(
+                          viewModel.user!.profileImage ?? "",
+                          fit: BoxFit.cover,
+                          width: screenWidth * 0.16,
+                          height: screenWidth * 0.16,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Image.asset("assets/images/noprofile.png");
+                          },
                         ),
                       ),
-                      SizedBox(width: screenWidth * 0.04),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            viewModel.user!.email ?? "",
-                            style: TextStyle(
-                              color: const Color(0xFF522501),
-                              fontSize: screenHeight * 0.022,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            "Owner",
-                            style: TextStyle(
-                              color: Colors.black87,
-                              fontSize: screenHeight * 0.02,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: screenHeight * 0.015),
-                  Text(
-                    pet.description ?? "A Lovely Pet",
-                    style: TextStyle(
-                      height: 1.4,
-                      fontSize: screenHeight * 0.02,
                     ),
-                  ),
-                  SizedBox(height: screenHeight * 0.02),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Icon(Icons.message_outlined,
-                          color: const Color(0xFFF7992C),
-                          size: screenWidth * 0.09),
-                      ElevatedButton(
-                        onPressed: () {
-                          // Future enhancement: Trigger adoption process
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFF7992C),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          padding: EdgeInsets.symmetric(
-                            vertical: screenHeight * 0.03,
-                            horizontal: screenWidth * 0.09,
+                    SizedBox(width: screenWidth * 0.04),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          viewModel.user!.email ?? "",
+                          style: TextStyle(
+                            color: const Color(0xFF522501),
+                            fontSize: screenHeight * 0.022,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                        child: Text(
-                          "Adopt Now",
+                        Text(
+                          "Owner",
                           style: TextStyle(
-                            color: Colors.white,
+                            color: Colors.black87,
                             fontSize: screenHeight * 0.02,
                           ),
                         ),
+                      ],
+                    ),
+                  ],
+                ),
+                SizedBox(height: screenHeight * 0.015),
+                Text(
+                  pet.description ?? "A Lovely Pet",
+                  style: TextStyle(
+                    height: 1.4,
+                    fontSize: screenHeight * 0.02,
+                  ),
+                ),
+                SizedBox(height: screenHeight * 0.02),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Icon(Icons.message_outlined,
+                        color: const Color(0xFFF7992C),
+                        size: screenWidth * 0.09),
+                    ElevatedButton(
+                      onPressed: () {
+                        // Future enhancement: Trigger adoption process
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFF7992C),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        padding: EdgeInsets.symmetric(
+                          vertical: screenHeight * 0.03,
+                          horizontal: screenWidth * 0.09,
+                        ),
                       ),
-                    ],
-                  )
-                ],
-              ),
+                      child: Text(
+                        "Adopt Now",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: screenHeight * 0.02,
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
