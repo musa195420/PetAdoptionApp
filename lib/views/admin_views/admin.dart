@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:petadoption/models/selection_box_model.dart';
 import 'package:provider/provider.dart';
@@ -45,7 +47,7 @@ class AdminPage extends StatelessWidget {
                       padding: EdgeInsets.all(8),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color:Color(0xFF5D1F00),
+                        color: Color(0xFF5D1F00),
                       ),
                       child: Icon(
                         Icons.logout_rounded,
@@ -66,9 +68,11 @@ class AdminPage extends StatelessWidget {
                 ),
               ],
             ),
-             const SizedBox(height: 20),
-            Divider(color:  Color(0xFF5D1F00),thickness: 2,),
-           
+            const SizedBox(height: 20),
+            Divider(
+              color: Color(0xFF5D1F00),
+              thickness: 2,
+            ),
             Expanded(
               child: ListView(
                 children: listItems,

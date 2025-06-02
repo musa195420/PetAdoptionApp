@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:petadoption/helpers/locator.dart';
@@ -70,9 +72,7 @@ class SecuremeetupAdminViewModel extends BaseViewModel {
             .toList();
         filteredSecure = List.from(secureMeetups!);
       } else {
-        await _dialogService.showApiError(
-          secureRes.data
-        );
+        await _dialogService.showApiError(secureRes.data);
       }
     } catch (e, s) {
       _globalService.logError(
@@ -111,8 +111,7 @@ class SecuremeetupAdminViewModel extends BaseViewModel {
         if (resDelete.errorCode == "PA0004") {
           debugPrint("SecureMeetup Deleted Sucess Fully");
         } else {
-          await _dialogService.showApiError(
-              resDelete.data);
+          await _dialogService.showApiError(resDelete.data);
         }
       }
     } catch (e) {
@@ -144,7 +143,7 @@ class SecuremeetupAdminViewModel extends BaseViewModel {
 
         await _updateImages(secure.meetupId!);
         await getSecureMeetups();
-           _dialogService.showSuccess(text: "Secure Updated Success Fully");
+        _dialogService.showSuccess(text: "Secure Updated Success Fully");
       } else {
         await _dialogService.showApiError(updateRes.data);
       }
@@ -174,7 +173,6 @@ class SecuremeetupAdminViewModel extends BaseViewModel {
         if (res.errorCode == "PA0004") {
           debugPrint("Secure Updated Success Fully");
         } else {
-         
           await _dialogService.showApiError(res.data);
         }
       }
@@ -260,62 +258,52 @@ class SecuremeetupAdminViewModel extends BaseViewModel {
     notifyListeners();
   }
 
-
   //<===========================================================Meetup Edit====================================================>
-Meetup? meets;
+  Meetup? meets;
 
- Future<void> getMeetup(String meetupId) async
- {
-try{
-loading(true,loadingText: "Getting Meetup ....");
-  var res = await _apiService.getMeetupsById(Meetup(meetupId: meetupId));
-   if (res.errorCode == "PA0004") {
+  Future<void> getMeetup(String meetupId) async {
+    try {
+      loading(true, loadingText: "Getting Meetup ....");
+      var res = await _apiService.getMeetupsById(Meetup(meetupId: meetupId));
+      if (res.errorCode == "PA0004") {
+        meets = res.data;
 
-         meets=res.data;
+        await _navigationService.pushModalBottom(Routes.meetup_edit_modal,
+            data: MeetupEdit(meetup: meets!));
+        debugPrint("Secure Updated Success Fully");
+      } else {
+        await _dialogService.showApiError(res.data);
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+      loading(false);
+    } finally {
+      loading(false);
+    }
+  }
 
-         await _navigationService.pushModalBottom(Routes.meetup_edit_modal,data: MeetupEdit(meetup: meets!));
-          debugPrint("Secure Updated Success Fully");
-        } else {
-            await _dialogService.showApiError(res.data);
-        }
-}catch(e)
-{
-debugPrint(e.toString());
- loading(false);
-}finally{
-  loading(false);
-}
- }
-
- void setMeetup(Meetup meets) {
+  void setMeetup(Meetup meets) {
     this.meets = meets;
   }
 
-  void showPetInfo(String? petId) async{
-try{
- loading(true,loadingText: "Gathering Pet Info");
-  var res= await _apiService.getPetById(SinglePet(petId: petId!));
-   if(res.errorCode=="PA0004")
-   {
-    PetResponse pet = res.data as PetResponse;
- await _navigationService.pushModalBottom(Routes.pet_edit_modal,
-        data: PetEditModal(pet: pet));
-   }
-
-
-
-  
-}catch(e)
-{
-  loading(false);
-  debugPrint(e.toString());
-}finally{
-  loading(false);
-}
+  void showPetInfo(String? petId) async {
+    try {
+      loading(true, loadingText: "Gathering Pet Info");
+      var res = await _apiService.getPetById(SinglePet(petId: petId!));
+      if (res.errorCode == "PA0004") {
+        PetResponse pet = res.data as PetResponse;
+        await _navigationService.pushModalBottom(Routes.pet_edit_modal,
+            data: PetEditModal(pet: pet));
+      }
+    } catch (e) {
+      loading(false);
+      debugPrint(e.toString());
+    } finally {
+      loading(false);
+    }
   }
 
-  Future<void> getUserInfo(String id)async
-  {
+  Future<void> getUserInfo(String id) async {
     _userModel.showLink(id);
   }
 }

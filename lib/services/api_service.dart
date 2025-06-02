@@ -191,13 +191,10 @@ class APIService implements IAPIService {
     }
   }
 
-
-  
   @override
   Future<ApiStatus> getPetById(SinglePet pet) async {
     try {
-      var response =
-          await _httpService.postData("api/pet/id/", pet.toJson());
+      var response = await _httpService.postData("api/pet/id/", pet.toJson());
       if (response.statusCode == 404) {
         return ApiStatus(data: null, errorCode: "PA0002");
       }
@@ -332,7 +329,6 @@ class APIService implements IAPIService {
       return ApiStatus(data: e, errorCode: "PA0006");
     }
   }
-
 
   @override
   Future<ApiStatus> getAnimalBreeds() async {
@@ -518,12 +514,11 @@ class APIService implements IAPIService {
     }
   }
 
-
-  
   @override
   Future<ApiStatus> getAnimalVaccineById(GetAnimal breed) async {
     try {
-      var response = await _httpService.postData("api/vaccination/animal",breed.toJson());
+      var response =
+          await _httpService.postData("api/vaccination/animal", breed.toJson());
       if (response.statusCode == 404) {
         return ApiStatus(data: null, errorCode: "PA0002");
       }
@@ -565,7 +560,6 @@ class APIService implements IAPIService {
       return ApiStatus(data: e, errorCode: "PA0006");
     }
   }
-
 
   @override
   Future<ApiStatus> getDiseases() async {
@@ -613,11 +607,11 @@ class APIService implements IAPIService {
     }
   }
 
-
   @override
-   Future<ApiStatus> getAnimalDiseaseById(GetAnimal disease)async {
+  Future<ApiStatus> getAnimalDiseaseById(GetAnimal disease) async {
     try {
-      var response = await _httpService.postData("api/disease/animal",disease.toJson());
+      var response =
+          await _httpService.postData("api/disease/animal", disease.toJson());
       if (response.statusCode == 404) {
         return ApiStatus(data: null, errorCode: "PA0002");
       }
@@ -659,6 +653,7 @@ class APIService implements IAPIService {
       return ApiStatus(data: e, errorCode: "PA0006");
     }
   }
+
   @override
   Future<ApiStatus> getDisability() async {
     try {
@@ -708,7 +703,8 @@ class APIService implements IAPIService {
   @override
   Future<ApiStatus> getAnimalDisabilityById(GetAnimal disablility) async {
     try {
-      var response = await _httpService.postData("api/disability/animal/",disablility.toJson());
+      var response = await _httpService.postData(
+          "api/disability/animal/", disablility.toJson());
       if (response.statusCode == 404) {
         return ApiStatus(data: null, errorCode: "PA0002");
       }
@@ -861,7 +857,7 @@ class APIService implements IAPIService {
       if (response.statusCode == 200) {
         if (res.success ?? true) {
           return ApiStatus(
-            data:  Meetup.fromJson(res.data),
+            data: Meetup.fromJson(res.data),
             errorCode: "PA0004",
           );
         } else {
@@ -909,7 +905,7 @@ class APIService implements IAPIService {
       if (response.statusCode == 200) {
         if (res.success ?? true) {
           return ApiStatus(
-            data:  Meetup.fromJson(res.data),
+            data: Meetup.fromJson(res.data),
             errorCode: "PA0004",
           );
         } else {
@@ -2752,7 +2748,7 @@ class APIService implements IAPIService {
   }
 
   @override
-   Future<ApiStatus> addHealthInfo(HealthInfoModel health) async {
+  Future<ApiStatus> addHealthInfo(HealthInfoModel health) async {
     try {
       var response = await _httpService.postData("api/health", health.toJson());
       if (response.statusCode == 404) {
@@ -3090,7 +3086,7 @@ abstract class IAPIService {
   Future<ApiStatus> getSecureMeetups();
 
   Future<ApiStatus> getPets();
-   Future<ApiStatus> getPetById(SinglePet pet);
+  Future<ApiStatus> getPetById(SinglePet pet);
   Future<ApiStatus> deletePet(SinglePet pet);
   Future<ApiStatus> updatePet(PetResponse pet);
   Future<ApiStatus> getPetByUserId(SingleUser user);
@@ -3105,7 +3101,7 @@ abstract class IAPIService {
   Future<ApiStatus> updateSecureMeetup(SecureMeetup secure);
   Future<ApiStatus> getUsers();
   Future<ApiStatus> addAdopter(AddAdopter adopter);
-    Future<ApiStatus> addHealthInfo(HealthInfoModel health);
+  Future<ApiStatus> addHealthInfo(HealthInfoModel health);
   Future<ApiStatus> addDonor(AddDonor donor);
   Future<ApiStatus> addPet(PetRequest pet);
   Future<ApiStatus> addAnimalBreedBulk(AddAnimalBreed animal);

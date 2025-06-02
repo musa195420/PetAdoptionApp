@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:flutter/material.dart';
 import 'package:petadoption/custom_widgets/default_text_input.dart';
 import 'package:petadoption/custom_widgets/stateful_wrapper.dart';
@@ -165,9 +167,7 @@ class LoginPage extends StatelessWidget {
 
   Widget _buildForgotPasswordText() {
     return TextButton(
-      onPressed: () {
-        // TODO: Add forgot password logic
-      },
+      onPressed: () {},
       child: const Text(
         "Forgot password?",
         style: TextStyle(color: Colors.black54),

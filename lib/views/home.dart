@@ -6,8 +6,6 @@ import 'package:petadoption/views/home_page.dart';
 
 import 'package:provider/provider.dart';
 
-import '../custom_widgets/custom_button.dart';
-
 class Home extends StatelessWidget {
   Home({super.key});
   final scaffoldKey = GlobalKey<ScaffoldState>();
@@ -89,7 +87,8 @@ class Home extends StatelessWidget {
             ],
           ),
         ],
-        color: Color.fromARGB(255, 213, 101, 25),
+        color: Color.fromARGB(255, 99, 34, 10),
+        //   Color.fromARGB(255, 213, 101, 25)
         height: 50,
         circleWidth: 50,
         activeIndex: viewModel.tabIndex,

@@ -1,6 +1,5 @@
 // ignore_for_file: non_constant_identifier_names
 
-
 import 'package:flutter/foundation.dart';
 import 'package:petadoption/helpers/locator.dart';
 import 'package:petadoption/models/request_models/userinforequest.dart';
@@ -11,7 +10,6 @@ import 'package:petadoption/services/navigation_service.dart';
 import 'package:petadoption/services/pref_service.dart';
 import 'package:petadoption/viewModel/base_view_model.dart';
 
-import '../models/error_models/error_reponse.dart';
 import '../models/hive_models/user.dart';
 import '../models/request_models/login_request.dart';
 import '../models/request_models/refresh_token_request.dart';
@@ -24,7 +22,6 @@ class AuthenticationViewModel extends BaseViewModel {
   NavigationService get _navigationService => locator<NavigationService>();
   GlobalService get _globalService => locator<GlobalService>();
   IDialogService get _dialogService => locator<IDialogService>();
-
 
   String? _email = "";
   String? _password = "";
@@ -85,8 +82,7 @@ class AuthenticationViewModel extends BaseViewModel {
             _globalService.setuser(userResponse);
             _gotoNextPage(userResponse);
           } else {
-            await _dialogService.showApiError(
-                loginRes.data);
+            await _dialogService.showApiError(loginRes.data);
 
             _globalService.log('Client ($email) Login Fail');
           }

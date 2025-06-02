@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:flutter/material.dart';
 import 'package:petadoption/custom_widgets/default_text_input.dart';
 import 'package:petadoption/custom_widgets/stateful_wrapper.dart';
@@ -13,8 +15,8 @@ class AnimalbreedModal extends StatelessWidget {
   AnimalbreedModal({super.key, required this.petId});
   final scaffoldKey = GlobalKey<ScaffoldState>();
   IAPIService get _apiService => locator<IAPIService>();
-    IDialogService get _dialogService => locator< IDialogService>();
- 
+  IDialogService get _dialogService => locator<IDialogService>();
+
   final TextEditingController petController = TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -113,10 +115,10 @@ class AnimalbreedModal extends StatelessWidget {
           if (formKey.currentState!.validate()) {
             var addAnimalRes = await _apiService.addAnimalBreed(AddAnimalBreed(
                 name: petController.text.toString(), animalId: petId));
-            if(addAnimalRes.errorCode=="PA0004")
-                {
-           await   _dialogService.showSuccess(text: "Animal Added Successfully");
-                }
+            if (addAnimalRes.errorCode == "PA0004") {
+              await _dialogService.showSuccess(
+                  text: "Animal Added Successfully");
+            }
           }
         },
       ),

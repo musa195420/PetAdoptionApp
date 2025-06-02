@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:petadoption/custom_widgets/default_text_input.dart';
@@ -10,7 +12,8 @@ import '../../../viewModel/admin_view_models/secureMeetup_admin_view_model.dart'
 TextEditingController phoneNumberController = TextEditingController();
 TextEditingController currentAddressController = TextEditingController();
 TextEditingController meetupIdController = TextEditingController();
-TextEditingController rejectionReasonController= TextEditingController();
+TextEditingController rejectionReasonController = TextEditingController();
+
 class SecureEdit extends StatelessWidget {
   final SecureMeetup meetup;
   SecureEdit({
@@ -32,7 +35,7 @@ class SecureEdit extends StatelessWidget {
         TextEditingController(text: viewModel.meetup!.currentAddress ?? "");
     meetupIdController =
         TextEditingController(text: viewModel.meetup!.meetupId ?? "");
-        rejectionReasonController =
+    rejectionReasonController =
         TextEditingController(text: viewModel.meetup!.rejectionReason ?? "");
 
     return StatefulWrapper(
@@ -112,13 +115,13 @@ class SecureEdit extends StatelessWidget {
                                         meetup.proofPicUrl,
                                         "proofPicPath",
                                         "Proof Picture"),
-                                        _buildCharacterImage(
+                                    _buildCharacterImage(
                                         viewModel,
                                         viewModel.adopterIdPath,
                                         meetup.adopterIdFrontUrl,
                                         "adopterIdPath",
                                         "Adopter Front Identity"),
-                                         _buildCharacterImage(
+                                    _buildCharacterImage(
                                         viewModel,
                                         viewModel.adopterIdBackPath,
                                         meetup.adopterIdBackUrl,
@@ -127,13 +130,17 @@ class SecureEdit extends StatelessWidget {
                                     _buildUpdateSecure(viewModel),
                                   ],
                                 )),
-                              _buildAdminEdit(viewModel),
+                            _buildAdminEdit(viewModel),
                             const SizedBox(height: 10),
                             const SizedBox(height: 20),
                             InkWell(
                               onTap: () {
                                 if (formKey.currentState!.validate()) {
-                                  viewModel.updateSecureMeetup(phoneNumberController.text, currentAddressController.text,rejectionReasonController.text,viewModel.meetup!);
+                                  viewModel.updateSecureMeetup(
+                                      phoneNumberController.text,
+                                      currentAddressController.text,
+                                      rejectionReasonController.text,
+                                      viewModel.meetup!);
                                 }
                               },
                               child: _buildUpdateStatusButton(),
@@ -177,7 +184,6 @@ class SecureEdit extends StatelessWidget {
             controller: currentAddressController,
             hintText: "Current Address",
             labelText: "Current Address",
-           
             enabled: viewModel.isEdit,
             icon: Icons.animation_outlined,
             validator: (value) {
@@ -215,9 +221,10 @@ class SecureEdit extends StatelessWidget {
       children: [
         Container(
           padding: EdgeInsets.all(5),
-         
           decoration: BoxDecoration(
-            color:viewModel.isEdit? const Color.fromARGB(255, 146, 61, 5):Colors.grey,
+            color: viewModel.isEdit
+                ? const Color.fromARGB(255, 146, 61, 5)
+                : Colors.grey,
             borderRadius: BorderRadius.circular(10),
           ),
           child: Row(
@@ -262,7 +269,7 @@ class SecureEdit extends StatelessWidget {
                   ? ClipRRect(
                       borderRadius: BorderRadius.circular(10),
                       child: Image.network(
-                        url!,
+                        url,
                         height: 150,
                         width: 530,
                         fit: BoxFit.cover,
@@ -333,95 +340,94 @@ class SecureEdit extends StatelessWidget {
     );
   }
 
-Widget _buildAdminEdit(SecuremeetupAdminViewModel viewModel) {
-
-  return Padding(
-    padding: const EdgeInsets.all(12.0),
-    child: Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
-            blurRadius: 10,
-            spreadRadius: 2,
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Admin Section Title
-          Text(
-            "Admin Section",
-            style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              color: Colors.blueGrey.shade700,
+  Widget _buildAdminEdit(SecuremeetupAdminViewModel viewModel) {
+    return Padding(
+      padding: const EdgeInsets.all(12.0),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.2),
+              blurRadius: 10,
+              spreadRadius: 2,
             ),
-          ),
-          const SizedBox(height: 20),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Admin Section Title
+            Text(
+              "Admin Section",
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Colors.blueGrey.shade700,
+              ),
+            ),
+            const SizedBox(height: 20),
 
-          // Buttons Row
-          Row(
-            children: [
-              
-              Expanded(
-                child: InkWell(
-                  onTap: () => viewModel.getisApproved(),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    decoration: BoxDecoration(
-                      color: viewModel.getColor(viewModel.meetup!.approval??""),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Center(
-                      child: Text(
-                        viewModel.meetup!.approval??"",
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
+            // Buttons Row
+            Row(
+              children: [
+                Expanded(
+                  child: InkWell(
+                    onTap: () => viewModel.getisApproved(),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      decoration: BoxDecoration(
+                        color: viewModel
+                            .getColor(viewModel.meetup!.approval ?? ""),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Center(
+                        child: Text(
+                          viewModel.meetup!.approval ?? "",
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
+              ],
+            ),
+            const SizedBox(height: 16),
 
-          // More Info Button
-          Align(
-            alignment: Alignment.centerRight,
-            child: TextButton(
-              onPressed: () {
-                viewModel.getMeetup(meetup.meetupId??"");
-              },
-              child: Text(
-                "Meetup  Information",
-                style: TextStyle(
-                  color: Colors.blue,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  decoration: TextDecoration.underline,
+            // More Info Button
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton(
+                onPressed: () {
+                  viewModel.getMeetup(meetup.meetupId ?? "");
+                },
+                child: Text(
+                  "Meetup  Information",
+                  style: TextStyle(
+                    color: Colors.blue,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    decoration: TextDecoration.underline,
+                  ),
                 ),
               ),
             ),
-          ),
- DefaultTextInput(
-            controller: rejectionReasonController,
-            hintText: "Rejection Reason",
-            labelText: "Rejection Reason",
-            keyboardType: TextInputType.phone,
-            icon: Icons.cancel_rounded,
-          ),
-        ],
+            DefaultTextInput(
+              controller: rejectionReasonController,
+              hintText: "Rejection Reason",
+              labelText: "Rejection Reason",
+              keyboardType: TextInputType.phone,
+              icon: Icons.cancel_rounded,
+            ),
+          ],
+        ),
       ),
-    ),
-  );
-}
+    );
+  }
 }

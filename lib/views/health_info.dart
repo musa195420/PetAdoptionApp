@@ -1,7 +1,5 @@
 // ignore_for_file: must_be_immutable
 
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:petadoption/custom_widgets/stateful_wrapper.dart';
 import 'package:petadoption/viewModel/pet_view_model.dart';
@@ -101,7 +99,7 @@ class HealthInfo extends StatelessWidget {
                             InkWell(
                                 onTap: () {
                                   if (formKey.currentState!.validate()) {
-                                   viewModel.saveHealthInfo(info.petId);
+                                    viewModel.saveHealthInfo(info.petId);
                                   }
                                 },
                                 child: _buildAddPetButton(viewModel)),
@@ -191,7 +189,7 @@ class HealthInfo extends StatelessWidget {
               const SizedBox(width: 5),
               GestureDetector(
                 onTap: () async {
-                 viewModel.addDisability(info.animalId!);
+                  viewModel.addDisability(info.animalId!);
                 },
                 child: Container(
                   padding: const EdgeInsets.all(10),
@@ -231,7 +229,7 @@ class HealthInfo extends StatelessWidget {
               const SizedBox(width: 5),
               GestureDetector(
                 onTap: () async {
-               viewModel.addVaccination(info.animalId!);
+                  viewModel.addVaccination(info.animalId!);
                 },
                 child: Container(
                   padding: const EdgeInsets.all(10),

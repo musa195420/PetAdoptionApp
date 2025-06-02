@@ -16,6 +16,7 @@ import 'package:petadoption/viewModel/startup_viewmodel.dart';
 
 import '../../views/modals/admin_modals/user_edit_modal.dart';
 import '../../views/modals/admin_modals/userlink_modal.dart';
+
 class UserAdminViewModel extends BaseViewModel {
   // ignore: unused_element
   PrefService get _prefService => locator<PrefService>();
@@ -25,7 +26,7 @@ class UserAdminViewModel extends BaseViewModel {
   // ignore: unused_element
   StartupViewModel get _startModel => locator<StartupViewModel>();
   GlobalService get _globalService => locator<GlobalService>();
-  String? path;
+
   List<User>? users;
   List<User>? filteredUsers;
 
@@ -36,6 +37,7 @@ class UserAdminViewModel extends BaseViewModel {
     notifyListeners();
   }
 
+  String? path;
   void removeImagePath() {
     path = null;
     notifyListeners();
@@ -73,9 +75,7 @@ class UserAdminViewModel extends BaseViewModel {
             .toList();
         filteredUsers = List.from(users!);
       } else {
-        await _dialogService.showApiError(
-          usersRes.data
-        );
+        await _dialogService.showApiError(usersRes.data);
       }
     } catch (e, s) {
       _globalService.logError(
@@ -91,7 +91,8 @@ class UserAdminViewModel extends BaseViewModel {
       filteredUsers = List.from(users ?? []);
     } else {
       filteredUsers = users
-          ?.where((u) => u.email.toLowerCase().contains(pattern.toLowerCase()))
+          ?.where((u) =>
+              (u.email ?? "N/A").toLowerCase().contains(pattern.toLowerCase()))
           .toList();
     }
     notifyListeners();
@@ -130,11 +131,9 @@ class UserAdminViewModel extends BaseViewModel {
         var resDelete =
             await _apiService.deleteUser(SingleUser(userId: userId));
         if (resDelete.errorCode == "PA0004") {
-             _dialogService.showSuccess(text: "User Deleted Sucess Fully");
-          
+          _dialogService.showSuccess(text: "User Deleted Sucess Fully");
         } else {
-          await _dialogService.showApiError(
-              resDelete.data);
+          await _dialogService.showApiError(resDelete.data);
         }
       }
     } catch (e) {
@@ -163,8 +162,7 @@ class UserAdminViewModel extends BaseViewModel {
           _updateImage(user.userId, path!);
         }
       } else {
-        await _dialogService.showApiError(
-            updateUserRes.data);
+        await _dialogService.showApiError(updateUserRes.data);
       }
     } catch (e) {
       loading(false);

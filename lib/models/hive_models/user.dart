@@ -9,43 +9,41 @@ class User extends IHiveBaseModel<User> {
   String userId;
 
   @HiveField(1)
-  String email;
+  String? email;
 
   @HiveField(2)
-  String phoneNumber;
+  String? phoneNumber;
 
   @HiveField(3)
   String? password;
 
   @HiveField(4)
-  String role;
+  String? role;
 
   @HiveField(5)
-  String deviceId;
+  String? deviceId;
 
-  
   @HiveField(6)
   String? profileImage;
 
   User({
     required this.userId,
-    required this.email,
-    required this.phoneNumber,
-     this.password,
-    required this.role,
-    required this.deviceId,
+    this.email,
+    this.phoneNumber,
+    this.password,
+    this.role,
+    this.deviceId,
     this.profileImage,
   });
 
   factory User.fromJson(Map<String, dynamic> json) => User(
-        userId: json["user_id"],
-        email: json["email"],
-        phoneNumber: json["phone_number"],
-        password: json["password"],
-        role: json["role"],
-        deviceId: json["device_id"],
-        profileImage: json["profile_image"]
-      );
+      userId: json["user_id"],
+      email: json["email"],
+      phoneNumber: json["phone_number"],
+      password: json["password"],
+      role: json["role"],
+      deviceId: json["device_id"],
+      profileImage: json["profile_image"]);
 
   @override
   User fromJson(Map<String, dynamic> json) => User.fromJson(json);
@@ -58,6 +56,6 @@ class User extends IHiveBaseModel<User> {
         "password": password,
         "role": role,
         "device_id": deviceId,
-        "profile_image":profileImage,
+        "profile_image": profileImage,
       };
 }

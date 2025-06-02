@@ -20,7 +20,6 @@ class _UserEditModalState extends State<UserEditModal> {
   late TextEditingController emailController;
   late TextEditingController numberController;
 
-
   @override
   void initState() {
     super.initState();
@@ -30,7 +29,7 @@ class _UserEditModalState extends State<UserEditModal> {
     emailController = TextEditingController(text: widget.user.email);
     numberController = TextEditingController(text: widget.user.phoneNumber);
 
-    viewModel.role = widget.user.role;
+    viewModel.role = widget.user.role ?? "N/A";
   }
 
   @override
@@ -82,11 +81,8 @@ class _UserEditModalState extends State<UserEditModal> {
                           InkWell(
                             onTap: () {
                               if (formKey.currentState!.validate()) {
-                                viewModel.updateUser(
-                                  emailController.text,
-                                  numberController.text,
-                                 widget.user
-                                );
+                                viewModel.updateUser(emailController.text,
+                                    numberController.text, widget.user);
                               }
                             },
                             child: _buildUpdateUserButton(),
@@ -107,9 +103,8 @@ class _UserEditModalState extends State<UserEditModal> {
   Widget _buildUpdateUser(UserAdminViewModel viewModel) {
     return Form(
       key: formKey,
-
       child: Column(
-      spacing: 5,
+        spacing: 5,
         children: [
           const SizedBox(height: 15),
           DefaultTextInput(
@@ -192,9 +187,8 @@ class _UserEditModalState extends State<UserEditModal> {
           children: [
             Container(
               decoration: BoxDecoration(
-                color: viewModel.path != null
-                    ? Colors.brown
-                    : Colors.deepOrange,
+                color:
+                    viewModel.path != null ? Colors.brown : Colors.deepOrange,
                 borderRadius: BorderRadius.circular(30),
               ),
               padding: const EdgeInsets.symmetric(horizontal: 5),
@@ -276,9 +270,7 @@ class _UserEditModalState extends State<UserEditModal> {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
-                    color: isSelected
-                        ? Colors.orange.shade900
-                        : Colors.black87,
+                    color: isSelected ? Colors.orange.shade900 : Colors.black87,
                   ),
                 ),
               ],

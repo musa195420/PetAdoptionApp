@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:petadoption/custom_widgets/default_text_input.dart';
@@ -122,7 +124,11 @@ class PetEditModal extends StatelessWidget {
                             InkWell(
                               onTap: () {
                                 if (formKey.currentState!.validate()) {
-                                  viewModel.updatePet(nameController.text,int.parse(ageController.text),descriptionController.text,rejectionReason.text);
+                                  viewModel.updatePet(
+                                      nameController.text,
+                                      int.parse(ageController.text),
+                                      descriptionController.text,
+                                      rejectionReason.text);
                                 }
                               },
                               child: _buildUpdateStatusButton(),
@@ -348,130 +354,130 @@ class PetEditModal extends StatelessWidget {
     );
   }
 
-Widget _buildAdminEdit(PetAdminViewModel viewModel) {
-  String displayText = pet.isLive.toString() == 'true' ? "Live" : "Not Live";
-  Color liveColor = pet.isLive.toString() == 'true' ? Colors.green : Colors.red;
+  Widget _buildAdminEdit(PetAdminViewModel viewModel) {
+    String displayText = pet.isLive.toString() == 'true' ? "Live" : "Not Live";
+    Color liveColor =
+        pet.isLive.toString() == 'true' ? Colors.green : Colors.red;
 
-  return Padding(
-    padding: const EdgeInsets.all(12.0),
-    child: Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
-            blurRadius: 10,
-            spreadRadius: 2,
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Admin Section Title
-          Text(
-            "Admin Section",
-            style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              color: Colors.blueGrey.shade700,
+    return Padding(
+      padding: const EdgeInsets.all(12.0),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.2),
+              blurRadius: 10,
+              spreadRadius: 2,
             ),
-          ),
-          const SizedBox(height: 20),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Admin Section Title
+            Text(
+              "Admin Section",
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Colors.blueGrey.shade700,
+              ),
+            ),
+            const SizedBox(height: 20),
 
-          // Buttons Row
-          Row(
-            children: [
-              Expanded(
-                child: InkWell(
-                  onTap: () => viewModel.isLive(),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    decoration: BoxDecoration(
-                      color: liveColor.withOpacity(0.1),
-                      border: Border.all(color: liveColor),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Center(
-                      child: Text(
-                        displayText,
-                        style: TextStyle(
-                          color: liveColor,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
+            // Buttons Row
+            Row(
+              children: [
+                Expanded(
+                  child: InkWell(
+                    onTap: () => viewModel.isLive(),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      decoration: BoxDecoration(
+                        color: liveColor.withOpacity(0.1),
+                        border: Border.all(color: liveColor),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Center(
+                        child: Text(
+                          displayText,
+                          style: TextStyle(
+                            color: liveColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: InkWell(
-                  onTap: () => viewModel.getisApproved(),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    decoration: BoxDecoration(
-                      color: viewModel.getColor(),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Center(
-                      child: Text(
-                        viewModel.isApproved,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
+                const SizedBox(width: 12),
+                Expanded(
+                  child: InkWell(
+                    onTap: () => viewModel.getisApproved(),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      decoration: BoxDecoration(
+                        color: viewModel.getColor(),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Center(
+                        child: Text(
+                          viewModel.isApproved,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
+              ],
+            ),
+            const SizedBox(height: 16),
 
-          // More Info Button
-          Align(
-            alignment: Alignment.centerRight,
-            child: TextButton(
-              onPressed: () {
-                viewModel.userInfo(pet.donorId);
+            // More Info Button
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton(
+                onPressed: () {
+                  viewModel.userInfo(pet.donorId);
+                },
+                child: Text(
+                  "User  Information",
+                  style: TextStyle(
+                    color: Colors.blue,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    decoration: TextDecoration.underline,
+                  ),
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 16),
+
+            // Rejection Reason Input
+            DefaultTextInput(
+              controller: rejectionReason,
+              hintText: "Enter reason for rejection",
+              labelText: "Rejection Reason",
+              icon: Icons.cancel_outlined,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter rejection reason';
+                }
+                return null;
               },
-              child: Text(
-                "User  Information",
-                style: TextStyle(
-                  color: Colors.blue,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  decoration: TextDecoration.underline,
-                ),
-              ),
             ),
-          ),
-
-          const SizedBox(height: 16),
-
-          // Rejection Reason Input
-          DefaultTextInput(
-            controller: rejectionReason,
-            hintText: "Enter reason for rejection",
-            labelText: "Rejection Reason",
-            icon: Icons.cancel_outlined,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter rejection reason';
-              }
-              return null;
-            },
-          ),
-        ],
+          ],
+        ),
       ),
-    ),
-  );
-}
-
+    );
+  }
 }

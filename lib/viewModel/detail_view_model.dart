@@ -1,12 +1,9 @@
 import 'package:petadoption/helpers/locator.dart';
 import 'package:petadoption/models/response_models/pet_response.dart';
 import 'package:petadoption/services/api_service.dart';
-import 'package:petadoption/services/global_service.dart';
 import 'package:petadoption/viewModel/base_view_model.dart';
-import 'package:petadoption/viewModel/startup_viewmodel.dart';
 
 import '../models/hive_models/user.dart';
-import '../models/request_models/delete_user.dart';
 import '../models/request_models/userinforequest.dart';
 import '../services/dialog_service.dart';
 import '../services/navigation_service.dart';
@@ -15,8 +12,6 @@ class DetailViewModel extends BaseViewModel {
   NavigationService get _navigationService => locator<NavigationService>();
   IDialogService get _dialogService => locator<IDialogService>();
   IAPIService get _apiService => locator<IAPIService>();
-  GlobalService get _globalService => locator<GlobalService>();
-  StartupViewModel get _startupViewModel => locator<StartupViewModel>();
 
   PetResponse? pet;
   User? user;

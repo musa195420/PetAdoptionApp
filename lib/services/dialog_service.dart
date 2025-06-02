@@ -244,17 +244,25 @@ class DialogService implements IDialogService {
   }
 
   @override
-  Future<bool> showApiError(ErrorResponse? errorResponse) async {
+  Future<bool> showApiError(dynamic dynamicRes) async {
     String code = "404";
     String error = "An Error Occurred";
-    String message = "Please  Contact the administrator. Or Get Back To Us Later!";
-
-    if(errorResponse!=null)
-    {
-        error=errorResponse.error?? "An Unexpected Error Occurred";
-        code = errorResponse.errorCode??"404";
-         message="Please  Contact the administrator. Or Get Back To Us Later!";
+    String message =
+        "Please  Contact the administrator. Or Get Back To Us Later!";
+    ErrorResponse? errorResponse;
+    try {
+      errorResponse = dynamicRes as ErrorResponse;
+    } catch (e) {
+      errorResponse = ErrorResponse(
+          error: "Server Not Reachable",
+          errorCode: "500",
+          message:
+              "Please  Contact the administrator. Or Get Back To Us Later!");
     }
+
+    error = errorResponse.error ?? "An Unexpected Error Occurred";
+    code = errorResponse.errorCode ?? "404";
+    message = "Please  Contact the administrator. Or Get Back To Us Later!";
 
     if (EasyLoading.isShow) {
       await EasyLoading.dismiss();
@@ -491,6 +499,6 @@ abstract class IDialogService {
   Future<bool> showAlertDialog(Message message);
   Future<int> showSelect(Message message);
   Future<bool> showAlert(Message message);
-  Future<bool> showApiError(ErrorResponse? error);
+  Future<bool> showApiError(dynamic error);
   Future<void> showToast(Message message);
 }

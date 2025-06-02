@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:flutter/material.dart';
 import 'package:petadoption/custom_widgets/stateful_wrapper.dart';
 import 'package:petadoption/viewModel/admin_view_models/general_config_view_model.dart';
@@ -7,7 +9,8 @@ import '../../../../models/response_models/animal_Type.dart';
 import 'package:provider/provider.dart';
 
 import '../../../services/navigation_service.dart';
-  NavigationService get _navigationService => locator<NavigationService>();
+
+NavigationService get _navigationService => locator<NavigationService>();
 dynamic formKey = GlobalKey<FormState>();
 dynamic formKey2 = GlobalKey<FormState>();
 
@@ -53,13 +56,12 @@ class AnimalConfigModal extends StatelessWidget {
   }
 
   Widget _buildAddAnimal(GeneralConfigViewModel viewModel) {
-
     return Form(
       key: formKey2,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
-           spacing: 10,
+          spacing: 10,
           children: [
             Row(
               children: [
@@ -73,94 +75,99 @@ class AnimalConfigModal extends StatelessWidget {
                       color: const Color.fromARGB(255, 146, 61, 5),
                     ),
                     padding: const EdgeInsets.all(3),
-                    child: const Icon(Icons.arrow_back, size: 30, color: Colors.white),
+                    child: const Icon(Icons.arrow_back,
+                        size: 30, color: Colors.white),
                   ),
                 ),
                 const SizedBox(width: 60),
                 Center(
                   child: Text(
-                    
-                              "Add Animal",
-                              style: TextStyle(
-                  color: const Color.fromARGB(255, 146, 61, 5),
-                  fontSize: 30,
-                  fontWeight: FontWeight.w700),
-                            ),
+                    "Add Animal",
+                    style: TextStyle(
+                        color: const Color.fromARGB(255, 146, 61, 5),
+                        fontSize: 30,
+                        fontWeight: FontWeight.w700),
+                  ),
                 ),
               ],
             ),
-
-                Divider(thickness: 2,color: const Color.fromARGB(255, 146, 61, 5),),
-             Expanded(
+            Divider(
+              thickness: 2,
+              color: const Color.fromARGB(255, 146, 61, 5),
+            ),
+            Expanded(
               flex: 1,
-                  child: Column(
-                    spacing: 10,
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          gradient: const LinearGradient(
-                            colors: [Colors.black,  Color.fromARGB(255, 146, 61, 5)],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: TabBar(
-                          controller: TabController(initialIndex: viewModel.selectedIndex,length: 2, vsync: Navigator.of(_navigationService.navigatorKey.currentContext!)),
-                          labelColor: Colors.white,
-                          unselectedLabelColor: Colors.white70,
-                        
-                          indicatorColor: Colors.white,
-                          onTap: (index)
-                          {
-                           viewModel.setselectedIndex(index);
-
-                          },
-                          tabs: const [
-                            Tab(text: "Add Single"),
-                            Tab(text: "Add In Bulk"),
-                          ],
-                        ),
+              child: Column(
+                spacing: 10,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [Colors.black, Color.fromARGB(255, 146, 61, 5)],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
                       ),
-                    ],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TabBar(
+                      controller: TabController(
+                          initialIndex: viewModel.selectedIndex,
+                          length: 2,
+                          vsync: Navigator.of(
+                              _navigationService.navigatorKey.currentContext!)),
+                      labelColor: Colors.white,
+                      unselectedLabelColor: Colors.white70,
+                      indicatorColor: Colors.white,
+                      onTap: (index) {
+                        viewModel.setselectedIndex(index);
+                      },
+                      tabs: const [
+                        Tab(text: "Add Single"),
+                        Tab(text: "Add In Bulk"),
+                      ],
+                    ),
                   ),
-                ),
-          Expanded(
-            flex: 3,
-            child: Column(children: [
-              const SizedBox(height: 10),
-          if(viewModel.selectedIndex==0)
-            DefaultTextInput(
-              controller: nameController,
-              labelText: "Name",
-              hintText: "Name",
-              icon: Icons.pets_outlined,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Enter Your Name Please';
-                }
-                return null;
-              },
+                ],
+              ),
             ),
-             if(viewModel.selectedIndex==1)
-            DefaultTextInput(
-              controller: nameController,
-              labelText: "Add Names In Bulk",
-              hintText: "Separate By Commas For Example Leopard,Lion",
-              maxLines: 5,
-              icon: Icons.pets_outlined,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Enter animal names';
-                }
-                return null;
-              },
-            ),
-          ],)),
+            Expanded(
+                flex: 3,
+                child: Column(
+                  children: [
+                    const SizedBox(height: 10),
+                    if (viewModel.selectedIndex == 0)
+                      DefaultTextInput(
+                        controller: nameController,
+                        labelText: "Name",
+                        hintText: "Name",
+                        icon: Icons.pets_outlined,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Enter Your Name Please';
+                          }
+                          return null;
+                        },
+                      ),
+                    if (viewModel.selectedIndex == 1)
+                      DefaultTextInput(
+                        controller: nameController,
+                        labelText: "Add Names In Bulk",
+                        hintText: "Separate By Commas For Example Leopard,Lion",
+                        maxLines: 5,
+                        icon: Icons.pets_outlined,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Enter animal names';
+                          }
+                          return null;
+                        },
+                      ),
+                  ],
+                )),
             _buildButton(viewModel, "Add Animal", () {
               if (formKey2.currentState!.validate()) {
                 viewModel.animalName = nameController.text;
-               viewModel.addAnimal(nameController.text);
+                viewModel.addAnimal(nameController.text);
               }
             }),
           ],
@@ -192,7 +199,8 @@ class AnimalConfigModal extends StatelessWidget {
                       color: const Color.fromARGB(255, 146, 61, 5),
                     ),
                     padding: const EdgeInsets.all(3),
-                    child: const Icon(Icons.arrow_back, size: 30, color: Colors.white),
+                    child: const Icon(Icons.arrow_back,
+                        size: 30, color: Colors.white),
                   ),
                 ),
                 const SizedBox(width: 80),
@@ -214,14 +222,16 @@ class AnimalConfigModal extends StatelessWidget {
               readOnly: true,
               enabled: false,
               icon: Icons.unarchive,
-              validator: (value) => value == null || value.isEmpty ? 'ID required' : null,
+              validator: (value) =>
+                  value == null || value.isEmpty ? 'ID required' : null,
             ),
             DefaultTextInput(
               controller: nameController,
               labelText: "Name",
               hintText: "Name",
               icon: Icons.pets_outlined,
-              validator: (value) => value == null || value.isEmpty ? 'Name required' : null,
+              validator: (value) =>
+                  value == null || value.isEmpty ? 'Name required' : null,
             ),
             _buildButton(viewModel, "Update Animal", () {
               if (formKey.currentState!.validate()) {
@@ -235,7 +245,8 @@ class AnimalConfigModal extends StatelessWidget {
     );
   }
 
-  Widget _buildButton(GeneralConfigViewModel viewModel, String text, Function() onTap) {
+  Widget _buildButton(
+      GeneralConfigViewModel viewModel, String text, Function() onTap) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 60),
       decoration: BoxDecoration(
@@ -246,7 +257,8 @@ class AnimalConfigModal extends StatelessWidget {
         onTap: onTap,
         child: Text(
           text,
-          style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
+          style:
+              const TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
         ),
       ),
     );
@@ -269,7 +281,8 @@ class AnimalConfigModal extends StatelessWidget {
                     color: const Color.fromARGB(255, 146, 61, 5),
                   ),
                   padding: const EdgeInsets.all(3),
-                  child: const Icon(Icons.arrow_back, size: 30, color: Colors.white),
+                  child: const Icon(Icons.arrow_back,
+                      size: 30, color: Colors.white),
                 ),
               ),
               Expanded(
@@ -304,7 +317,9 @@ class AnimalConfigModal extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         Expanded(
-          child: viewModel.filteredAnimals == null || viewModel.filteredAnimals!.isEmpty              ? const Center(child: Text("No Animals loaded."))
+          child: viewModel.filteredAnimals == null ||
+                  viewModel.filteredAnimals!.isEmpty
+              ? const Center(child: Text("No Animals loaded."))
               : ListView.builder(
                   padding: const EdgeInsets.all(2),
                   itemCount: viewModel.filteredAnimals!.length,
@@ -318,32 +333,32 @@ class AnimalConfigModal extends StatelessWidget {
     );
   }
 
-  Widget _buildUserCard(BuildContext context, AnimalType animals, GeneralConfigViewModel viewModel) {
+  Widget _buildUserCard(BuildContext context, AnimalType animals,
+      GeneralConfigViewModel viewModel) {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       elevation: 4,
       margin: const EdgeInsets.symmetric(vertical: 8),
       child: ListTile(
-  title: Text("⦾   ${animals.name}"),
-  trailing: Row(
-    mainAxisSize: MainAxisSize.min, // <-- Add this line
-    children: [
-     
-      IconButton(
-        icon: const Icon(Icons.edit),
-        onPressed: () {
-          viewModel.gotoEditAnimal(animals);
-        },
+        title: Text("⦾   ${animals.name}"),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min, // <-- Add this line
+          children: [
+            IconButton(
+              icon: const Icon(Icons.edit),
+              onPressed: () {
+                viewModel.gotoEditAnimal(animals);
+              },
+            ),
+            IconButton(
+              icon: const Icon(Icons.delete, color: Colors.red),
+              onPressed: () {
+                viewModel.deleteAnimal(animals.animalId);
+              },
+            )
+          ],
+        ),
       ),
-       IconButton(
-        icon: const Icon(Icons.delete, color: Colors.red),
-        onPressed: () {
-          viewModel.deleteAnimal(animals.animalId);
-        },
-      )
-    ],
-  ),
-),
     );
   }
 }

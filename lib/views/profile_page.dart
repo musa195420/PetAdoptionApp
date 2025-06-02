@@ -1,10 +1,14 @@
+// ignore_for_file: deprecated_member_use
+
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:petadoption/custom_widgets/stateful_wrapper.dart';
 import 'package:petadoption/viewModel/profile_view_model.dart';
 import 'package:provider/provider.dart';
 
 class ProfilePage extends StatelessWidget {
-  ProfilePage({super.key});
+  const ProfilePage({super.key});
 
   final Color primaryColor = const Color(0xFF3E2723);
   final Color accentColor = const Color.fromARGB(255, 83, 36, 6);
@@ -25,18 +29,45 @@ class ProfilePage extends StatelessWidget {
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.all(16),
                   child: Column(
+                    spacing: 20,
                     children: [
-                      const SizedBox(height: 20),
                       _profileHeader(viewModel),
-                      const SizedBox(height: 20),
                       _buildInfoSection(viewModel),
-                      const SizedBox(height: 24),
                       _logoutButton(context, viewModel),
                     ],
                   ),
                 ),
               ),
       ),
+    );
+  }
+
+  Widget updateInfo(ProfileViewModel viewModel) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        InkWell(
+          onTap: () async {
+            await viewModel.updateUser();
+          },
+          child: Container(
+            margin: EdgeInsets.all(5),
+            padding: EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+            decoration: BoxDecoration(
+              color: Color.fromARGB(255, 99, 34, 10),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Text(
+              "Update",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -52,19 +83,31 @@ class ProfilePage extends StatelessWidget {
             CircleAvatar(
               radius: 52,
               backgroundColor: accentColor.withOpacity(0.1),
-              backgroundImage: user.profileImage != null
-                  ? NetworkImage(user.profileImage!)
-                  : const AssetImage('assets/images/noprofile.png')
-                      as ImageProvider,
+              backgroundImage: viewModel.path != null
+                  ? FileImage(File(viewModel.path!))
+                  : user.profileImage != null
+                      ? NetworkImage(user.profileImage!)
+                      : const AssetImage('assets/images/noprofile.png'),
             ),
-            Container(
-              padding: const EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                shape: BoxShape.circle,
-                border: Border.all(color: Colors.grey.shade300),
+            InkWell(
+              onTap: () {
+                if (viewModel.path != null) {
+                  viewModel.removeImagePath();
+                } else {
+                  viewModel.saveImagePath();
+                }
+              },
+              child: Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                  border: Border.all(color: Colors.grey.shade300),
+                ),
+                child: viewModel.path != null
+                    ? Icon(Icons.delete, size: 20, color: primaryColor)
+                    : Icon(Icons.camera_alt, size: 20, color: primaryColor),
               ),
-              child: Icon(Icons.camera_alt, size: 20, color: primaryColor),
             ),
           ],
         ),
@@ -77,9 +120,9 @@ class ProfilePage extends StatelessWidget {
             color: primaryColor,
           ),
         ),
-        if (user.email.isNotEmpty)
+        if (user.email != null)
           Text(
-            "@${user.email.split("@")[0]}",
+            "@${(user.email ?? "N/A").split("@")[0]}",
             style: const TextStyle(color: Colors.grey),
           ),
       ],
@@ -95,41 +138,51 @@ class ProfilePage extends StatelessWidget {
         _buildExpandableCard(
           title: "Personal Information",
           children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                InkWell(
+                  onTap: () {
+                    viewModel.seteditMode(!viewModel.editMode);
+                  },
+                  child: Row(
+                    children: [
+                      Text(
+                        "Edit ",
+                        style: TextStyle(
+                            color: accentColor,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500),
+                      ),
+                      Icon(
+                        Icons.edit,
+                        size: 16,
+                        color: accentColor,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
             viewModel.editMode
                 ? _editableField("Name", viewModel.nameController)
                 : _infoTile("Name", profile?.name ?? "-"),
-            _infoTile("Email", user.email),
+            _infoTile("Email", user.email ?? "N/A"),
             viewModel.editMode
                 ? _editableField("Phone", viewModel.phoneController)
-                : _infoTile("Phone", user.phoneNumber ?? "-"),
+                : _infoTile("Phone", user.phoneNumber ?? "N/A"),
             viewModel.editMode
                 ? _editableField("Address", viewModel.addressController)
                 : _infoTile("Address", profile?.location ?? "-"),
-            Align(
-              alignment: Alignment.centerRight,
-              child: Row(
-                children: [
-                  InkWell(
-                    onTap: () {
-                      viewModel.seteditMode(!viewModel.editMode);
-                    },
-                    child: Icon(
-                      Icons.edit,
-                      size: 25,
-                      color: accentColor,
-                    ),
-                  ),
-                ],
-              ),
-            ),
           ],
         ),
+        if (viewModel.editMode) updateInfo(viewModel),
         const SizedBox(height: 16),
         _buildExpandableCard(
           title: "Login and Security",
           children: [
-            _infoTile("Role", user.role),
-            _infoTile("Device ID", user.deviceId),
+            _infoTile("Role", user.role ?? "N/A"),
+            _infoTile("Device ID", user.deviceId ?? "N/A"),
             _infoTile(
               "Is Active",
               (profile?.isActive ?? false) ? "Yes" : "No",
@@ -213,7 +266,7 @@ class ProfilePage extends StatelessWidget {
   Widget _logoutButton(BuildContext context, ProfileViewModel viewModel) {
     return ElevatedButton.icon(
       style: ElevatedButton.styleFrom(
-        backgroundColor: Color.fromARGB(255, 213, 101, 25),
+        backgroundColor: Color.fromARGB(255, 99, 34, 10),
         foregroundColor: Colors.white,
         minimumSize: const Size.fromHeight(48),
         padding: EdgeInsets.all(20),

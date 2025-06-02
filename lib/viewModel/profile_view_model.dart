@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:petadoption/helpers/locator.dart';
 import 'package:petadoption/models/response_models/pet_response.dart';
 import 'package:petadoption/services/api_service.dart';
@@ -8,15 +9,14 @@ import 'package:petadoption/viewModel/startup_viewmodel.dart';
 
 import '../models/hive_models/user.dart';
 import '../models/request_models/delete_user.dart';
-import '../models/request_models/userinforequest.dart';
 import '../models/response_models/user_profile.dart';
 import '../services/dialog_service.dart';
 import '../services/navigation_service.dart';
 
 class ProfileViewModel extends BaseViewModel {
   NavigationService get _navigationService => locator<NavigationService>();
-  IDialogService get _dialogService => locator<IDialogService>();
   IAPIService get _apiService => locator<IAPIService>();
+  IDialogService get _dialogService => locator<IDialogService>();
   GlobalService get _globalService => locator<GlobalService>();
   StartupViewModel get _startupViewModel => locator<StartupViewModel>();
 
@@ -40,6 +40,97 @@ class ProfileViewModel extends BaseViewModel {
   void goBack() async {
     await _navigationService.pushNamedAndRemoveUntil(Routes.home,
         args: TransitionType.slideLeft);
+  }
+
+  String? path;
+  void removeImagePath() {
+    path = null;
+    notifyListeners();
+  }
+
+  Future<void> saveImagePath() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile == null) return;
+    path = pickedFile.path;
+
+    notifyListeners();
+  }
+
+  Future<void> updateUserImage() async {
+    if (path != null) {
+      final status = await _apiService.uploadProfileImage(path!, user!.userId);
+      if (status.data != null) {
+        debugPrint("Upload success: ${status.data}");
+      } else {
+        debugPrint("Upload failed: ${status.errorCode}");
+      }
+    }
+  }
+
+  Future<void> updateUser() async {
+    try {
+      loading(true, loadingText: "Updating User");
+      if (path != null) {
+        await updateUserImage();
+      }
+
+      await updateRel(user!.role ?? "N/A");
+      var updateUserRes = await _apiService.updateUser(User(
+          userId: user!.userId,
+          phoneNumber: phoneController.text.toString(),
+          email: user!.email,
+          deviceId: user!.deviceId,
+          role: user!.role ?? "Adopter"));
+      if (updateUserRes.errorCode == "PA0004") {
+        debugPrint("User Updated Success Fully");
+        loading(false);
+      } else {
+        await _dialogService.showApiError(updateUserRes.data);
+      }
+
+      // ignore: empty_catches
+    } catch (e, s) {
+      debugPrint("Error ${e.toString()} \n Stack ${s.toString()}");
+    } finally {
+      loading(
+        false,
+      );
+    }
+  }
+
+  Future<void> updateRel(String role) async {
+    switch (role.toLowerCase()) {
+      case "adopter":
+        {
+          var res = await _apiService.updateAdopter(UserProfile(
+              name: nameController.text,
+              location: addressController.text,
+              adopterId: user!.userId,
+              isActive: false));
+          if (res.errorCode == "PA0004") {
+            debugPrint("Adopter Updated Success Fully");
+            loading(false);
+          } else {
+            await _dialogService.showApiError(res.data);
+          }
+        }
+      case "donor":
+        {
+          var res = await _apiService.updateDonor(UserProfile(
+              name: nameController.text,
+              location: addressController.text,
+              donorId: user!.userId,
+              isActive: false));
+          if (res.errorCode == "PA0004") {
+            debugPrint("Donor Updated Success Fully");
+            loading(false);
+          } else {
+            await _dialogService.showApiError(res.data);
+          }
+        }
+    }
   }
 
   void getUser() async {
