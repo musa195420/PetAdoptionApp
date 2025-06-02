@@ -12,6 +12,7 @@ import '../models/request_models/delete_user.dart';
 import '../models/response_models/user_profile.dart';
 import '../services/dialog_service.dart';
 import '../services/navigation_service.dart';
+import '../views/modals/admin_modals/pet_edit_modal.dart';
 
 class ProfileViewModel extends BaseViewModel {
   NavigationService get _navigationService => locator<NavigationService>();
@@ -20,7 +21,7 @@ class ProfileViewModel extends BaseViewModel {
   GlobalService get _globalService => locator<GlobalService>();
   StartupViewModel get _startupViewModel => locator<StartupViewModel>();
 
-  PetResponse? pet;
+  List<PetResponse>? pet;
   User? user;
 
   UserProfile? userProfile;
@@ -40,6 +41,22 @@ class ProfileViewModel extends BaseViewModel {
   void goBack() async {
     await _navigationService.pushNamedAndRemoveUntil(Routes.home,
         args: TransitionType.slideLeft);
+  }
+
+  Color getColor(String isApproved) {
+    switch (isApproved) {
+      case "Approved":
+        return Colors.green;
+
+      case "Pending":
+        return Colors.grey;
+
+      case "Rejected":
+        return Colors.red;
+
+      default:
+        return Colors.grey;
+    }
   }
 
   String? path;
@@ -150,6 +167,9 @@ class ProfileViewModel extends BaseViewModel {
 
       if (profileRes.errorCode == "PA0004") {
         userProfile = profileRes.data as UserProfile;
+        if (user!.role.toString().toLowerCase() == "donor") {
+          await getPet(userId);
+        }
         // Pre-fill text fields
         nameController.text = userProfile?.name ?? '';
         phoneController.text = user?.phoneNumber ?? '';
@@ -165,6 +185,22 @@ class ProfileViewModel extends BaseViewModel {
     }
   }
 
+  Future<void> getPet(String userId) async {
+    var resPet = await _apiService.getPetByUserId(SingleUser(userId: userId));
+    if (resPet.errorCode == "PA0004") {
+      try {
+        pet = (resPet.data as List)
+            .map((json) => PetResponse.fromJson(json as Map<String, dynamic>))
+            .toList();
+        debugPrint(pet!.first.name.toString());
+      } catch (e) {
+        debugPrint("Error ${e.toString()}");
+      }
+    } else {
+      return;
+    }
+  }
+
   void logout() async {
     await _startupViewModel.logout();
   }
@@ -175,4 +211,9 @@ class ProfileViewModel extends BaseViewModel {
   }
 
   Future<void> updateProfile() async {}
+
+  gotopetDetail(PetResponse pet) async {
+    await _navigationService.pushModalBottom(Routes.pet_edit_modal,
+        data: PetEditModal(pet: pet));
+  }
 }

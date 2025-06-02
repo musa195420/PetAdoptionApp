@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:petadoption/helpers/locator.dart';
+import 'package:petadoption/models/hive_models/user.dart';
 import 'package:petadoption/models/message.dart';
 import 'package:petadoption/models/request_models/single_pet.dart';
 import 'package:petadoption/models/response_models/pet_response.dart';
@@ -109,9 +110,7 @@ class PetAdminViewModel extends BaseViewModel {
             .toList();
         filteredPets = List.from(pets!);
       } else {
-        await _dialogService.showApiError(
-          petRes.data
-        );
+        await _dialogService.showApiError(petRes.data);
       }
     } catch (e, s) {
       _globalService.logError(
@@ -140,7 +139,7 @@ class PetAdminViewModel extends BaseViewModel {
   }
 
   void gotoEditPet(PetResponse pet) async {
-    path=null;
+    path = null;
     await _navigationService.pushModalBottom(Routes.pet_edit_modal,
         data: PetEditModal(pet: pet));
   }
@@ -153,10 +152,9 @@ class PetAdminViewModel extends BaseViewModel {
       if (res) {
         var resDelete = await _apiService.deletePet(SinglePet(petId: petId));
         if (resDelete.errorCode == "PA0004") {
-            _dialogService.showSuccess(text: "Deleted Pet SuccessFully");
+          _dialogService.showSuccess(text: "Deleted Pet SuccessFully");
         } else {
-          await _dialogService.showApiError(
-              resDelete.data);
+          await _dialogService.showApiError(resDelete.data);
         }
       }
     } catch (e) {
@@ -165,6 +163,10 @@ class PetAdminViewModel extends BaseViewModel {
     } finally {
       loading(false);
     }
+  }
+
+  User? getUser() {
+    return _globalService.getuser();
   }
 
   void updatePet(
@@ -197,15 +199,12 @@ class PetAdminViewModel extends BaseViewModel {
 
       if (updatePetrRes.errorCode == "PA0004") {
         _dialogService.showSuccess(text: "Updated Pet SuccessFully");
-        
-      if(path!=null)
-      {
-        updatepetImage(pet!.petId);
-      }
 
+        if (path != null) {
+          updatepetImage(pet!.petId);
+        }
       } else {
-        await _dialogService.showApiError(
-            updatePetrRes.data);
+        await _dialogService.showApiError(updatePetrRes.data);
       }
     } catch (e) {
       loading(false);
@@ -262,7 +261,6 @@ class PetAdminViewModel extends BaseViewModel {
   }
 
   void userInfo(String id) async {
-    _userModel.showLink(id,isAdmin: true);
+    _userModel.showLink(id, isAdmin: true);
   }
-
 }

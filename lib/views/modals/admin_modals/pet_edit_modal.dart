@@ -43,6 +43,7 @@ class PetEditModal extends StatelessWidget {
     return StatefulWrapper(
       onInit: () {
         viewModel.isApproved = pet.isApproved ?? "Pending";
+        viewModel.removeImagePath();
       },
       onDispose: () {
         nameController.dispose();
@@ -118,7 +119,9 @@ class PetEditModal extends StatelessWidget {
                                     _buildUpdatePet(viewModel),
                                   ],
                                 )),
-                            _buildAdminEdit(viewModel),
+                            if ((viewModel.getUser()!.role ?? "donor") ==
+                                "admin")
+                              _buildAdminEdit(viewModel),
                             const SizedBox(height: 10),
                             const SizedBox(height: 20),
                             InkWell(
