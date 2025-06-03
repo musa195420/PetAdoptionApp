@@ -1,13 +1,14 @@
-class HealthInfoModel{
-
-   String petId;
-   String? vaccinationId;
-   String? diseaseId;
-   String? disabilityId;
-   String? animalId;
+class HealthInfoModel {
+  String? healthId;
+  String petId;
+  String? vaccinationId;
+  String? diseaseId;
+  String? disabilityId;
+  String? animalId;
 
   HealthInfoModel({
     required this.petId,
+    this.healthId,
     this.vaccinationId,
     this.diseaseId,
     this.disabilityId,
@@ -20,7 +21,7 @@ class HealthInfoModel{
       vaccinationId: json['vaccination_id'],
       diseaseId: json['disease_id'],
       disabilityId: json['disability_id'],
-     
+      healthId: json['health_id'],
     );
   }
 
@@ -30,9 +31,7 @@ class HealthInfoModel{
       'vaccination_id': vaccinationId,
       'disease_id': diseaseId,
       'disability_id': disabilityId,
-     
+      'health_id': healthId,
     };
   }
-
-
 }

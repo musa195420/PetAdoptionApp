@@ -21,6 +21,7 @@ import 'package:petadoption/viewModel/home_view_model.dart';
 
 import '../viewModel/admin_view_models/adopter_admin_view_model.dart';
 import '../viewModel/admin_view_models/donor_admin_view_model.dart';
+import '../viewModel/admin_view_models/health_admin_view_model.dart';
 import '../viewModel/admin_view_models/user_admin_view_model.dart';
 import '../viewModel/detail_view_model.dart';
 import '../viewModel/pet_view_model.dart';
@@ -60,6 +61,7 @@ class LocatorInjector {
       locator.registerLazySingleton(() => PetAdminViewModel());
       locator.registerLazySingleton(() => GeneralConfigViewModel());
       locator.registerLazySingleton(() => SecuremeetupAdminViewModel());
+      locator.registerLazySingleton(() => HealthAdminViewModel());
       locator.registerLazySingleton(() => DetailViewModel());
       locator.registerLazySingleton(() => ProfileViewModel());
 

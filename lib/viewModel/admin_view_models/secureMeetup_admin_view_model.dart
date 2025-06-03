@@ -270,7 +270,6 @@ class SecuremeetupAdminViewModel extends BaseViewModel {
 
         await _navigationService.pushModalBottom(Routes.meetup_edit_modal,
             data: MeetupEdit(meetup: meets!));
-        debugPrint("Secure Updated Success Fully");
       } else {
         await _dialogService.showApiError(res.data);
       }

@@ -32,7 +32,10 @@ import 'package:petadoption/views/startup.dart';
 
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import '../helpers/locator.dart';
+import '../models/response_models/health_info.dart';
+import '../views/admin_views/health_admin.dart';
 import '../views/modals/admin_modals/donor_edit_modal.dart';
+import '../views/modals/admin_modals/health_info_modal.dart';
 import '../views/modals/admin_modals/meetup_edit_modal.dart';
 import '../views/modals/admin_modals/userlink_modal.dart';
 import '../views/modals/detail_modal.dart';
@@ -58,10 +61,12 @@ class Routes {
   static const String donor_edit_modal = "donor_edit_modal";
   static const String adopter_edit_modal = "adopter_edit_modal";
   static const String pet_edit_modal = "pet_edit_modal";
+  static const String health_modal = "health_modal";
   static const String userAdmin = "userAdmin";
   static const String adopterAdmin = "adopterAdmin";
   static const String donorAdmin = "donorAdmin";
   static const String petAdmin = "petAdmin";
+  static const String healthAdmin = "healthAdmin";
   static const String secureAdmin = "secureAdmin";
   static const String animal_config_modal = "animal_config_modal";
   static const String breed_config_modal = "breed_config_modal";
@@ -358,6 +363,15 @@ class NavigationService {
               builder: (context) => DetailModal(pet: data.pet));
         }
         break;
+
+      case Routes.health_modal:
+        {
+          showBarModalBottomSheet(
+              expand: true,
+              context: navigatorKey.currentContext!,
+              backgroundColor: Colors.transparent,
+              builder: (context) => HealthInfoModal(info: data.info));
+        }
     }
   }
 
@@ -611,6 +625,22 @@ class RouteManager {
             pageBuilder: (BuildContext context, Animation<double> animation,
                 Animation<double> secondaryAnimation) {
               return UserAdmin();
+            },
+            transitionsBuilder: (BuildContext context,
+                Animation<double> animation,
+                Animation<double> secondaryAnimation,
+                Widget child) {
+              return _transitionsBuilder(transition, animation, child);
+            },
+          );
+        }
+
+      case Routes.healthAdmin:
+        {
+          return PageRouteBuilder(
+            pageBuilder: (BuildContext context, Animation<double> animation,
+                Animation<double> secondaryAnimation) {
+              return HealthAdmin();
             },
             transitionsBuilder: (BuildContext context,
                 Animation<double> animation,

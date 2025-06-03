@@ -13,6 +13,8 @@ import 'package:petadoption/viewModel/base_view_model.dart';
 import 'package:petadoption/viewModel/pet_view_model.dart';
 import 'package:petadoption/views/modals/admin_modals/pet_edit_modal.dart';
 
+import '../../models/response_models/health_info.dart';
+import '../../views/modals/admin_modals/health_info_modal.dart';
 import 'user_admin_view_model.dart';
 
 class PetAdminViewModel extends BaseViewModel {
@@ -79,6 +81,26 @@ class PetAdminViewModel extends BaseViewModel {
       } else {
         debugPrint("Upload failed: ${status.errorCode}");
       }
+    }
+  }
+
+  Future<void> gotoEdithealth(PetResponse pet) async {
+    try {
+      loading(true);
+      var res = await _apiService.getHealthByPetId(SinglePet(petId: pet.petId));
+
+      if (res.errorCode == "PA0004") {
+        await _navigationService.pushModalBottom(Routes.health_modal,
+            data: HealthInfoModal(
+              info: res.data as PetHealthInfo,
+            ));
+      } else {
+        await _dialogService.showApiError(res.data);
+      }
+    } catch (e, s) {
+      _globalService.logError("Error Occured", e.toString(), s);
+    } finally {
+      loading(false);
     }
   }
 

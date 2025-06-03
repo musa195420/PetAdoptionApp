@@ -10,6 +10,7 @@ import 'package:provider/single_child_widget.dart';
 
 import '../viewModel/admin_view_models/admin_view_model.dart';
 import '../viewModel/admin_view_models/adopter_admin_view_model.dart';
+import '../viewModel/admin_view_models/health_admin_view_model.dart';
 import '../viewModel/admin_view_models/pet_admin_view_model.dart';
 import '../viewModel/admin_view_models/user_admin_view_model.dart';
 import '../viewModel/detail_view_model.dart';
@@ -41,6 +42,7 @@ class ProviderInjector {
         create: (_) => locator<SecuremeetupAdminViewModel>()),
     ChangeNotifierProvider(create: (_) => locator<DetailViewModel>()),
     ChangeNotifierProvider(create: (_) => locator<ProfileViewModel>()),
+    ChangeNotifierProvider(create: (_) => locator<HealthAdminViewModel>()),
   ];
 
   static final List<SingleChildWidget> _dependentServices = [];

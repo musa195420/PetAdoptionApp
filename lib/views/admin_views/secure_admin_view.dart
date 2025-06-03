@@ -104,84 +104,95 @@ class SecureAdminView extends StatelessWidget {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       elevation: 4,
-      margin: const EdgeInsets.symmetric(vertical: 8),
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
       child: Padding(
         padding: const EdgeInsets.all(16),
-        child: Row(
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(secure.currentAddress ?? "",
-                              style: Theme.of(context).textTheme.titleMedium),
-                          Text(secure.time ?? "",
-                              style: Theme.of(context).textTheme.titleMedium),
-                        ],
-                      ),
-                      Spacer(),
-                      Flexible(
-                          child: Text(secure.phoneNumber ?? "",
-                              style: Theme.of(context).textTheme.titleMedium)),
-                    ],
+            // Address
+            Text(
+              secure.currentAddress ?? "Unknown Address",
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            const SizedBox(height: 8),
+
+            // Time
+            Row(
+              children: [
+                const Icon(Icons.access_time, size: 18, color: Colors.grey),
+                const SizedBox(width: 6),
+                Text(
+                  secure.time ?? "--:--",
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+              ],
+            ),
+
+            // Phone
+            Row(
+              children: [
+                const Icon(Icons.phone, size: 18, color: Colors.grey),
+                const SizedBox(width: 6),
+                Text(
+                  secure.phoneNumber ?? "No phone number",
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 12),
+
+            // Approval badge and action buttons
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Approval Status
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                  decoration: BoxDecoration(
+                    color: color.withOpacity(0.1),
+                    border: Border.all(color: color),
+                    borderRadius: BorderRadius.circular(20),
                   ),
-                  const SizedBox(height: 8),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 5, horizontal: 10),
-                            decoration: BoxDecoration(
-                              color: color.withOpacity(0.1),
-                              border: Border.all(color: color),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Center(
-                              child: Text(secure.approval ?? "",
-                                  style: TextStyle(
-                                      color: color,
-                                      fontWeight: FontWeight.bold)),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Flexible(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                              icon: Icon(Icons.edit,
-                                  color: Theme.of(context).colorScheme.primary),
-                              onPressed: () async {
-                                viewModel.gotoEditSecure(secure);
-                              },
-                            ),
-                            IconButton(
-                              icon: Icon(Icons.delete,
-                                  color: Theme.of(context).colorScheme.error),
-                              onPressed: () {
-                                viewModel.deleteSecureMeetup(
-                                    secure.secureMeetupId ?? "");
-                              },
-                            ),
-                          ],
+                  child: Text(
+                    secure.approval ?? "Unknown",
+                    style: TextStyle(
+                      color: color,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+
+                // Action Buttons
+                Row(
+                  children: [
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        viewModel.gotoEditSecure(secure);
+                      },
+                      icon: const Icon(Icons.edit, size: 18),
+                      label: const Text("Edit"),
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 6, horizontal: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
                         ),
                       ),
-                    ],
-                  ),
-                ],
-              ),
+                    ),
+                    const SizedBox(width: 8),
+                    IconButton(
+                      icon: const Icon(Icons.delete, color: Colors.red),
+                      onPressed: () {
+                        viewModel
+                            .deleteSecureMeetup(secure.secureMeetupId ?? "");
+                      },
+                    ),
+                  ],
+                ),
+              ],
             ),
           ],
         ),

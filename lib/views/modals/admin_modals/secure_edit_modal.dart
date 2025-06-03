@@ -360,13 +360,27 @@ class SecureEdit extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Admin Section Title
-            Text(
-              "Admin Section",
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: Colors.blueGrey.shade700,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Admin Section",
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blueGrey.shade700,
+                  ),
+                ),
+                InkWell(
+                    onTap: () async {
+                      await viewModel.getMeetup(meetup.meetupId ?? "");
+                    },
+                    child: Icon(
+                      Icons.link_rounded,
+                      color: Colors.blue,
+                      size: 24,
+                    )),
+              ],
             ),
             const SizedBox(height: 20),
 
@@ -401,23 +415,7 @@ class SecureEdit extends StatelessWidget {
             const SizedBox(height: 16),
 
             // More Info Button
-            Align(
-              alignment: Alignment.centerRight,
-              child: TextButton(
-                onPressed: () {
-                  viewModel.getMeetup(meetup.meetupId ?? "");
-                },
-                child: Text(
-                  "Meetup  Information",
-                  style: TextStyle(
-                    color: Colors.blue,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    decoration: TextDecoration.underline,
-                  ),
-                ),
-              ),
-            ),
+
             DefaultTextInput(
               controller: rejectionReasonController,
               hintText: "Rejection Reason",

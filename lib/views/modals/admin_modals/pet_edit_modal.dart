@@ -43,7 +43,6 @@ class PetEditModal extends StatelessWidget {
     return StatefulWrapper(
       onInit: () {
         viewModel.isApproved = pet.isApproved ?? "Pending";
-        viewModel.removeImagePath();
       },
       onDispose: () {
         nameController.dispose();
@@ -119,7 +118,11 @@ class PetEditModal extends StatelessWidget {
                                     _buildUpdatePet(viewModel),
                                   ],
                                 )),
-                            if ((viewModel.getUser()!.role ?? "donor") ==
+                            if ((viewModel
+                                    .getUser()!
+                                    .role
+                                    .toString()
+                                    .toLowerCase()) ==
                                 "admin")
                               _buildAdminEdit(viewModel),
                             const SizedBox(height: 10),
@@ -249,6 +252,16 @@ class PetEditModal extends StatelessWidget {
               }
               return null;
             },
+          ),
+          DefaultTextInput(
+            hintText: "Health Information",
+            labelText: "Health Information",
+            onTap: () {
+              viewModel.gotoEdithealth(pet);
+            },
+            readOnly: true,
+            enabled: true,
+            icon: Icons.description,
           ),
         ],
       ),

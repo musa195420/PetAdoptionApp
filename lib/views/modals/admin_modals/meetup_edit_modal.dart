@@ -142,7 +142,7 @@ class MeetupEdit extends StatelessWidget {
       final Color statusColor = isAccepted ? Colors.green : Colors.red;
       final IconData statusIcon =
           isAccepted ? Icons.check_circle : Icons.cancel;
-      final String statusText = isAccepted ? "Accepted" : "Not Accepted";
+      final String statusText = isAccepted ? "Accepted" : "Rejected";
 
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,

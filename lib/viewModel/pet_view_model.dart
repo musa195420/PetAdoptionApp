@@ -7,6 +7,7 @@ import 'package:petadoption/models/request_models/animal_breed_request.dart';
 import 'package:petadoption/models/request_models/pet_request.dart';
 import 'package:petadoption/models/response_models/animal_Type.dart';
 import 'package:petadoption/models/response_models/get_disability.dart';
+import 'package:petadoption/models/response_models/health_info.dart';
 import 'package:petadoption/services/api_service.dart';
 import 'package:petadoption/services/dialog_service.dart';
 import 'package:petadoption/services/global_service.dart';
@@ -32,7 +33,12 @@ class PetViewModel extends BaseViewModel {
 
   bool checkVersion = true;
   String? path;
+  TextEditingController vaccinationController = TextEditingController();
+  TextEditingController diseaseController = TextEditingController();
+  TextEditingController disabilityController = TextEditingController();
 
+  TextEditingController petNameController = TextEditingController();
+  TextEditingController animaltypeController = TextEditingController();
   List<AnimalType>? animals;
   Future<void> savePetImagePath() async {
     final picker = ImagePicker();
@@ -82,9 +88,7 @@ class PetViewModel extends BaseViewModel {
           }
         }
       } else {
-        await _dialogService.showApiError(
-          animalRes.data
-        );
+        await _dialogService.showApiError(animalRes.data);
       }
     } catch (e, s) {
       _globalService.logError(
@@ -147,9 +151,7 @@ class PetViewModel extends BaseViewModel {
                 .showAlert(Message(description: "No Breed Found For Animal"));
           }
         } else {
-          await _dialogService.showApiError(
-            breedRes.data
-          );
+          await _dialogService.showApiError(breedRes.data);
         }
       } else {
         await _dialogService.showAlert(
@@ -239,14 +241,15 @@ class PetViewModel extends BaseViewModel {
         if (path != null) {
           _uploadPetImage(path!, pet.petId!);
         }
-     // await   _dialogService.showSuccess(text: "Pet Added SuccessFully");
-      await   _navigationService
-              .pushNamed(Routes.healthinfo, data:HealthInfoModel(animalId: selectedAnimalTypeId!, petId:  pet.petId!), args: TransitionType.slideRight,);
- 
-      } else {
-        await _dialogService.showApiError(
-          addpetRes.data
+        // await   _dialogService.showSuccess(text: "Pet Added SuccessFully");
+        await _navigationService.pushNamed(
+          Routes.healthinfo,
+          data: HealthInfoModel(
+              animalId: selectedAnimalTypeId!, petId: pet.petId!),
+          args: TransitionType.slideRight,
         );
+      } else {
+        await _dialogService.showApiError(addpetRes.data);
       }
     } catch (e) {
       loading(false);
@@ -261,9 +264,7 @@ class PetViewModel extends BaseViewModel {
     if (res.errorCode == "PA0000") {
       debugPrint(res.toString());
     } else {
-      await _dialogService.showApiError(
-        res.data
-      );
+      await _dialogService.showApiError(res.data);
     }
   }
 
@@ -307,6 +308,8 @@ class PetViewModel extends BaseViewModel {
               // Assign selected animal_id
               selectedVaccinationId = vaccines![selectedIndex].vaccineId;
               selectedVaccinationName = vaccines![selectedIndex].name;
+              vaccinationController =
+                  TextEditingController(text: selectedVaccinationName);
             } else {
               debugPrint("No animal selected or invalid selection.");
             }
@@ -315,9 +318,7 @@ class PetViewModel extends BaseViewModel {
                 .showAlert(Message(description: "No Breed Found For Animal"));
           }
         } else {
-          await _dialogService.showApiError(
-            res.data
-          );
+          await _dialogService.showApiError(res.data);
         }
       } else {
         await _dialogService.showAlert(
@@ -369,6 +370,8 @@ class PetViewModel extends BaseViewModel {
               // Assign selected animal_id
               selectedDiseaseId = diseases![selectedIndex].diseaseId;
               selectedDiseaseName = diseases![selectedIndex].name;
+              diseaseController =
+                  TextEditingController(text: selectedDiseaseName);
             } else {
               debugPrint("No animal selected or invalid selection.");
             }
@@ -377,9 +380,7 @@ class PetViewModel extends BaseViewModel {
                 .showAlert(Message(description: "No Breed Found For Animal"));
           }
         } else {
-          await _dialogService.showApiError(
-            res.data
-          );
+          await _dialogService.showApiError(res.data);
         }
       } else {
         await _dialogService.showAlert(
@@ -431,6 +432,8 @@ class PetViewModel extends BaseViewModel {
               // Assign selected animal_id
               selectedDisabilityId = disabilities![selectedIndex].disabilityId;
               selectedDisabilityName = disabilities![selectedIndex].name;
+              disabilityController =
+                  TextEditingController(text: selectedDisabilityName);
             } else {
               debugPrint("No animal selected or invalid selection.");
             }
@@ -439,9 +442,7 @@ class PetViewModel extends BaseViewModel {
                 .showAlert(Message(description: "No Breed Found For Animal"));
           }
         } else {
-          await _dialogService.showApiError(
-            res.data
-          );
+          await _dialogService.showApiError(res.data);
         }
       } else {
         await _dialogService.showAlert(
@@ -458,56 +459,124 @@ class PetViewModel extends BaseViewModel {
     }
   }
 
-  void addDisease(String animalId) async{
-    await _navigationService.pushModalBottom(Routes.disease_modal, data:AnimalDiseaseModal(animalId: animalId));
- 
+  void addDisease(String animalId) async {
+    await _navigationService.pushModalBottom(Routes.disease_modal,
+        data: AnimalDiseaseModal(animalId: animalId));
   }
 
-  void addDisability(String animalId) async{
-    await _navigationService.pushModalBottom(Routes.disability_modal, data: AnimalDisabilityModal(animalId: animalId));
- 
+  void addDisability(String animalId) async {
+    await _navigationService.pushModalBottom(Routes.disability_modal,
+        data: AnimalDisabilityModal(animalId: animalId));
   }
 
-  void addVaccination(String animalId) async{
-    await _navigationService.pushModalBottom(Routes.vaccination_modal, data:  AnimalVaccinationModal(animalId: animalId));
- 
+  void addVaccination(String animalId) async {
+    await _navigationService.pushModalBottom(Routes.vaccination_modal,
+        data: AnimalVaccinationModal(animalId: animalId));
   }
 
-
-
-  Future<void> saveHealthInfo(String petId) async {
+  Future<void> updateHealthInfo(String petId, String healthId) async {
     try {
-      loading(true,loadingText: "Adding Health Info ..");
-      if (selectedAnimalTypeId != null &&selectedDisabilityId!=null && selectedDiseaseId!=null && selectedVaccinationId!=null) {
-        var res = await _apiService
-            .addHealthInfo(HealthInfoModel(petId: petId,vaccinationId: selectedVaccinationId,diseaseId: selectedDiseaseId,disabilityId: selectedDisabilityId));
+      loading(true, loadingText: "Adding Health Info ..");
+      if (selectedDisabilityId != null &&
+          selectedDiseaseId != null &&
+          selectedVaccinationId != null) {
+        var res = await _apiService.updateHealth(HealthInfoModel(
+            healthId: healthId,
+            petId: petId,
+            vaccinationId: selectedVaccinationId,
+            diseaseId: selectedDiseaseId,
+            disabilityId: selectedDisabilityId));
 
         if (res.errorCode == "PA0004") {
-        
         } else {
-         
-          await _dialogService.showApiError(
-            res.data
-          );
-           return;
+          await _dialogService.showApiError(res.data);
+          return;
         }
       } else {
-        await _dialogService.showAlert(
-            Message(description: "Please Select The All Info Again \n You migh Be Missing Something"));
+        await _dialogService.showAlert(Message(
+            description:
+                "Please Select The All Info Again \n You migh Be Missing Something"));
         loading(false);
-         return;
+        return;
       }
     } catch (e, s) {
-        loading(false);
-      
+      loading(false);
+
       _globalService.logError(
           "Error Occured When Renew User Token", e.toString(), s);
       debugPrint(e.toString());
     } finally {
       notifyListeners();
-        await _navigationService.pushNamedAndRemoveUntil(Routes.home, args: TransitionType.slideTop);
       loading(false);
     }
+  }
+
+  Future<void> saveHealthInfo(String petId) async {
+    try {
+      loading(true, loadingText: "Adding Health Info ..");
+      if (selectedAnimalTypeId != null &&
+          selectedDisabilityId != null &&
+          selectedDiseaseId != null &&
+          selectedVaccinationId != null) {
+        var res = await _apiService.addHealthInfo(HealthInfoModel(
+            petId: petId,
+            vaccinationId: selectedVaccinationId,
+            diseaseId: selectedDiseaseId,
+            disabilityId: selectedDisabilityId));
+
+        if (res.errorCode == "PA0004") {
+        } else {
+          await _dialogService.showApiError(res.data);
+          return;
+        }
+      } else {
+        await _dialogService.showAlert(Message(
+            description:
+                "Please Select The All Info Again \n You migh Be Missing Something"));
+        loading(false);
+        return;
+      }
+    } catch (e, s) {
+      loading(false);
+
+      _globalService.logError(
+          "Error Occured When Renew User Token", e.toString(), s);
+      debugPrint(e.toString());
+    } finally {
+      notifyListeners();
+      await _navigationService.pushNamedAndRemoveUntil(Routes.home,
+          args: TransitionType.slideTop);
+      loading(false);
+    }
+  }
+
+  bool isHealthInfoReady = false;
+
+  Future<void> setFields(PetHealthInfo info) async {
+    isHealthInfoReady = false;
+    notifyListeners(); // show loading UI if needed
+
+    selectedVaccinationName = info.vaccinationName;
+    selectedVaccinationId = info.vaccinationId;
+    selectedDiseaseId = info.diseaseId;
+    selectedDiseaseName = info.diseaseName;
+    selectedDisabilityId = info.disabilityId;
+    selectedDisabilityName = info.disabilityName;
+
+    petNameController = TextEditingController(text: info.petName);
+    animaltypeController = TextEditingController(text: info.animalName);
+    await setControllers();
+
+    isHealthInfoReady = true;
+    notifyListeners(); // now show the updated form
+  }
+
+  Future<void> setControllers() async {
+    vaccinationController =
+        TextEditingController(text: selectedVaccinationName);
+    diseaseController = TextEditingController(text: selectedDiseaseName);
+    disabilityController = TextEditingController(text: selectedDisabilityName);
+    notifyListeners();
   }
 }
 
