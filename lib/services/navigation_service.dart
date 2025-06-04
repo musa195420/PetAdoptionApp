@@ -32,8 +32,9 @@ import 'package:petadoption/views/startup.dart';
 
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import '../helpers/locator.dart';
-import '../models/response_models/health_info.dart';
 import '../views/admin_views/health_admin.dart';
+import '../views/message_info.dart';
+import '../views/message_page.dart';
 import '../views/modals/admin_modals/donor_edit_modal.dart';
 import '../views/modals/admin_modals/health_info_modal.dart';
 import '../views/modals/admin_modals/meetup_edit_modal.dart';
@@ -49,6 +50,7 @@ class Routes {
   static const String login = "login";
   static const String dashboard = "dashboard";
   static const String message = "message";
+  static const String message_info = "message_info";
   static const String notSupported = "notSupported";
   static const String signup = "signup";
   static const String admin = "admin";
@@ -641,6 +643,21 @@ class RouteManager {
             pageBuilder: (BuildContext context, Animation<double> animation,
                 Animation<double> secondaryAnimation) {
               return HealthAdmin();
+            },
+            transitionsBuilder: (BuildContext context,
+                Animation<double> animation,
+                Animation<double> secondaryAnimation,
+                Widget child) {
+              return _transitionsBuilder(transition, animation, child);
+            },
+          );
+        }
+      case Routes.message:
+        {
+          return PageRouteBuilder(
+            pageBuilder: (BuildContext context, Animation<double> animation,
+                Animation<double> secondaryAnimation) {
+              return MessagePage();
             },
             transitionsBuilder: (BuildContext context,
                 Animation<double> animation,

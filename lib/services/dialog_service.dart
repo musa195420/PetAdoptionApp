@@ -262,7 +262,8 @@ class DialogService implements IDialogService {
 
     error = errorResponse.error ?? "An Unexpected Error Occurred";
     code = errorResponse.errorCode ?? "404";
-    message = "Please  Contact the administrator. Or Get Back To Us Later!";
+    message = errorResponse.message ??
+        "Please  Contact the administrator. Or Get Back To Us Later!";
 
     if (EasyLoading.isShow) {
       await EasyLoading.dismiss();

@@ -1,6 +1,7 @@
 import 'package:circle_nav_bar/circle_nav_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:petadoption/viewModel/home_view_model.dart';
+import 'package:petadoption/views/message_info.dart';
 import 'package:petadoption/views/profile_page.dart';
 import 'package:petadoption/views/home_page.dart';
 
@@ -121,10 +122,7 @@ class Home extends StatelessWidget {
               height: double.infinity,
               color: Colors.white),
           HomePage(),
-          Container(
-              width: double.infinity,
-              height: double.infinity,
-              color: Colors.white),
+          MessageInfo(),
           ProfilePage(),
         ],
       ),
