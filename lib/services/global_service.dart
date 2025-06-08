@@ -56,12 +56,12 @@ class GlobalService {
   Future<String> getHost() async {
     try {
       if (await _prefService.getBool(PrefKey.isProduction)) {
-        return "https://eac4-103-198-154-144.ngrok-free.app";
+        return "https://cc2e-103-198-154-144.ngrok-free.app";
       }
     } catch (e, s) {
       logError("Error Occured When get Host", e.toString(), s);
       debugPrint(e.toString());
     }
-    return "https://eac4-103-198-154-144.ngrok-free.app";
+    return "https://cc2e-103-198-154-144.ngrok-free.app";
   }
 }

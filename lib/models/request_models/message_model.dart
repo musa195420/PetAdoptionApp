@@ -1,9 +1,9 @@
 class MessageModel {
-  final String? messageId;
-  final String? senderId;
-  final String? receiverId;
-  final String? content;
-  final DateTime? timestamp;
+  String? messageId;
+  String? senderId;
+  String? receiverId;
+  String? content;
+  DateTime? timestamp;
 
   MessageModel({
     this.messageId,

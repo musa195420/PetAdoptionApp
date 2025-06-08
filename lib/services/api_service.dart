@@ -3621,6 +3621,7 @@ abstract class IAPIService {
   Future<ApiStatus> updateMessages(MessageModel message);
   Future<ApiStatus> deleteMessage(MessageModel message);
   Future<ApiStatus> getUserinfo(SingleUser user);
+
   Future<ApiStatus> getPetByUserId(SingleUser user);
   Future<ApiStatus> getProfile(SingleUser user);
   Future<ApiStatus> getAdopters();

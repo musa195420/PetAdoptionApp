@@ -1,22 +1,20 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:petadoption/helpers/locator.dart';
 import 'package:petadoption/models/request_models/message_model.dart';
 import 'package:petadoption/models/response_models/message_info.dart';
-import 'package:petadoption/models/response_models/pet_response.dart';
 import 'package:petadoption/services/api_service.dart';
 import 'package:petadoption/services/global_service.dart';
 import 'package:petadoption/viewModel/base_view_model.dart';
-import 'package:petadoption/viewModel/startup_viewmodel.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 import '../models/hive_models/user.dart';
 import '../models/message.dart';
 import '../models/request_models/delete_user.dart';
 import '../models/request_models/receiver_model.dart';
-import '../models/response_models/user_profile.dart';
 import '../services/dialog_service.dart';
 import '../services/navigation_service.dart';
-import '../views/modals/admin_modals/pet_edit_modal.dart';
 
 class MessageViewModel extends BaseViewModel {
   NavigationService get _navigationService => locator<NavigationService>();
@@ -156,6 +154,8 @@ class MessageViewModel extends BaseViewModel {
       loading(false);
       debugPrint("Error => $e");
     } finally {
+      await getMessages(message.receiverId ?? "");
+      notifyListeners();
       loading(false);
     }
   }
@@ -177,6 +177,8 @@ class MessageViewModel extends BaseViewModel {
       loading(false);
       debugPrint(e.toString());
     } finally {
+      await getMessages(message.receiverId ?? "");
+      notifyListeners();
       loading(false);
     }
   }
@@ -228,5 +230,83 @@ class MessageViewModel extends BaseViewModel {
     } finally {
       loading(false);
     }
+  }
+
+  MessageModel? selectedMessage;
+
+  void selectMessage(MessageModel? message) {
+    selectedMessage = message;
+
+    notifyListeners();
+  }
+
+  IO.Socket? socket;
+
+  void initSocket(String userId, String receiverId) {
+    try {
+      if (socket != null && socket!.connected)
+        return; // Prevent reinitialization
+
+      socket = IO
+          .io('https://cc2e-103-198-154-144.ngrok-free.app', <String, dynamic>{
+        'transports': ['websocket'],
+        'autoConnect': false,
+      });
+
+      socket!.connect();
+
+      socket!.onConnect((_) {
+        debugPrint('Connected to Socket.IO server');
+        socket!
+            .emit('joinRoom', {'senderId': userId, 'receiverId': receiverId});
+      });
+
+      socket!.off(
+          'receiveMessage'); // REMOVE previous listener to avoid duplicates
+      socket!.on('receiveMessage', (data) {
+        debugPrint('receiveMessage: $data');
+        final newMsg = MessageModel.fromJson(data);
+        messages!.add(newMsg);
+        notifyListeners();
+      });
+      socket!.on('updateMessage', (data) {
+        final updtMsg = MessageModel.fromJson(data);
+
+        for (int i = 0; i < messages!.length; i++) {
+          if (messages![i].messageId == updtMsg.messageId) {
+            messages![i] = updtMsg;
+            break;
+          }
+        }
+        notifyListeners();
+      });
+
+      socket!.on('deleteMessage', (data) {
+        debugPrint('❌ Message deleted: $data');
+        final delMsg = MessageModel.fromJson(data);
+
+        messages?.removeWhere((msg) => msg.messageId == delMsg.messageId);
+
+        // Optionally update UI
+        notifyListeners(); // if using StatefulWidget
+      });
+
+      socket!.onDisconnect((_) => debugPrint('Disconnected from server'));
+    } catch (e, s) {
+      debugPrint("Error ${e.toString()} Stack ${s.toString()}");
+    }
+  }
+
+  void sendMessage(MessageModel msg) async {
+    socket?.emit('sendMessage', msg.toJson());
+    debugPrint("Sending message: ${msg.toJson()}");
+
+    notifyListeners();
+  }
+
+  void disposeSocket() {
+    socket?.disconnect();
+    socket?.destroy();
+    socket = null;
   }
 }

@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:petadoption/models/request_models/message_model.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import '../custom_widgets/custom_button.dart';
+import '../helpers/locator.dart';
+import '../services/navigation_service.dart';
 import '../viewModel/message_view_model.dart'; // adjust path
 import '../custom_widgets/stateful_wrapper.dart';
 
@@ -21,8 +24,12 @@ class MessagePage extends StatelessWidget {
     final viewModel = context.watch<MessageViewModel>();
 
     return StatefulWrapper(
-      onInit: () {},
-      onDispose: () {},
+      onInit: () {
+        viewModel.initSocket(viewModel.senderId!, viewModel.receiverId!);
+      },
+      onDispose: () {
+        viewModel.disposeSocket();
+      },
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: pageBackground,
@@ -159,30 +166,183 @@ class MessagePage extends StatelessWidget {
             bottomRight: Radius.circular(16),
           );
 
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 6),
-      alignment: isSender ? Alignment.centerRight : Alignment.centerLeft,
+    final viewModel = Provider.of<MessageViewModel>(scaffoldKey.currentContext!,
+        listen: false);
+    final isSelected = viewModel.selectedMessage == message;
+
+    return GestureDetector(
+      onLongPress: () {
+        if (isSender) {
+          viewModel.selectMessage(message);
+        }
+      },
       child: Column(
         crossAxisAlignment: alignment,
         children: [
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-            constraints: const BoxConstraints(maxWidth: 280),
-            decoration: BoxDecoration(
-              color: bubbleColor,
-              borderRadius: radius,
+            margin: const EdgeInsets.symmetric(vertical: 6),
+            alignment: isSender ? Alignment.centerRight : Alignment.centerLeft,
+            child: Column(
+              crossAxisAlignment: alignment,
+              children: [
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                  constraints: const BoxConstraints(maxWidth: 280),
+                  decoration: BoxDecoration(
+                    color: bubbleColor,
+                    borderRadius: radius,
+                  ),
+                  child: Text(
+                    message.content ?? '',
+                    style: TextStyle(color: textColor, fontSize: 15),
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  _formatTimestamp(message.timestamp),
+                  style: TextStyle(color: softGrey, fontSize: 11),
+                ),
+                if (isSelected)
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.edit, size: 20),
+                        onPressed: () {
+                          showEditMessageDialog(
+                            message: message,
+                            viewModel: viewModel,
+                          );
+                        },
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.delete, size: 20),
+                        onPressed: () async {
+                          viewModel.selectMessage(null);
+                          await viewModel.deleteMessage(message);
+                          await viewModel.getMessages(viewModel.receiverId!);
+                        },
+                      ),
+                    ],
+                  ),
+              ],
             ),
-            child: Text(
-              message.content ?? '',
-              style: TextStyle(color: textColor, fontSize: 15),
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            _formatTimestamp(message.timestamp),
-            style: TextStyle(color: softGrey, fontSize: 11),
           ),
         ],
+      ),
+    );
+  }
+
+  Future<void> showEditMessageDialog({
+    required MessageModel message,
+    required MessageViewModel viewModel,
+  }) async {
+    NavigationService navigationService = locator<NavigationService>();
+    final BuildContext context = navigationService.navigatorKey.currentContext!;
+    final controller = TextEditingController(text: message.content ?? '');
+
+    await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => PopScope(
+        canPop: false,
+        child: Dialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          backgroundColor: const Color(0xFFFAF3E0),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height * 0.6,
+            ),
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(25),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // Title
+                    Row(
+                      children: [
+                        const Icon(Icons.edit, color: Color(0xFF3E2723)),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            'Edit Message',
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF3E2723),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    // TextField
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: const Color(0xFFBCAAA4)),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 12),
+                        child: TextFormField(
+                          controller: controller,
+                          maxLines: null,
+                          style: const TextStyle(fontSize: 16),
+                          decoration: const InputDecoration.collapsed(
+                            hintText: "Type your new message...",
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 24),
+
+                    // Buttons
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        CustomButton(
+                          height: 45,
+                          text: "Cancel",
+                          onTap: () {
+                            navigationService.popDialog(result: null);
+                          },
+                          backgroundcolor: const Color(0xFFBCAAA4),
+                          fontcolor: Colors.white,
+                        ),
+                        const SizedBox(width: 12),
+                        CustomButton(
+                          height: 45,
+                          text: "Update",
+                          onTap: () async {
+                            final updatedText = controller.text.trim();
+                            if (updatedText.isNotEmpty) {
+                              message.content = updatedText;
+                              viewModel.updateMessage(message);
+                              viewModel.selectMessage(null);
+                              navigationService.popDialog(result: null);
+                              await viewModel
+                                  .getMessages(viewModel.receiverId!);
+                            }
+                          },
+                          backgroundcolor: const Color(0xFFFF6F00),
+                          fontcolor: Colors.white,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -219,11 +379,13 @@ class MessagePage extends StatelessWidget {
               onPressed: () async {
                 final content = _messageController.text.trim();
                 if (content.isNotEmpty) {
-                  await viewModel.addMessage(
-                    viewModel.senderId!,
-                    viewModel.receiverId!,
-                    content,
+                  final msg = MessageModel(
+                    senderId: viewModel.senderId!,
+                    receiverId: viewModel.receiverId!,
+                    content: content,
+                    timestamp: DateTime.now(),
                   );
+                  viewModel.sendMessage(msg);
                   _messageController.clear();
                   await viewModel.getMessages(viewModel.receiverId!);
                 }
