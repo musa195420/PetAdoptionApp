@@ -3,10 +3,14 @@ import 'package:petadoption/models/hive_models/user.dart';
 import 'package:petadoption/services/logging_service.dart';
 import 'package:petadoption/helpers/locator.dart';
 import 'package:petadoption/services/pref_service.dart';
+import 'package:petadoption/viewModel/startup_viewmodel.dart';
+
+import '../viewModel/favourite_viewmodel.dart';
 
 class GlobalService {
   PrefService get _prefService => locator<PrefService>();
   LoggingService get _loggingService => locator<LoggingService>();
+  FavouriteViewmodel get favouriteViewmodel => locator<FavouriteViewmodel>();
   User? _user = User(
       userId: '1',
       email: 'user@gmail.com',
@@ -21,6 +25,10 @@ class GlobalService {
 
   setuser(value) {
     _user = value;
+  }
+
+  Future<void> getfavourites() async {
+    await favouriteViewmodel.getFavourites();
   }
 
   log(String message, {bool vti = false}) {

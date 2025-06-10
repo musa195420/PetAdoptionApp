@@ -57,9 +57,20 @@ class DetailModal extends StatelessWidget {
                                       color: Colors.black,
                                       size: screenWidth * 0.07),
                                 ),
-                                Icon(Icons.favorite,
-                                    color: Colors.white,
-                                    size: screenWidth * 0.07),
+                                InkWell(
+                                  onTap: () {
+                                    if (viewModel.isFavourite) {
+                                      viewModel.removeFavourite();
+                                    } else {
+                                      viewModel.addFavourite();
+                                    }
+                                  },
+                                  child: Icon(Icons.favorite,
+                                      color: viewModel.isFavourite
+                                          ? Colors.red
+                                          : Colors.white,
+                                      size: screenWidth * 0.07),
+                                ),
                               ],
                             ),
                           ),
@@ -241,9 +252,14 @@ class DetailModal extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    Icon(Icons.message_outlined,
-                        color: const Color(0xFFF7992C),
-                        size: screenWidth * 0.09),
+                    InkWell(
+                      onTap: () async {
+                        viewModel.gotoMessage();
+                      },
+                      child: Icon(Icons.message_outlined,
+                          color: const Color(0xFFF7992C),
+                          size: screenWidth * 0.09),
+                    ),
                     ElevatedButton(
                       onPressed: () {
                         // Future enhancement: Trigger adoption process

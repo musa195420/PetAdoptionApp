@@ -119,6 +119,8 @@ class MessageViewModel extends BaseViewModel {
   Future<void> gotoMessagePage(MessageInfo messageInfo) async {
     try {
       receiverId = messageInfo.userId;
+      user ??= _globalService.getuser();
+      if (user == null) return;
       senderId = user!.userId;
       currentInfo = messageInfo;
       await getReceiverInfo(receiverId!);

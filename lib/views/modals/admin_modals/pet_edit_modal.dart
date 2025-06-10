@@ -462,7 +462,7 @@ class PetEditModal extends StatelessWidget {
               alignment: Alignment.centerRight,
               child: TextButton(
                 onPressed: () {
-                  viewModel.userInfo(pet.donorId);
+                  viewModel.userInfo(pet.donorId ?? "");
                 },
                 child: Text(
                   "User  Information",

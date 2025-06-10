@@ -1,8 +1,8 @@
 class PetResponse {
-  String petId;
-  String donorId;
-  String breedId;
-  String animalId;
+  String? petId;
+  String? donorId;
+  String? breedId;
+  String? animalId;
   String? name;
   int? age;
   String? gender;

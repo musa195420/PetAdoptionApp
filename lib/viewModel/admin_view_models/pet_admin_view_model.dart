@@ -87,7 +87,8 @@ class PetAdminViewModel extends BaseViewModel {
   Future<void> gotoEdithealth(PetResponse pet) async {
     try {
       loading(true);
-      var res = await _apiService.getHealthByPetId(SinglePet(petId: pet.petId));
+      var res =
+          await _apiService.getHealthByPetId(SinglePet(petId: pet.petId ?? ""));
 
       if (res.errorCode == "PA0004") {
         await _navigationService.pushModalBottom(Routes.health_modal,
@@ -223,7 +224,7 @@ class PetAdminViewModel extends BaseViewModel {
         _dialogService.showSuccess(text: "Updated Pet SuccessFully");
 
         if (path != null) {
-          updatepetImage(pet!.petId);
+          updatepetImage(pet!.petId ?? "");
         }
       } else {
         await _dialogService.showApiError(updatePetrRes.data);

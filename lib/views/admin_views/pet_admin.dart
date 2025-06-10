@@ -25,61 +25,60 @@ class PetAdmin extends StatelessWidget {
         body: SafeArea(
           child: Column(
             children: [
-             Padding(
-               padding: const EdgeInsets.all(8.0),
-               child: Row(
-                 mainAxisAlignment: MainAxisAlignment.start,
-                 children: [
-                   GestureDetector(
-                     onTap: () {
-                       viewModel.gotoPrevious();
-                     },
-                     child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(100),
-                        color:  const Color.fromARGB(255, 146, 61, 5),
-                      )
-                      ,
-                       padding: const EdgeInsets.all(3),
-                       child: Icon(
-                         Icons.arrow_back,
-                         size: 30,
-                         color:Colors.white,
-                       ),
-                     ),
-                   ),
-                   Expanded( // <-- Fix: this makes TextField take the remaining space
-                     child: Padding(
-                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                       child: TextField(
-                         controller: searchController,
-                         onChanged: viewModel.filterPets,
-                         decoration: InputDecoration(
-                           hintText: "Search by Owner Email",
-                           prefixIcon: const Icon(Icons.search),
-                           suffixIcon: searchController.text.isNotEmpty
-                  ? IconButton(
-                      icon: const Icon(Icons.clear),
-                      onPressed: () {
-                        searchController.clear();
-                        viewModel.resetFilter();
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        viewModel.gotoPrevious();
                       },
-                    )
-                  : null,
-                           border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                           ),
-                           filled: true,
-                           fillColor: Theme.of(context).cardColor,
-                         ),
-                       ),
-                     ),
-                   ),
-                 ],
-               ),
-             ),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(100),
+                          color: const Color.fromARGB(255, 146, 61, 5),
+                        ),
+                        padding: const EdgeInsets.all(3),
+                        child: Icon(
+                          Icons.arrow_back,
+                          size: 30,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      // <-- Fix: this makes TextField take the remaining space
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: TextField(
+                          controller: searchController,
+                          onChanged: viewModel.filterPets,
+                          decoration: InputDecoration(
+                            hintText: "Search by Owner Email",
+                            prefixIcon: const Icon(Icons.search),
+                            suffixIcon: searchController.text.isNotEmpty
+                                ? IconButton(
+                                    icon: const Icon(Icons.clear),
+                                    onPressed: () {
+                                      searchController.clear();
+                                      viewModel.resetFilter();
+                                    },
+                                  )
+                                : null,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            filled: true,
+                            fillColor: Theme.of(context).cardColor,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               const SizedBox(height: 16),
-              
               const SizedBox(height: 12),
               Expanded(
                 child: viewModel.filteredPets == null
@@ -100,10 +99,10 @@ class PetAdmin extends StatelessWidget {
     );
   }
 
-   Widget _buildUserCard(BuildContext context, PetResponse pets, PetAdminViewModel viewModel) {
-      
-  String displayText = pets.isLive.toString() == 'true' ? "Live" : "NotLive";
-   Color     color = pets.isLive.toString() == 'true' ? Colors.green : Colors.red;
+  Widget _buildUserCard(
+      BuildContext context, PetResponse pets, PetAdminViewModel viewModel) {
+    String displayText = pets.isLive.toString() == 'true' ? "Live" : "NotLive";
+    Color color = pets.isLive.toString() == 'true' ? Colors.green : Colors.red;
 
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -119,21 +118,27 @@ class PetAdmin extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: 30,
-                  backgroundColor: Theme.of(context).primaryColor.withOpacity(0.2),
-                  backgroundImage: pets.image != null ? NetworkImage(pets.image!) : null,
+                  backgroundColor:
+                      Theme.of(context).primaryColor.withOpacity(0.2),
+                  backgroundImage:
+                      pets.image != null ? NetworkImage(pets.image!) : null,
                   child: pets.image == null
                       ? Image.asset("assets/images/signup.png")
                       : null,
                 ),
                 Container(
-                  
-                  padding: EdgeInsets.all(3),
-                  decoration: BoxDecoration(
-                    color: Colors.brown,
-                    
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Text(pets.animal??"",style: TextStyle(color: Colors.white,fontSize: 12,fontWeight: FontWeight.w400),))
+                    padding: EdgeInsets.all(3),
+                    decoration: BoxDecoration(
+                      color: Colors.brown,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text(
+                      pets.animal ?? "",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w400),
+                    ))
               ],
             ),
             const SizedBox(width: 10),
@@ -143,54 +148,59 @@ class PetAdmin extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Text(pets.name??"", style: Theme.of(context).textTheme.titleMedium),
-                      SizedBox(width: 20,),
-                      Flexible(child: 
-                      Text(pets.userEmail??""))
+                      Text(pets.name ?? "",
+                          style: Theme.of(context).textTheme.titleMedium),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Flexible(child: Text(pets.userEmail ?? ""))
                     ],
                   ),
                   const SizedBox(height: 8),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                    Row(
+                      Row(
                         children: [
-                       Container(
-                padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                decoration: BoxDecoration(
-                  color: color.withOpacity(0.1),
-                  border: Border.all(color: color),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Center(
-                  child: Text(displayText, style: TextStyle(color: color, fontWeight: FontWeight.bold)),
-                ),
-              ),
-
-              
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 5, horizontal: 10),
+                            decoration: BoxDecoration(
+                              color: color.withOpacity(0.1),
+                              border: Border.all(color: color),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Center(
+                              child: Text(displayText,
+                                  style: TextStyle(
+                                      color: color,
+                                      fontWeight: FontWeight.bold)),
+                            ),
+                          ),
                         ],
                       ),
-                    Flexible(
-  child: Row(
-    mainAxisAlignment: MainAxisAlignment.end,
-    mainAxisSize: MainAxisSize.min,
-    children: [
-      IconButton(
-        icon: Icon(Icons.edit, color: Theme.of(context).colorScheme.primary),
-        onPressed: () async{
-      viewModel.gotoEditPet(pets);
-        },
-      ),
-      IconButton(
-        icon: Icon(Icons.delete, color: Theme.of(context).colorScheme.error),
-        onPressed: () {
-          viewModel.deletePet(pets.petId);
-        },
-      ),
-    
-    ],
-  ),
-),
+                      Flexible(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              icon: Icon(Icons.edit,
+                                  color: Theme.of(context).colorScheme.primary),
+                              onPressed: () async {
+                                viewModel.gotoEditPet(pets);
+                              },
+                            ),
+                            IconButton(
+                              icon: Icon(Icons.delete,
+                                  color: Theme.of(context).colorScheme.error),
+                              onPressed: () {
+                                viewModel.deletePet(pets.petId ?? "");
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ],
@@ -200,5 +210,5 @@ class PetAdmin extends StatelessWidget {
         ),
       ),
     );
-}
+  }
 }

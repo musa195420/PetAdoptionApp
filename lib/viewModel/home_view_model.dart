@@ -35,7 +35,7 @@ class HomeViewModel extends BaseViewModel {
       loading(true);
       selectedAnimal = "";
       var petRes = await _apiService.getPets();
-
+      await _globalService.getfavourites();
       if (petRes.errorCode == "PA0004") {
         pets = (petRes.data as List)
             .map((json) => PetResponse.fromJson(json as Map<String, dynamic>))

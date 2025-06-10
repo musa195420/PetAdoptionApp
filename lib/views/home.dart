@@ -7,6 +7,8 @@ import 'package:petadoption/views/home_page.dart';
 
 import 'package:provider/provider.dart';
 
+import 'favourite_page.dart';
+
 class Home extends StatelessWidget {
   Home({super.key});
   final scaffoldKey = GlobalKey<ScaffoldState>();
@@ -30,61 +32,61 @@ class Home extends StatelessWidget {
           Column(
             children: [
               Icon(Icons.favorite, color: Colors.white),
-              Text(
-                "Favourite",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 15,
-                    fontWeight: FontWeight.w400),
-              ),
+              // Text(
+              //   "Favourite",
+              //   style: TextStyle(
+              //       color: Colors.white,
+              //       fontSize: 15,
+              //       fontWeight: FontWeight.w400),
+              // ),
             ],
           ),
           Column(
             children: [
               Icon(Icons.search, color: Colors.white),
-              Text(
-                "Search",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 15,
-                    fontWeight: FontWeight.w400),
-              ),
+              // Text(
+              //   "Search",
+              //   style: TextStyle(
+              //       color: Colors.white,
+              //       fontSize: 15,
+              //       fontWeight: FontWeight.w400),
+              // ),
             ],
           ),
           Column(
             children: [
               Icon(Icons.home, color: Colors.white),
-              Text(
-                "Home",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 15,
-                    fontWeight: FontWeight.w400),
-              ),
+              // Text(
+              //   "Home",
+              //   style: TextStyle(
+              //       color: Colors.white,
+              //       fontSize: 15,
+              //       fontWeight: FontWeight.w400),
+              // ),
             ],
           ),
           Column(
             children: [
               Icon(Icons.message_rounded, color: Colors.white),
-              Text(
-                "Message",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 15,
-                    fontWeight: FontWeight.w400),
-              ),
+              // Text(
+              //   "Message",
+              //   style: TextStyle(
+              //       color: Colors.white,
+              //       fontSize: 15,
+              //       fontWeight: FontWeight.w400),
+              // ),
             ],
           ),
           Column(
             children: [
               Icon(Icons.person, color: Colors.white),
-              Text(
-                "Account",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 15,
-                    fontWeight: FontWeight.w400),
-              ),
+              // Text(
+              //   "Account",
+              //   style: TextStyle(
+              //       color: Colors.white,
+              //       fontSize: 15,
+              //       fontWeight: FontWeight.w400),
+              // ),
             ],
           ),
         ],
@@ -113,10 +115,7 @@ class Home extends StatelessWidget {
           viewModel.tabIndex = v;
         },
         children: [
-          Container(
-              width: double.infinity,
-              height: double.infinity,
-              color: Colors.white),
+          FavouritePage(),
           Container(
               width: double.infinity,
               height: double.infinity,
