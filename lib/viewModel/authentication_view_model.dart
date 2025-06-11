@@ -1,6 +1,7 @@
 // ignore_for_file: non_constant_identifier_names
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:petadoption/helpers/locator.dart';
 import 'package:petadoption/models/request_models/userinforequest.dart';
 import 'package:petadoption/services/api_service.dart';
@@ -25,14 +26,13 @@ class AuthenticationViewModel extends BaseViewModel {
 
   String? _email = "";
   String? _password = "";
-  bool _showPassword = false;
 
   String? get getEmail => _email;
   String? get getPassword => _password;
-  bool get getShowPassword => _showPassword;
+  bool showPassword = true;
 
-  setShowPassword(bool showPassword) async {
-    _showPassword = showPassword;
+  void setShowPassword() {
+    showPassword = !showPassword;
     notifyListeners();
   }
 
@@ -42,6 +42,14 @@ class AuthenticationViewModel extends BaseViewModel {
 
   setPassword(String password) async {
     _password = password;
+  }
+
+  Future<void> _showErrorAndUnfocus(dynamic data) async {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _dialogService.showApiError(data); // Pass the actual response
+    });
+
+    FocusManager.instance.primaryFocus?.unfocus();
   }
 
   void Login(String email, String password) async {
@@ -82,17 +90,18 @@ class AuthenticationViewModel extends BaseViewModel {
             _globalService.setuser(userResponse);
             _gotoNextPage(userResponse);
           } else {
-            await _dialogService.showApiError(loginRes.data);
+            await _showErrorAndUnfocus(loginRes.data);
+            // await _dialogService.showApiError(loginRes.data);
 
             _globalService.log('Client ($email) Login Fail');
           }
         } else {
-          await _dialogService.showApiError(loginRes.data);
+          await _showErrorAndUnfocus(loginRes.data);
 
           _globalService.log('Client ($email) Login Fail');
         }
       } else {
-        await _dialogService.showApiError(loginRes.data);
+        await _showErrorAndUnfocus(loginRes.data);
         _globalService.log('Client ($email) Login Fail');
       }
     } catch (e, s) {

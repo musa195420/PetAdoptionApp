@@ -15,6 +15,8 @@ TextEditingController breedController = TextEditingController();
 TextEditingController genderController = TextEditingController();
 TextEditingController descriptionController = TextEditingController();
 TextEditingController rejectionReason = TextEditingController();
+final formKey2 = GlobalKey<FormState>();
+final formKey = GlobalKey<FormState>();
 
 class PetEditModal extends StatelessWidget {
   final PetResponse pet;
@@ -22,8 +24,7 @@ class PetEditModal extends StatelessWidget {
     super.key,
     required this.pet,
   });
-  final GlobalKey<FormState> formKey2 = GlobalKey<FormState>();
-  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -254,14 +255,15 @@ class PetEditModal extends StatelessWidget {
             },
           ),
           DefaultTextInput(
+            enabled: viewModel.isEdit,
             hintText: "Health Information",
             labelText: "Health Information",
             onTap: () {
               viewModel.gotoEdithealth(pet);
             },
             readOnly: true,
-            enabled: true,
-            icon: Icons.description,
+            suffixicon: true,
+            icon: Icons.health_and_safety,
           ),
         ],
       ),

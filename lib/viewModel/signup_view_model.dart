@@ -1,6 +1,5 @@
 // ignore_for_file: non_constant_identifier_names
 
-
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
@@ -34,44 +33,44 @@ class SignupViewModel extends BaseViewModel {
   NavigationService get _navigationService => locator<NavigationService>();
   GlobalService get _globalService => locator<GlobalService>();
   IDialogService get _dialogService => locator<IDialogService>();
+  bool showPassword = true;
+  String deviceId = "";
 
-String deviceId="";
+  void setShowPassword() {
+    showPassword = !showPassword;
+    notifyListeners();
+  }
 
- String generateUniqueId(String role) {
-  final now = DateTime.now();
-  final random = Random();
+  String generateUniqueId(String role) {
+    final now = DateTime.now();
+    final random = Random();
 
-  // Format current date-time parts
-  final dateTimeString = '${now.year}'
-      '${now.month.toString().padLeft(2, '0')}'
-      '${now.day.toString().padLeft(2, '0')}'
-      '${now.hour.toString().padLeft(2, '0')}'
-      '${now.minute.toString().padLeft(2, '0')}'
-      '${now.second.toString().padLeft(2, '0')}'
-      '${now.millisecond.toString().padLeft(3, '0')}';
+    // Format current date-time parts
+    final dateTimeString = '${now.year}'
+        '${now.month.toString().padLeft(2, '0')}'
+        '${now.day.toString().padLeft(2, '0')}'
+        '${now.hour.toString().padLeft(2, '0')}'
+        '${now.minute.toString().padLeft(2, '0')}'
+        '${now.second.toString().padLeft(2, '0')}'
+        '${now.millisecond.toString().padLeft(3, '0')}';
 
-  // Add a few random numbers
-  final randomString = List.generate(4, (_) => random.nextInt(9)).join(); // 4 random digits
+    // Add a few random numbers
+    final randomString =
+        List.generate(4, (_) => random.nextInt(9)).join(); // 4 random digits
 
-  // Combine secret key, date-time and random digits
-  return '${role}_$dateTimeString$randomString';
-}
+    // Combine secret key, date-time and random digits
+    return '${role}_$dateTimeString$randomString';
+  }
 
   String? _email = "";
   String? _password = "";
-  bool _showPassword = false;
+
   List<String> roles = ["Adopter", "Donor", "Admin"];
 
   String role = "Adopter";
 
   String? get getEmail => _email;
   String? get getPassword => _password;
-  bool get getShowPassword => _showPassword;
-
-  setShowPassword(bool showPassword) async {
-    _showPassword = showPassword;
-    notifyListeners();
-  }
 
   setEmail(String email) async {
     _email = email;
@@ -84,7 +83,7 @@ String deviceId="";
   void Signup(
       String email, String password, String phoneNumber, String name) async {
     try {
-     // await _deviceId();
+      // await _deviceId();
 
       await loading(true);
       _globalService.init();
@@ -169,8 +168,7 @@ String deviceId="";
           return response;
         }
       } else {
-        await _dialogService.showApiError(
-            refreshRes.data);
+        await _dialogService.showApiError(refreshRes.data);
       }
     } catch (e, s) {
       _globalService.logError(
@@ -192,63 +190,59 @@ String deviceId="";
     notifyListeners();
   }
 
-Future<void> _setnextConfig(String name) async {
-  User? user = _globalService.getuser();
-  String location = "";
-  
-  try {
-    Position position = await CurrentLocation().getCurrentPosition();
-    location = await CurrentLocation().getAddressFromLatLng(position) ?? "";
-  } catch (e) {
-    debugPrint("Location error: ${e.toString()}");
-    // Don't show any error dialog here, just continue with empty location
-    location = "Not Specified";
-  }
+  Future<void> _setnextConfig(String name) async {
+    User? user = _globalService.getuser();
+    String location = "";
 
-  try {
-    switch (role) {
-      case "Adopter":
-        {
-          var res = await _apiService.addAdopter(AddAdopter(
-            adopterId: user!.userId,
-            name: name,
-            location: location,
-            isActive: true,
-          ));
-          if (res.errorCode == "PA0004") {
-            debugPrint(res.data.toString());
-          } else {
-            await _dialogService.showApiError(
-              res.data
-            );
-          }
-        }
-        break;
-
-      case "Donor":
-        {
-          var res = await _apiService.addDonor(AddDonor(
-            donorId: user!.userId,
-            name: name,
-            location: location,
-            isActive: true,
-          ));
-          if (res.errorCode == "PA0004") {
-            debugPrint(res.data.toString());
-          } else {
-            await _dialogService.showApiError(
-              res.data
-            );
-          }
-        }
-        break;
+    try {
+      Position position = await CurrentLocation().getCurrentPosition();
+      location = await CurrentLocation().getAddressFromLatLng(position) ?? "";
+    } catch (e) {
+      debugPrint("Location error: ${e.toString()}");
+      // Don't show any error dialog here, just continue with empty location
+      location = "Not Specified";
     }
-  } catch (e) {
-    debugPrint("Config error: ${e.toString()}");
-    await _dialogService.showAlert(Message(description: "Error ${e.toString()}"));
-  }
-}
 
+    try {
+      switch (role) {
+        case "Adopter":
+          {
+            var res = await _apiService.addAdopter(AddAdopter(
+              adopterId: user!.userId,
+              name: name,
+              location: location,
+              isActive: true,
+            ));
+            if (res.errorCode == "PA0004") {
+              debugPrint(res.data.toString());
+            } else {
+              await _dialogService.showApiError(res.data);
+            }
+          }
+          break;
+
+        case "Donor":
+          {
+            var res = await _apiService.addDonor(AddDonor(
+              donorId: user!.userId,
+              name: name,
+              location: location,
+              isActive: true,
+            ));
+            if (res.errorCode == "PA0004") {
+              debugPrint(res.data.toString());
+            } else {
+              await _dialogService.showApiError(res.data);
+            }
+          }
+          break;
+      }
+    } catch (e) {
+      debugPrint("Config error: ${e.toString()}");
+      await _dialogService
+          .showAlert(Message(description: "Error ${e.toString()}"));
+    }
+  }
 
   _gotoNextPage() async {
     switch (role) {

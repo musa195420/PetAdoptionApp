@@ -7,7 +7,7 @@ import 'package:petadoption/helpers/constants.dart';
 import 'package:petadoption/viewModel/signup_view_model.dart';
 import 'package:provider/provider.dart';
 
-dynamic formKey = GlobalKey<FormState>();
+final formKey = GlobalKey<FormState>();
 final TextEditingController emailController = TextEditingController();
 final TextEditingController passwordController = TextEditingController();
 final TextEditingController nameController = TextEditingController();
@@ -138,6 +138,7 @@ class SignupPage extends StatelessWidget {
           ),
           DefaultTextInput(
             controller: numberController,
+            isPassword: true,
             hintText: "PhoneNumber",
             icon: Icons.phone,
             validator: (value) {
@@ -152,10 +153,11 @@ class SignupPage extends StatelessWidget {
             hintText: "Password",
             icon: Icons.lock_outline,
             isPassword: true,
-            showPassword: viewModel.getShowPassword,
-            secureText: viewModel.getShowPassword,
+            showPassword: viewModel.showPassword,
+            secureText: viewModel.showPassword,
+            suffixicon: true,
             onEyePressed: () {
-              viewModel.setShowPassword(!viewModel.getShowPassword);
+              viewModel.setShowPassword();
             },
             validator: (value) {
               if (value == null || value.isEmpty) {

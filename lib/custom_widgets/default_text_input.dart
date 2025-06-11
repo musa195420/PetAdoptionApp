@@ -17,7 +17,7 @@ class DefaultTextInput extends StatelessWidget {
   final bool secureText;
   final bool border;
   final IconData? icon;
-  final String? suffixicon;
+  final bool suffixicon;
   final Function()? onEyePressed;
   final Function()? onTap;
   final int? maxLines;
@@ -43,7 +43,7 @@ class DefaultTextInput extends StatelessWidget {
     this.readOnly = false,
     this.maxLines = 1,
     this.icon,
-    this.suffixicon,
+    this.suffixicon = false,
     this.labelText,
     this.visibility = true,
     this.secureText = false,
@@ -72,7 +72,7 @@ class DefaultTextInput extends StatelessWidget {
           hintText: hintText,
           labelText: labelText,
           prefixIcon: icon != null ? Icon(icon) : null,
-          suffixIcon: suffixicon != null
+          suffixIcon: suffixicon
               ? IconButton(
                   onPressed: onEyePressed,
                   icon: Icon(Icons.remove_red_eye),

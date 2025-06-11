@@ -8,11 +8,11 @@ import '../viewModel/authentication_view_model.dart';
 
 final TextEditingController emailController = TextEditingController();
 final TextEditingController passwordController = TextEditingController();
+final formKey = GlobalKey<FormState>();
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
   final scaffoldKey = GlobalKey<ScaffoldState>();
-  dynamic formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -127,10 +127,11 @@ class LoginPage extends StatelessWidget {
             hintText: "Password",
             icon: Icons.lock_outline,
             isPassword: true,
-            showPassword: viewModel.getShowPassword,
-            secureText: viewModel.getShowPassword,
+            showPassword: viewModel.showPassword,
+            secureText: viewModel.showPassword,
+            suffixicon: true,
             onEyePressed: () {
-              viewModel.setShowPassword(!viewModel.getShowPassword);
+              viewModel.setShowPassword();
             },
             validator: (value) {
               if (value == null || value.isEmpty) {

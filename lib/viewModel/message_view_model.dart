@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:petadoption/helpers/locator.dart';
 import 'package:petadoption/models/request_models/message_model.dart';
@@ -56,7 +54,7 @@ class MessageViewModel extends BaseViewModel {
         return;
       }
       String userId = user!.userId;
-      loading(true);
+      //loading(true);
       var mesRes = await _apiService.getMessages(MessageInfo(userId: userId));
 
       if (mesRes.errorCode == "PA0004") {
@@ -73,7 +71,7 @@ class MessageViewModel extends BaseViewModel {
           "Error Occured While Fetching Messages", e.toString(), s);
     } finally {
       notifyListeners();
-      loading(false);
+      // loading(false);
     }
   }
 
@@ -191,7 +189,7 @@ class MessageViewModel extends BaseViewModel {
         return false;
       }
       String userId = user!.userId;
-      loading(true);
+      //loading(true);
       var mesRes = await _apiService.getMessagesBetweenUsers(MessageModel(
         senderId: userId,
         receiverId: receiverId,
@@ -213,7 +211,7 @@ class MessageViewModel extends BaseViewModel {
     } finally {
       notifyListeners();
 
-      loading(false);
+      // loading(false);
     }
   }
 
@@ -244,13 +242,13 @@ class MessageViewModel extends BaseViewModel {
 
   IO.Socket? socket;
 
-  void initSocket(String userId, String receiverId) {
+  void initSocket(String userId, String receiverId) async {
     try {
-      if (socket != null && socket!.connected)
+      if (socket != null && socket!.connected) {
         return; // Prevent reinitialization
-
-      socket = IO
-          .io('https://cc2e-103-198-154-144.ngrok-free.app', <String, dynamic>{
+      }
+      String url = await _globalService.getHost();
+      socket = IO.io(url, <String, dynamic>{
         'transports': ['websocket'],
         'autoConnect': false,
       });
@@ -258,7 +256,7 @@ class MessageViewModel extends BaseViewModel {
       socket!.connect();
 
       socket!.onConnect((_) {
-        debugPrint('Connected to Socket.IO server');
+        //debugPrint('Connected to Socket.IO server');
         socket!
             .emit('joinRoom', {'senderId': userId, 'receiverId': receiverId});
       });
@@ -266,7 +264,7 @@ class MessageViewModel extends BaseViewModel {
       socket!.off(
           'receiveMessage'); // REMOVE previous listener to avoid duplicates
       socket!.on('receiveMessage', (data) {
-        debugPrint('receiveMessage: $data');
+        //debugPrint('receiveMessage: $data');
         final newMsg = MessageModel.fromJson(data);
         messages!.add(newMsg);
         notifyListeners();
@@ -284,7 +282,7 @@ class MessageViewModel extends BaseViewModel {
       });
 
       socket!.on('deleteMessage', (data) {
-        debugPrint('❌ Message deleted: $data');
+        //debugPrint('❌ Message deleted: $data');
         final delMsg = MessageModel.fromJson(data);
 
         messages?.removeWhere((msg) => msg.messageId == delMsg.messageId);
@@ -300,10 +298,14 @@ class MessageViewModel extends BaseViewModel {
   }
 
   void sendMessage(MessageModel msg) async {
-    socket?.emit('sendMessage', msg.toJson());
-    debugPrint("Sending message: ${msg.toJson()}");
+    try {
+      socket?.emit('sendMessage', msg.toJson());
+      debugPrint("Sending message: ${msg.toJson()}");
 
-    notifyListeners();
+      notifyListeners();
+    } catch (e, s) {
+      debugPrint("Error ${e.toString()} Stack ${s.toString()}");
+    }
   }
 
   void disposeSocket() {
