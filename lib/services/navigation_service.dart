@@ -25,6 +25,7 @@ import 'package:petadoption/views/modals/animalDisease_modal.dart';
 import 'package:petadoption/views/modals/animalType_modal.dart';
 import 'package:petadoption/views/modals/admin_modals/animal_config_modal.dart';
 import 'package:petadoption/views/modals/animal_Vaccination_modal.dart';
+import 'package:petadoption/views/modals/meetup_modal.dart';
 import 'package:petadoption/views/not_supported.dart';
 import 'package:petadoption/views/pet_page.dart';
 import 'package:petadoption/views/signup.dart';
@@ -81,6 +82,7 @@ class Routes {
   static const String disability_modal = "disability_modal";
   static const String disease_modal = "disease_modal";
   static const String detail_modal = "detail_modal";
+  static const String meetup_modal = "meetup_modal";
 }
 
 class NavigationService {
@@ -373,6 +375,18 @@ class NavigationService {
               context: navigatorKey.currentContext!,
               backgroundColor: Colors.transparent,
               builder: (context) => HealthInfoModal(info: data.info));
+        }
+
+      case Routes.meetup_modal:
+        {
+          showBarModalBottomSheet(
+              expand: true,
+              context: navigatorKey.currentContext!,
+              backgroundColor: Colors.transparent,
+              builder: (context) => MeetupModal(
+                    adopterId: data.adopterId,
+                    userId: data.userId,
+                  ));
         }
     }
   }

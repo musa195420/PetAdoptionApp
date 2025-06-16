@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:petadoption/models/request_models/message_model.dart';
 import 'package:provider/provider.dart';
@@ -33,6 +35,115 @@ class MessagePage extends StatelessWidget {
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: pageBackground,
+
+        // 🔥 Drawer added here
+        endDrawer: Drawer(
+          backgroundColor: Colors.transparent,
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Color(0xFF1C0B00).withOpacity(0.9),
+                  Color(0xFF3D1B00).withOpacity(0.95),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
+            child: Column(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
+                    child: Container(
+                      width: double.infinity,
+                      margin: const EdgeInsets.all(12),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 16, horizontal: 20),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            Color(0xFF3D1B00).withOpacity(0.6),
+                            Color(0xFFFF7700).withOpacity(0.4),
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                            color: Colors.orangeAccent.withOpacity(0.4)),
+                      ),
+                      child: const Center(
+                        child: Text(
+                          'Active Events',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 24,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: 1.2,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: viewModel.listItems.isNotEmpty
+                      ? ListView.builder(
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          itemCount: viewModel.listItems.length,
+                          itemBuilder: (context, index) => AnimatedContainer(
+                            duration: const Duration(milliseconds: 300),
+                            margin: const EdgeInsets.symmetric(vertical: 6),
+                            decoration: BoxDecoration(
+                              color: Color(0xFF4A2C18).withOpacity(0.8),
+                              borderRadius: BorderRadius.circular(14),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.2),
+                                  blurRadius: 6,
+                                  offset: const Offset(2, 4),
+                                ),
+                              ],
+                            ),
+                            child: ListTile(
+                              title: Text(
+                                viewModel.listItems[index],
+                                style: const TextStyle(
+                                  color: Colors.white70,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 8, horizontal: 16),
+                              onTap: () {
+                                Navigator.of(context).pop();
+                                viewModel
+                                    .onMenuItemTap(viewModel.listItems[index]);
+                              },
+                              hoverColor: Colors.orange.withOpacity(0.1),
+                              splashColor: Colors.orange.withOpacity(0.2),
+                            ),
+                          ),
+                        )
+                      : const Center(
+                          child: Text(
+                            "No Events Scheduled",
+                            style: TextStyle(
+                              color: Colors.orangeAccent,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                ),
+              ],
+            ),
+          ),
+        ),
+
         body: SafeArea(
           child: Column(
             children: [
@@ -76,7 +187,7 @@ class MessagePage extends StatelessWidget {
             onTap: () async {
               await viewModel.gotoMessageInfo();
             },
-            child: Icon(
+            child: const Icon(
               Icons.arrow_back_ios_new_sharp,
               size: 20,
               color: Colors.white,
@@ -88,10 +199,9 @@ class MessagePage extends StatelessWidget {
             child: viewModel.currentInfo != null &&
                     viewModel.currentInfo!.profileImage != null
                 ? ClipOval(
-                    // ensures the image is circular
                     child: Image.network(
                       viewModel.currentInfo!.profileImage!,
-                      width: 48, // match 2x radius
+                      width: 48,
                       height: 48,
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) {
@@ -105,31 +215,27 @@ class MessagePage extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Name (top left)
               Text(
                 viewModel.reciverInfo!.name ?? "N/A",
-                style: TextStyle(fontSize: 16, color: Colors.white),
+                style: const TextStyle(fontSize: 16, color: Colors.white),
               ),
-              SizedBox(height: 4),
-              // Role (left) and Location (right)
+              const SizedBox(height: 4),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     viewModel.reciverInfo!.role ?? "",
-                    style: TextStyle(fontSize: 12, color: Colors.white70),
+                    style: const TextStyle(fontSize: 12, color: Colors.white70),
                   ),
                   SizedBox(width: MediaQuery.sizeOf(context).width * 0.06),
                   Row(
                     children: [
-                      Icon(
-                        Icons.location_on,
-                        color: Colors.white,
-                        size: 14,
-                      ),
+                      const Icon(Icons.location_on,
+                          color: Colors.white, size: 14),
                       Text(
                         viewModel.reciverInfo!.location ?? "Not Specified",
-                        style: TextStyle(fontSize: 12, color: Colors.white70),
+                        style: const TextStyle(
+                            fontSize: 12, color: Colors.white70),
                       ),
                     ],
                   ),
@@ -138,12 +244,14 @@ class MessagePage extends StatelessWidget {
             ],
           ),
           const Spacer(),
+          // 🍔 menu button
           IconButton(
-              onPressed: () {},
-              icon: const Icon(Icons.call, color: Colors.white)),
-          IconButton(
-              onPressed: () {},
-              icon: const Icon(Icons.videocam, color: Colors.white)),
+            onPressed: () async {
+              await viewModel.drawerLogic();
+              scaffoldKey.currentState!.openEndDrawer();
+            },
+            icon: const Icon(Icons.menu, color: Colors.white),
+          ),
         ],
       ),
     );

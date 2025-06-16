@@ -10,11 +10,6 @@ import 'package:petadoption/services/dialog_service.dart';
 import 'package:petadoption/services/global_service.dart';
 import 'package:petadoption/services/navigation_service.dart';
 import 'package:petadoption/viewModel/base_view_model.dart';
-import 'package:petadoption/viewModel/pet_view_model.dart';
-import 'package:petadoption/views/modals/admin_modals/pet_edit_modal.dart';
-
-import '../../models/response_models/health_info.dart';
-import '../../views/modals/admin_modals/health_info_modal.dart';
 import '../models/request_models/favourite.dart';
 import '../views/modals/detail_modal.dart';
 

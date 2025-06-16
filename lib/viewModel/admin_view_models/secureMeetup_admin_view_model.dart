@@ -1,10 +1,14 @@
 // ignore_for_file: file_names
 
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:petadoption/custom_widgets/os_map_picker.dart';
 import 'package:petadoption/helpers/locator.dart';
+import 'package:petadoption/models/hive_models/user.dart';
 import 'package:petadoption/models/message.dart';
 import 'package:petadoption/models/request_models/proof_image.dart';
+import 'package:petadoption/models/request_models/receiver_model.dart';
 import 'package:petadoption/models/request_models/single_pet.dart';
 import 'package:petadoption/models/response_models/meetup.dart';
 import 'package:petadoption/services/api_service.dart';
@@ -15,6 +19,9 @@ import 'package:petadoption/viewModel/base_view_model.dart';
 import 'package:petadoption/views/modals/admin_modals/meetup_edit_modal.dart';
 import 'package:petadoption/views/modals/admin_modals/secure_edit_modal.dart';
 
+import '../../models/error_models/error_reponse.dart';
+import '../../models/request_models/delete_user.dart';
+import '../../models/response_models/meetup_verification.dart';
 import '../../models/response_models/pet_response.dart';
 import '../../models/response_models/secure_meetup.dart';
 import '../../views/modals/admin_modals/pet_edit_modal.dart';
@@ -40,20 +47,24 @@ class SecuremeetupAdminViewModel extends BaseViewModel {
   }
 
   Color getColor(String approval) {
-    switch (approval) {
-      case 'Pending':
+    switch (approval.toLowerCase()) {
+      case 'pending':
         {
           return Colors.grey;
         }
 
-      case 'Valid':
+      case 'valid' || 'approved':
         {
           return Colors.green;
         }
 
-      case 'Invalid':
+      case 'invalid' || 'rejected':
         {
           return Colors.red;
+        }
+      case 'applied':
+        {
+          return const Color.fromARGB(255, 39, 50, 249);
         }
 
       default:
@@ -240,6 +251,17 @@ class SecuremeetupAdminViewModel extends BaseViewModel {
     }
   }
 
+  List<String> meetupApproval = ["Applied", "Rejected", "Accepted"];
+
+  getmeetupApproved() async {
+    int index = await _dialogService.showSelect(Message(
+        description: "Select Status Of Application", items: approvalStatus));
+    if (index != -1 && index < approvalStatus.length) {
+      meetup!.approval = approvalStatus[index];
+      notifyListeners();
+    }
+  }
+
   void removeImagePath(String type) {
     switch (type.toLowerCase()) {
       case "proofpicpath":
@@ -259,6 +281,26 @@ class SecuremeetupAdminViewModel extends BaseViewModel {
   }
 
   //<===========================================================Meetup Edit====================================================>
+
+  bool initailizing = true;
+  bool isUpdate = false;
+  setisUpdate(bool value) {
+    isUpdate = value;
+  }
+
+  List<String> paymentStatus = ["Not Paid", "Paid"];
+
+  Future<void> intialMeetupSetup(String userId, String adopterId) async {
+    await getUser(userId, adopterId);
+    await getpetuserId(donorUser!.userId);
+    adopterNameController.text = adopterUser!.email ?? "";
+    if (applicationController.text.isEmpty) {
+      applicationController.text = meetupApproval.first;
+    }
+    initailizing = false;
+    notifyListeners();
+  }
+
   Meetup? meets;
 
   Future<void> getMeetup(String meetupId) async {
@@ -281,8 +323,305 @@ class SecuremeetupAdminViewModel extends BaseViewModel {
     }
   }
 
+  Future<void> getMeetupByUserId(String meetupId) async {
+    try {
+      loading(true, loadingText: "Getting Meetup ....");
+      var res = await _apiService
+          .getMeetupsByUserId(Meetup(userId: _globalService.getuser()!.userId));
+      if (res.errorCode == "PA0004") {
+        meets = res.data;
+      } else {
+        await _dialogService.showApiError(res.data);
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+      loading(false);
+    } finally {
+      loading(false);
+    }
+  }
+
+  Future<Position?> getCurrentLocation() async {
+    try {
+      bool serviceEnabled;
+      LocationPermission permission;
+
+      // Check if location services are enabled
+      serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        return Future.error('Location services are disabled.');
+      }
+
+      // Check permission
+      permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          return null;
+        }
+      }
+
+      // If all good, get location
+      return await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+    } catch (e, s) {
+      debugPrint("Error ${e.toString()} STack ${s.toString()}");
+    }
+    return null;
+  }
+
+  String? longitude;
+  String? latitude;
+  Future<void> selectLocationonMaps() async {
+    if (longitude == null || latitude == null) {
+      Position? pos = await getCurrentLocation();
+      if (pos != null) {
+        longitude = pos.longitude.toString();
+        latitude = pos.latitude.toString();
+      }
+    }
+    final result = await Navigator.push(
+      _navigationService.navigatorKey.currentContext!,
+      MaterialPageRoute(
+          builder: (_) => OSMMapPickerScreen(
+                longitude: double.parse(longitude ?? "74.3079"),
+                latitude: double.parse(latitude ?? "31.5732"),
+              )),
+    );
+
+    if (result != null) {
+      latitude = result['latitude'].toString();
+      longitude = result['longitude'].toString();
+      locationNameController.text =
+          "$latitude, $longitude"; // or resolve address
+      notifyListeners();
+    }
+  }
+
+  Future<void> selectDateTime() async {
+    DateTime? dateTime = await _dialogService.showDateTimePicker();
+    if (dateTime != null) {
+      timeController.text = dateTime.toString();
+    }
+    notifyListeners();
+  }
+
+  List<String> meetupVerification = [
+    'Pending',
+    'Applied',
+  ];
+  Future<void> selectmeetupVerification() async {
+    String role = _globalService.getuser()!.role ?? "".toLowerCase();
+    if (role == "admin") {
+      meetupVerification = ['Pending', 'Applied', 'Approved', 'Rejected'];
+    }
+
+    int index = await _dialogService.showSelect(Message(
+        description: "Select Application Status", items: meetupVerification));
+    if (index != -1 && index < meetupVerification.length) {
+      applicationController.text = meetupVerification[index];
+      notifyListeners();
+    }
+  }
+
+  Future<void> selectPet() async {
+    if (pets == null) {
+      return;
+    }
+    List<String>? petNames = [];
+    for (var p in pets!) {
+      petNames.add(p.name ?? "Not Known");
+    }
+
+    int index = await _dialogService
+        .showSelect(Message(description: "Select Your Pet", items: petNames));
+    if (index != -1 && index < petNames.length) {
+      petName = pets![index].name;
+      petId = pets![index].petId;
+      petNameController.text = petName ?? "Enter Pet";
+      notifyListeners();
+    }
+  }
+
+  Future<void> updateMeetup(
+    String meetupId,
+    String userId,
+    String receiverId,
+    String petId,
+    String donorId,
+    String adopterId,
+    String location,
+    String latitude,
+    String longitude,
+    bool isAcceptedByDonor,
+    bool isAcceptedByAdopter, {
+    String? donorVerificationRequest,
+    String? adopterVerificationRequest,
+  }) async {
+    try {
+      loading(true, loadingText: "Updating Meetup ....");
+
+      // Fallback if values are null
+      // final donorRequest =
+      //     donorVerificationRequest ?? meets?.donorVerificationRequest ?? "";
+      // final adopterRequest =
+      //     adopterVerificationRequest ?? meets?.adopterVerificationRequest ?? "";
+
+      Meetup updatedMeetup = Meetup(
+        meetupId: meetupId,
+        petId: petId,
+        donorId: donorId,
+        adopterId: adopterId,
+        location: location,
+        latitude: latitude,
+        longitude: longitude,
+        time: timeController.text,
+        isAcceptedByAdopter: isAcceptedByAdopter,
+        isAcceptedByDonor: isAcceptedByDonor,
+        addVerification: applicationController.text,
+      );
+
+      var res = await _apiService.updateMeetup(updatedMeetup);
+      if (res.errorCode == "PA0004") {
+        _dialogService.showSuccess(text: "Updated Meetup");
+      } else {
+        await _dialogService.showApiError(res.data);
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+      loading(false);
+    } finally {
+      loading(false);
+    }
+  }
+
+  Future<void> deleteMeetup(
+    String meetupId,
+  ) async {
+    try {
+      loading(true, loadingText: "Deleting Meetup ....");
+
+      var res = await _apiService.deleteMeetup(Meetup(meetupId: meetupId));
+      if (res.errorCode == "PA0004") {
+        _dialogService.showSuccess(text: "Deleted Meetup");
+      } else {
+        await _dialogService.showApiError(res.data);
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+      loading(false);
+    } finally {
+      loading(false);
+    }
+  }
+
+  Future<ReceiverModel> getReceiverInfo(String userId) async {
+    try {
+      var userRes = await _apiService.getUserinfo(SingleUser(userId: userId));
+      if (userRes.errorCode == "PA0004") {
+        return userRes.data as ReceiverModel;
+      } else {
+        return ReceiverModel(userId: "");
+      }
+    } catch (e, s) {
+      debugPrint("Error ${e.toString()} Stack ${s.toString()}");
+      return ReceiverModel(userId: "");
+    }
+  }
+
+  String getRole() {
+    String role = _globalService.getuser()!.role.toString().toLowerCase();
+    return role;
+  }
+
+  String? meetupId;
+  ReceiverModel? donorUser;
+  ReceiverModel? adopterUser;
+  TextEditingController petNameController = TextEditingController();
+  TextEditingController adopterNameController = TextEditingController();
+  TextEditingController locationNameController = TextEditingController();
+  TextEditingController timeController = TextEditingController();
+  TextEditingController applicationController = TextEditingController();
+  bool isAcceptedByDonor = false;
+  bool isAcceptedByAdopter = false;
+  String? petId;
+  String? petName;
+  Future<void> addMeetup(
+    String userId,
+    String receiverId,
+    String petId,
+    String donorId,
+    String adopterId,
+    String location,
+    String latitude,
+    String longitude,
+    bool isAcceptedByDonor,
+    bool isAcceptedByAdopter, {
+    String? donorVerificationRequest,
+    String? adopterVerificationRequest,
+  }) async {
+    try {
+      loading(true, loadingText: "Add Meetup ....");
+
+      if (donorUser!.isVerified == null || adopterUser!.isVerified == null) {
+        _dialogService.showApiError(
+            ErrorResponse(message: "User Not Found", error: "604"));
+      }
+      // Fallback if values are null
+
+      Meetup addMeetup = Meetup(
+        petId: petId,
+        donorId: donorId,
+        adopterId: adopterId,
+        location: location,
+        latitude: latitude,
+        longitude: longitude,
+        time: timeController.text,
+        isAcceptedByAdopter: isAcceptedByAdopter,
+        isAcceptedByDonor: isAcceptedByDonor,
+        addVerification: applicationController.text,
+      );
+
+      var res = await _apiService.addMeetup(addMeetup);
+      if (res.errorCode == "PA0004") {
+        Meetup meetup = res.data;
+        var verRes = await _apiService.addMeetupVerification(MeetupVerification(
+          meetupId: meetup.meetupId ?? "",
+          adopterVerificationStatus: meetupVerification[0],
+          paymentStatus: paymentStatus[1],
+        ));
+        if (verRes.errorCode == "PA0004") {
+          _dialogService.showSuccess(text: "Add Meetup");
+        }
+      } else {
+        await _dialogService.showApiError(res.data);
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+      loading(false);
+    } finally {
+      loading(false);
+    }
+  }
+
   void setMeetup(Meetup meets) {
     this.meets = meets;
+  }
+
+  void setData(Meetup meets) {
+    meetupId = meets.meetupId;
+    petNameController.text = meets.petName ?? "";
+    petId = meets.petId;
+    petName = meets.petName;
+    adopterNameController.text = meets.adopterName ?? "";
+    locationNameController.text = meets.location ?? "";
+    longitude = meets.longitude;
+    latitude = meets.latitude;
+    timeController.text = meets.time ?? "";
+    applicationController.text = meets.addVerification ?? "";
+    isAcceptedByAdopter = meets.isAcceptedByAdopter ?? false;
+    isAcceptedByDonor = meets.isAcceptedByDonor ?? false;
   }
 
   void showPetInfo(String? petId) async {
@@ -302,7 +641,54 @@ class SecuremeetupAdminViewModel extends BaseViewModel {
     }
   }
 
+  List<PetResponse>? pets;
+  Future<void> getpetuserId(String userId) async {
+    var petRes = await _apiService.getPetByUserId(SingleUser(userId: userId));
+
+    if (petRes.errorCode == "PA0004") {
+      // Parse the response
+      pets = (petRes.data as List)
+          .map((json) => PetResponse.fromJson(json as Map<String, dynamic>))
+          .toList();
+
+      // Get all names for the dialog
+    }
+  }
+
+  Future<void> getUser(String userId, String adopterId) async {
+    donorUser = await getReceiverInfo(userId);
+    adopterUser = await getReceiverInfo(adopterId);
+  }
+
+  setpet(String petId, petName) {
+    this.petId = petId;
+    this.petName = petName;
+    petNameController = petName;
+  }
+
   Future<void> getUserInfo(String id) async {
     _userModel.showLink(id);
+  }
+
+  void setacceptedbyDonor(bool value) {
+    isAcceptedByDonor = value;
+    notifyListeners();
+  }
+
+  void setacceptedbyAdopter(bool value) {
+    isAcceptedByAdopter = value;
+    notifyListeners();
+  }
+
+  bool adopterverificationRequest = false;
+  bool donorverificationRequest = false;
+  void setadopterverificationRequest(bool value) {
+    adopterverificationRequest = value;
+    notifyListeners();
+  }
+
+  void setdonorverificationRequest(bool value) {
+    donorverificationRequest = value;
+    notifyListeners();
   }
 }

@@ -1,9 +1,10 @@
 class MessageInfo {
-  final String userId;
-  final String? email;
-  final String? profileImage;
-  final String? lastMessage;
-  final DateTime? messageTime;
+  String userId;
+  String? email;
+  String? profileImage;
+  String? lastMessage;
+  DateTime? messageTime;
+  bool? isVerified;
 
   MessageInfo({
     required this.userId,
@@ -11,18 +12,19 @@ class MessageInfo {
     this.profileImage,
     this.lastMessage,
     this.messageTime,
+    this.isVerified = false,
   });
 
   factory MessageInfo.fromJson(Map<String, dynamic> json) {
     return MessageInfo(
-      userId: json['user_id'],
-      email: json['email'],
-      profileImage: json['profile_image'],
-      lastMessage: json['last_message'],
-      messageTime: json['message_time'] != null
-          ? DateTime.parse(json['message_time'])
-          : null,
-    );
+        userId: json['user_id'],
+        email: json['email'],
+        profileImage: json['profile_image'],
+        lastMessage: json['last_message'],
+        messageTime: json['message_time'] != null
+            ? DateTime.parse(json['message_time'])
+            : null,
+        isVerified: json['verified']);
   }
 
   Map<String, dynamic> toJson() {
@@ -32,6 +34,7 @@ class MessageInfo {
       if (profileImage != null) 'profile_image': profileImage,
       if (lastMessage != null) 'last_message': lastMessage,
       if (messageTime != null) 'message_time': messageTime!.toIso8601String(),
+      if (isVerified != null) 'verified': isVerified,
     };
   }
 }

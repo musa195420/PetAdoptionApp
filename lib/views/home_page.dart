@@ -364,88 +364,92 @@ class HomePage extends StatelessWidget {
                                                           .bottomCenter,
                                                     ),
                                                   ),
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceAround,
-                                                    children: [
-                                                      Row(
-                                                        children: [
-                                                          Expanded(
-                                                            child: Text(
-                                                              pet.name ??
-                                                                  'No Name',
-                                                              style:
-                                                                  const TextStyle(
-                                                                fontSize: 18,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                              ),
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                            ),
-                                                          ),
-                                                          Icon(
-                                                            pet.gender?.toLowerCase() ==
-                                                                    'male'
-                                                                ? Icons.male
-                                                                : Icons.female,
-                                                            size: 20,
-                                                            color: pet.gender
-                                                                        ?.toLowerCase() ==
-                                                                    'male'
-                                                                ? Colors.blue
-                                                                : Colors.pink,
-                                                          )
-                                                        ],
-                                                      ),
-                                                      Text(
-                                                        pet.breed ??
-                                                            'Unknown Breed',
-                                                        style: TextStyle(
-                                                          fontSize: 13,
-                                                          color: Colors
-                                                              .grey.shade600,
-                                                        ),
-                                                      ),
-                                                      Text(
-                                                        '${pet.age ?? 0} years old',
-                                                        style: TextStyle(
-                                                          fontSize: 13,
-                                                          color: Colors
-                                                              .grey.shade600,
-                                                        ),
-                                                      ),
-                                                      Row(
-                                                        children: [
-                                                          const Icon(
-                                                              Icons.location_on,
-                                                              size: 14,
-                                                              color: Colors
-                                                                  .redAccent),
-                                                          const SizedBox(
-                                                              width: 4),
-                                                          Expanded(
-                                                            child: Text(
-                                                              pet.location ??
-                                                                  'Unknown',
-                                                              style:
-                                                                  const TextStyle(
-                                                                fontSize: 12,
+                                                  child: SingleChildScrollView(
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceAround,
+                                                      children: [
+                                                        Row(
+                                                          children: [
+                                                            Expanded(
+                                                              child: Text(
+                                                                pet.name ??
+                                                                    'No Name',
+                                                                style:
+                                                                    const TextStyle(
+                                                                  fontSize: 18,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                ),
                                                                 overflow:
                                                                     TextOverflow
                                                                         .ellipsis,
                                                               ),
                                                             ),
+                                                            Icon(
+                                                              pet.gender?.toLowerCase() ==
+                                                                      'male'
+                                                                  ? Icons.male
+                                                                  : Icons
+                                                                      .female,
+                                                              size: 20,
+                                                              color: pet.gender
+                                                                          ?.toLowerCase() ==
+                                                                      'male'
+                                                                  ? Colors.blue
+                                                                  : Colors.pink,
+                                                            )
+                                                          ],
+                                                        ),
+                                                        Text(
+                                                          pet.breed ??
+                                                              'Unknown Breed',
+                                                          style: TextStyle(
+                                                            fontSize: 13,
+                                                            color: Colors
+                                                                .grey.shade600,
                                                           ),
-                                                        ],
-                                                      ),
-                                                    ],
+                                                        ),
+                                                        Text(
+                                                          '${pet.age ?? 0} years old',
+                                                          style: TextStyle(
+                                                            fontSize: 13,
+                                                            color: Colors
+                                                                .grey.shade600,
+                                                          ),
+                                                        ),
+                                                        Row(
+                                                          children: [
+                                                            const Icon(
+                                                                Icons
+                                                                    .location_on,
+                                                                size: 14,
+                                                                color: Colors
+                                                                    .redAccent),
+                                                            const SizedBox(
+                                                                width: 4),
+                                                            Expanded(
+                                                              child: Text(
+                                                                pet.location ??
+                                                                    'Unknown',
+                                                                style:
+                                                                    const TextStyle(
+                                                                  fontSize: 12,
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ),
                                                 ),
                                               ),

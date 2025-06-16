@@ -5,6 +5,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:petadoption/services/navigation_service.dart';
 import 'package:petadoption/helpers/locator.dart';
 import '../custom_widgets/custom_button.dart';
+import '../custom_widgets/date_time_part.dart';
 import '../models/error_models/error_reponse.dart';
 import '../models/message.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -493,6 +494,24 @@ class DialogService implements IDialogService {
       },
     );
   }
+
+  /// Returns `null` if the user cancels either picker.
+  Future<DateTime?> showDateTimePicker({
+    DateTime? initialDateTime,
+    bool barrierDismissible = false,
+  }) async {
+    // Wrap everything in the same nice‑looking Dialog shell you use elsewhere
+    return await showDialog<DateTime?>(
+      context: _navigationService.navigatorKey.currentContext!,
+      barrierDismissible: barrierDismissible,
+      builder: (_) => PopScope(
+        canPop: barrierDismissible,
+        child: DateTimePickerDialog(
+          initialDateTime: initialDateTime ?? DateTime.now(),
+        ),
+      ),
+    ); // If nothing came back, treat as cancelled
+  }
 }
 
 abstract class IDialogService {
@@ -502,4 +521,8 @@ abstract class IDialogService {
   Future<bool> showAlert(Message message);
   Future<bool> showApiError(dynamic error);
   Future<void> showToast(Message message);
+  Future<DateTime?> showDateTimePicker({
+    DateTime? initialDateTime,
+    bool barrierDismissible = false,
+  });
 }

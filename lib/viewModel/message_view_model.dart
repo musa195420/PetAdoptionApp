@@ -4,6 +4,7 @@ import 'package:petadoption/models/request_models/message_model.dart';
 import 'package:petadoption/models/response_models/message_info.dart';
 import 'package:petadoption/services/api_service.dart';
 import 'package:petadoption/services/global_service.dart';
+import 'package:petadoption/viewModel/admin_view_models/secureMeetup_admin_view_model.dart';
 import 'package:petadoption/viewModel/base_view_model.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
@@ -11,14 +12,18 @@ import '../models/hive_models/user.dart';
 import '../models/message.dart';
 import '../models/request_models/delete_user.dart';
 import '../models/request_models/receiver_model.dart';
+import '../models/response_models/meetup.dart';
 import '../services/dialog_service.dart';
 import '../services/navigation_service.dart';
+import '../views/modals/meetup_modal.dart';
 
 class MessageViewModel extends BaseViewModel {
   NavigationService get _navigationService => locator<NavigationService>();
   IDialogService get _dialogService => locator<IDialogService>();
   IAPIService get _apiService => locator<IAPIService>();
   GlobalService get _globalService => locator<GlobalService>();
+  SecuremeetupAdminViewModel get _meetupModel =>
+      locator<SecuremeetupAdminViewModel>();
 
   MessageModel? message;
   List<MessageModel>? messages;
@@ -109,6 +114,15 @@ class MessageViewModel extends BaseViewModel {
     } catch (e, s) {
       debugPrint("Error ${e.toString()} Stack ${s.toString()}");
     }
+  }
+
+  Future<void> addmeetupModal() async {
+    _navigationService.openModalBottomSheet(
+        Routes.meetup_modal,
+        MeetupModal(
+          adopterId: reciverInfo!.userId,
+          userId: user!.userId,
+        ));
   }
 
   MessageInfo? currentInfo;
@@ -312,5 +326,56 @@ class MessageViewModel extends BaseViewModel {
     socket?.disconnect();
     socket?.destroy();
     socket = null;
+  }
+
+  List<String> listItems = [];
+
+  void onMenuItemTap(String item) {
+    switch (item.toLowerCase()) {
+      case "add meetup":
+        addmeetupModal();
+        break;
+      case "update meetup":
+        addmeetupModal();
+        break;
+      // future options can go here
+    }
+  }
+
+  Future<void> drawerLogic() async {
+    try {
+      _meetupModel.setisUpdate(false);
+      if (user == null) return;
+      listItems = [];
+      if (user!.role!.toLowerCase() == "donor") {
+        await addDonorActions();
+        if (meets == null) {
+          listItems.add("Add Meetup");
+        } else {
+          listItems.add("Update Meetup");
+        }
+      }
+    } catch (e, s) {
+      debugPrint("Error ${e.toString()} Stack ${s.toString()}");
+    } finally {
+      loading(false);
+      notifyListeners();
+    }
+  }
+
+  Meetup? meets;
+  Future<void> addDonorActions() async {
+    try {
+      loading(true, loadingText: "Getting Events ....");
+      var res = await _apiService.getMeetupsBetweenUserId(Meetup(
+          userId: _globalService.getuser()!.userId, receiverId: receiverId));
+      if (res.errorCode == "PA0004") {
+        meets = res.data;
+        _meetupModel.setData(meets!);
+        // _meetupModel.setisUpdate(true);
+      }
+    } catch (e) {
+      loading(false);
+    }
   }
 }

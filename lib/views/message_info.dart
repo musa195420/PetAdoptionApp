@@ -99,6 +99,7 @@ class MessageInfo extends StatelessWidget {
                                     isOnline: msg.lastMessage == 'Online',
                                     lastSeen: msg.messageTime,
                                     profileImage: msg.profileImage,
+                                    isVerified: msg.isVerified ?? false,
                                   ),
                                 );
                               },
@@ -119,6 +120,7 @@ class MessageCard extends StatelessWidget {
   final bool isOnline;
   final DateTime? lastSeen;
   final String? profileImage;
+  final bool isVerified;
 
   const MessageCard({
     super.key,
@@ -126,6 +128,7 @@ class MessageCard extends StatelessWidget {
     required this.isOnline,
     required this.lastSeen,
     required this.profileImage,
+    required this.isVerified,
   });
 
   @override
@@ -213,7 +216,8 @@ class MessageCard extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 4),
-                    const Icon(Icons.verified, size: 16, color: Colors.blue),
+                    if (isVerified)
+                      const Icon(Icons.verified, size: 16, color: Colors.blue),
                   ],
                 ),
                 const SizedBox(height: 4),

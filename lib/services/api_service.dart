@@ -24,6 +24,7 @@ import "package:petadoption/models/request_models/update_animal.dart";
 import "package:petadoption/models/request_models/userinforequest.dart";
 import "package:petadoption/models/response_models/breed_type.dart";
 import "package:petadoption/models/response_models/health_info.dart";
+import "package:petadoption/models/response_models/meetup_verification.dart";
 import "package:petadoption/models/response_models/user_profile.dart";
 import "package:petadoption/services/dialog_service.dart";
 import "package:petadoption/services/global_service.dart";
@@ -1003,7 +1004,103 @@ class APIService implements IAPIService {
       if (response.statusCode == 200) {
         if (res.success ?? true) {
           return ApiStatus(
+            data: res.data,
+            errorCode: "PA0004",
+          );
+        } else {
+          return ApiStatus(
+              data: ErrorResponse.fromJson(res.toJson()),
+              errorCode: res.status.toString());
+        }
+      } else {
+        return ApiStatus(
+            data: ErrorResponse.fromJson(res.toJson()),
+            errorCode: res.status.toString());
+      }
+    } on HttpException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0013");
+    } on FormatException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0007");
+    } on TimeoutException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0003");
+    } catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0006");
+    }
+  }
+
+  @override
+  Future<ApiStatus> getMeetupsBetweenUserId(Meetup meetup) async {
+    try {
+      // "user_id": "2a517e5e-4106-4c15-94c9-5123012e5a9f"
+      var response = await _httpService.postData(
+          "api/meetup/between-users", meetup.toJson());
+      if (response.statusCode == 404) {
+        return ApiStatus(data: null, errorCode: "PA0002");
+      }
+      if (response.statusCode == 401) {
+        return ApiStatus(data: null, errorCode: "PA0001");
+      }
+      ApiResponse res = ApiResponse.fromJson(json.decode(response.body));
+      if (response.statusCode == 200) {
+        if (res.success ?? true) {
+          return ApiStatus(
             data: Meetup.fromJson(res.data),
+            errorCode: "PA0004",
+          );
+        } else {
+          return ApiStatus(
+              data: ErrorResponse.fromJson(res.toJson()),
+              errorCode: res.status.toString());
+        }
+      } else {
+        return ApiStatus(
+            data: ErrorResponse.fromJson(res.toJson()),
+            errorCode: res.status.toString());
+      }
+    } on HttpException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0013");
+    } on FormatException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0007");
+    } on TimeoutException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0003");
+    } catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0006");
+    }
+  }
+
+  @override
+  Future<ApiStatus> getMeetupVerificationById(MeetupVerification meetup) async {
+    try {
+      // "user_id": "2a517e5e-4106-4c15-94c9-5123012e5a9f"
+      var response = await _httpService.postData(
+          "api/verification-meetups/id", meetup.toJson());
+      if (response.statusCode == 404) {
+        return ApiStatus(data: null, errorCode: "PA0002");
+      }
+      if (response.statusCode == 401) {
+        return ApiStatus(data: null, errorCode: "PA0001");
+      }
+      ApiResponse res = ApiResponse.fromJson(json.decode(response.body));
+      if (response.statusCode == 200) {
+        if (res.success ?? true) {
+          return ApiStatus(
+            data: MeetupVerification.fromJson(res.data),
             errorCode: "PA0004",
           );
         } else {
@@ -2152,6 +2249,54 @@ class APIService implements IAPIService {
   }
 
   @override
+  Future<ApiStatus> updateMeetupVerification(MeetupVerification meetup) async {
+    try {
+      var response = await _httpService.patchData(
+          "api/verification-meetups", meetup.toJson());
+      if (response.statusCode == 404) {
+        return ApiStatus(data: null, errorCode: "PA0002");
+      }
+      if (response.statusCode == 401) {
+        return ApiStatus(data: null, errorCode: "PA0001");
+      }
+      ApiResponse res = ApiResponse.fromJson(json.decode(response.body));
+      if (response.statusCode == 200) {
+        if (res.success ?? false) {
+          return ApiStatus(
+            data: null,
+            errorCode: "PA0004",
+          );
+        } else {
+          return ApiStatus(
+              data: ErrorResponse.fromJson(res.toJson()),
+              errorCode: res.status.toString());
+        }
+      } else {
+        debugPrint(response.statusCode);
+        return ApiStatus(
+            data: ErrorResponse.fromJson(res.toJson()),
+            errorCode: res.status.toString());
+      }
+    } on HttpException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0013");
+    } on FormatException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0007");
+    } on TimeoutException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0003");
+    } catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0006");
+    }
+  }
+
+  @override
   Future<ApiStatus> updatePet(PetResponse pet) async {
     try {
       var response =
@@ -3088,6 +3233,53 @@ class APIService implements IAPIService {
   }
 
   @override
+  Future<ApiStatus> deleteMeetupVerification(MeetupVerification meetup) async {
+    try {
+      var response = await _httpService.deleteData(
+          "api/verification-meetups/", meetup.toJson());
+      if (response.statusCode == 404) {
+        return ApiStatus(data: null, errorCode: "PA0002");
+      }
+      if (response.statusCode == 401) {
+        return ApiStatus(data: null, errorCode: "PA0001");
+      }
+      ApiResponse res = ApiResponse.fromJson(json.decode(response.body));
+      if (response.statusCode == 200) {
+        if (res.success ?? false) {
+          return ApiStatus(
+            data: null,
+            errorCode: "PA0004",
+          );
+        } else {
+          return ApiStatus(
+              data: ErrorResponse.fromJson(res.toJson()),
+              errorCode: res.status.toString());
+        }
+      } else {
+        return ApiStatus(
+            data: ErrorResponse.fromJson(res.toJson()),
+            errorCode: res.status.toString());
+      }
+    } on HttpException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0013");
+    } on FormatException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0007");
+    } on TimeoutException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0003");
+    } catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0006");
+    }
+  }
+
+  @override
   Future<ApiStatus> deleteFavourite(Favourite favourite) async {
     try {
       var response = await _httpService.deleteData(
@@ -3559,7 +3751,54 @@ class APIService implements IAPIService {
         return ApiStatus(data: null, errorCode: "PA0001");
       }
       ApiResponse res = ApiResponse.fromJson(json.decode(response.body));
-      if (response.statusCode == 200) {
+      if (response.statusCode == 201) {
+        if (res.success ?? true) {
+          return ApiStatus(
+            data: Meetup.fromJson(res.data.first),
+            errorCode: "PA0004",
+          );
+        } else {
+          return ApiStatus(
+              data: ErrorResponse.fromJson(res.toJson()),
+              errorCode: res.status.toString());
+        }
+      } else {
+        return ApiStatus(
+            data: ErrorResponse.fromJson(res.toJson()),
+            errorCode: res.status.toString());
+      }
+    } on HttpException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0013");
+    } on FormatException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0007");
+    } on TimeoutException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0003");
+    } catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0006");
+    }
+  }
+
+  @override
+  Future<ApiStatus> addMeetupVerification(MeetupVerification meetup) async {
+    try {
+      var response = await _httpService.postData(
+          "api/verification-meetups", meetup.toJson());
+      if (response.statusCode == 404) {
+        return ApiStatus(data: null, errorCode: "PA0002");
+      }
+      if (response.statusCode == 401) {
+        return ApiStatus(data: null, errorCode: "PA0001");
+      }
+      ApiResponse res = ApiResponse.fromJson(json.decode(response.body));
+      if (response.statusCode == 201) {
         if (res.success ?? true) {
           return ApiStatus(
             data: null,
@@ -3748,11 +3987,17 @@ abstract class IAPIService {
   Future<ApiStatus> deleteMeetup(Meetup meetup);
   Future<ApiStatus> getMeetups();
   Future<ApiStatus> getMeetupsByPetId(Meetup meetup);
+  Future<ApiStatus> getMeetupsBetweenUserId(Meetup meetup);
   Future<ApiStatus> getMeetupsByUserId(Meetup meetup);
   Future<ApiStatus> getMeetupsById(Meetup meetup);
   Future<ApiStatus> getSecureMeetups();
   Future<ApiStatus> deleteSecureMeetup(SecureMeetup meetup);
   Future<ApiStatus> updateSecureMeetup(SecureMeetup secure);
+  //<=========================== Meetup Verification Requests =======================>
+  Future<ApiStatus> addMeetupVerification(MeetupVerification meetup);
+  Future<ApiStatus> updateMeetupVerification(MeetupVerification meetup);
+  Future<ApiStatus> deleteMeetupVerification(MeetupVerification meetup);
+  Future<ApiStatus> getMeetupVerificationById(MeetupVerification meetup);
 //<=========================== Favourite Requests =======================>
   Future<ApiStatus> addFavourite(Favourite favourite);
   Future<ApiStatus> deleteFavourite(Favourite favourite);
