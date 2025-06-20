@@ -25,32 +25,36 @@ import 'services/navigation_service.dart';
 void main() async {
   runZonedGuarded(
     () async {
-      EasyLoading.instance
-        ..displayDuration = const Duration(milliseconds: 2000)
-        ..indicatorType = EasyLoadingIndicatorType.pulse
-        ..loadingStyle = EasyLoadingStyle.dark
-        ..indicatorSize = 45.0
-        ..radius = 10.0
-        ..progressColor = Colors.yellow
-        ..backgroundColor = Colors.green
-        ..indicatorColor = Colors.yellow
-        ..textColor = Colors.yellow
-        ..maskColor = Colors.blue.withValues(alpha: 0.5)
-        ..userInteractions = false
-        ..maskType = EasyLoadingMaskType.black
-        ..dismissOnTap = false;
+      registerLoader();
       await LocatorInjector.setupLocator();
 
       await Hive.initFlutter();
 
       await configSettings();
       HttpOverrides.global = CustomHttpOverrides();
- SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
       WidgetsFlutterBinding.ensureInitialized();
       runApp(const MyApp());
     },
     (Object error, StackTrace stack) {},
   );
+}
+
+Future<void> registerLoader() async {
+  EasyLoading.instance
+    ..displayDuration = const Duration(milliseconds: 2000)
+    ..indicatorType = EasyLoadingIndicatorType.pulse
+    ..loadingStyle = EasyLoadingStyle.dark
+    ..indicatorSize = 45.0
+    ..radius = 10.0
+    ..progressColor = Colors.yellow
+    ..backgroundColor = Colors.green
+    ..indicatorColor = Colors.yellow
+    ..textColor = Colors.yellow
+    ..maskColor = Colors.blue.withValues(alpha: 0.5)
+    ..userInteractions = false
+    ..maskType = EasyLoadingMaskType.black
+    ..dismissOnTap = false;
 }
 
 Future configSettings() async {

@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:petadoption/models/request_models/message_model.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
@@ -10,9 +11,10 @@ import '../services/navigation_service.dart';
 import '../viewModel/message_view_model.dart'; // adjust path
 import '../custom_widgets/stateful_wrapper.dart';
 
+final _focusNode = FocusNode();
+
 class MessagePage extends StatelessWidget {
   MessagePage({super.key});
-
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final TextEditingController _messageController = TextEditingController();
 
@@ -473,11 +475,43 @@ class MessagePage extends StatelessWidget {
         child: Row(
           children: [
             Expanded(
-              child: TextField(
-                controller: _messageController,
-                decoration: const InputDecoration(
-                  hintText: "Type your message...",
-                  border: InputBorder.none,
+              child: RawKeyboardListener(
+                focusNode: _focusNode, // <- listener’s node
+                autofocus: true, // grab focus when the page opens
+                onKey: (RawKeyEvent event) async {
+                  if (event is RawKeyDownEvent) {
+                    final isEnter =
+                        event.logicalKey == LogicalKeyboardKey.enter;
+                    final isShiftPressed = event.isShiftPressed;
+
+                    // Enter without Shift  ➜  send
+                    if (isEnter && !isShiftPressed) {
+                      final content = _messageController.text.trim();
+                      if (content.isNotEmpty) {
+                        final msg = MessageModel(
+                          senderId: viewModel.senderId!,
+                          receiverId: viewModel.receiverId!,
+                          content: content,
+                          timestamp: DateTime.now(),
+                        );
+                        viewModel.sendMessage(msg);
+                        _messageController.clear();
+                        await viewModel.getMessages(viewModel.receiverId!);
+                      }
+                    }
+                  }
+                },
+
+                // TextField gets its *own* internal FocusNode.
+                child: TextField(
+                  controller: _messageController,
+                  maxLines: null, // allow multi‑line input
+                  keyboardType: TextInputType.multiline,
+                  textInputAction: TextInputAction.newline,
+                  decoration: const InputDecoration(
+                    hintText: "Type your message...",
+                    border: InputBorder.none,
+                  ),
                 ),
               ),
             ),

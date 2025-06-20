@@ -1,6 +1,3 @@
-// ignore_for_file: deprecated_member_use
-
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:petadoption/custom_widgets/default_text_input.dart';
 import 'package:petadoption/custom_widgets/stateful_wrapper.dart';
@@ -77,13 +74,16 @@ class MeetupModal extends StatelessWidget {
                                         fontSize: 30,
                                         fontWeight: FontWeight.w700),
                                   ),
-                                  Column(
-                                    spacing: 10,
-                                    children: [
-                                      _buildePetForm(viewModel),
-                                    ],
-                                  ),
-                                  _buildVerificationEdit(viewModel, context),
+                                  _buildePetForm(viewModel, context),
+                                  viewModel.isDonor
+                                      ? _buildVerificationEdit(
+                                          viewModel, context)
+                                      : viewModel.applicationController.text
+                                                  .toLowerCase() ==
+                                              "applied"
+                                          ? buildPaymentVerificationSection(
+                                              context, viewModel)
+                                          : SizedBox(),
                                   const SizedBox(height: 20),
                                   InkWell(
                                     onTap: () async {
@@ -132,82 +132,138 @@ class MeetupModal extends StatelessWidget {
     );
   }
 
-  Widget _buildePetForm(SecuremeetupAdminViewModel viewModel) {
-    return Form(
-      key: formKey,
-      child: Column(
-        spacing: 10,
-        children: [
-          const SizedBox(height: 15),
+  Widget _buildePetForm(
+      SecuremeetupAdminViewModel viewModel, BuildContext context) {
+    return Column(
+      children: [
+        Container(
+            padding: EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: viewModel.verificationLock
+                  ? const Color.fromARGB(255, 230, 229, 228)
+                  : null,
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                width: 3,
+                color: viewModel.verificationLock
+                    ? const Color.fromARGB(255, 168, 167, 165)
+                    : const Color.fromARGB(255, 146, 61, 5),
+              ),
+            ),
+            child: Column(spacing: 10, children: [
+              if (viewModel.isAdopter)
+                InkWell(
+                  onTap: () {
+                    _showGatewayDialog(context,
+                        "Pay To Edit The Meetup \n And To Follow Secure Meetup ");
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Icon(
+                        viewModel.verificationLock
+                            ? Icons.lock
+                            : Icons.lock_open,
+                        size: 30,
+                        color: viewModel.verificationLock
+                            ? Color(0xFF2C5364)
+                            : const Color.fromARGB(255, 51, 143, 54),
+                      ),
+                    ],
+                  ),
+                ),
+              Form(
+                key: formKey,
+                child: Column(
+                  spacing: 10,
+                  children: [
+                    const SizedBox(height: 15),
 
-          // existing text inputs …
-          DefaultTextInput(
-            controller: viewModel.petNameController,
-            labelText: 'Pet Name',
-            hintText: 'Pet Name',
-            readOnly: true,
-            icon: Icons.pets_outlined,
-            onTap: viewModel.selectPet,
-            validator: (v) =>
-                (v == null || v.isEmpty) ? 'Enter Pet Name Please' : null,
-          ),
-          DefaultTextInput(
-            controller: viewModel.adopterNameController,
-            hintText: 'Adopter Name',
-            labelText: 'Adopter Name',
-            readOnly: true,
-            icon: Icons.person,
-            validator: (v) =>
-                (v == null || v.isEmpty) ? 'Enter Adopter Name Please' : null,
-          ),
-          DefaultTextInput(
-            controller: viewModel.locationNameController,
-            readOnly: true,
-            hintText: 'Location Name',
-            labelText: 'Location Name',
-            onTap: viewModel.selectLocationonMaps,
-            icon: Icons.map,
-            validator: (v) => (v == null || v.isEmpty)
-                ? 'Enter Your Location Name Please'
-                : null,
-          ),
-          DefaultTextInput(
-            controller: viewModel.timeController,
-            readOnly: true,
-            hintText: 'Time',
-            labelText: 'Time',
-            onTap: viewModel.selectDateTime,
-            icon: Icons.access_time,
-            validator: (v) =>
-                (v == null || v.isEmpty) ? 'Enter Meetup Time' : null,
-          ),
+                    // existing text inputs …
+                    DefaultTextInput(
+                      controller: viewModel.petNameController,
+                      labelText: 'Pet Name',
+                      hintText: 'Pet Name',
+                      readOnly: true,
+                      enabled: !viewModel.verificationLock,
+                      icon: Icons.pets_outlined,
+                      onTap: viewModel.selectPet,
+                      validator: (v) => (v == null || v.isEmpty)
+                          ? 'Enter Pet Name Please'
+                          : null,
+                    ),
+                    DefaultTextInput(
+                      controller: viewModel.adopterNameController,
+                      hintText: 'Adopter Name',
+                      labelText: 'Adopter Name',
+                      enabled: !viewModel.verificationLock,
+                      readOnly: true,
+                      icon: Icons.person,
+                      validator: (v) => (v == null || v.isEmpty)
+                          ? 'Enter Adopter Name Please'
+                          : null,
+                    ),
+                    DefaultTextInput(
+                      controller: viewModel.locationNameController,
+                      readOnly: true,
+                      hintText: 'Location Name',
+                      labelText: 'Location Name',
+                      enabled: !viewModel.verificationLock,
+                      onTap: viewModel.selectLocationonMaps,
+                      icon: Icons.map,
+                      validator: (v) => (v == null || v.isEmpty)
+                          ? 'Enter Your Location Name Please'
+                          : null,
+                    ),
+                    DefaultTextInput(
+                      controller: viewModel.timeController,
+                      readOnly: true,
+                      hintText: 'Time',
+                      labelText: 'Time',
+                      enabled: !viewModel.verificationLock,
+                      onTap: viewModel.selectDateTime,
+                      icon: Icons.access_time,
+                      validator: (v) =>
+                          (v == null || v.isEmpty) ? 'Enter Meetup Time' : null,
+                    ),
 
-          // ★  new acceptance UI
-          _buildAcceptanceSection(viewModel),
-        ],
-      ),
+                    // ★  new acceptance UI
+                  ],
+                ),
+              ),
+              _buildAcceptanceSection(viewModel),
+            ])),
+      ],
     );
   }
 
-  Widget _booleanCard({
-    required bool isSelected,
-    required String label,
-    required VoidCallback onTap,
-  }) {
+  Widget _booleanCard(
+      {required bool isSelected,
+      required String label,
+      required VoidCallback onTap,
+      required bool verficationLock}) {
     return Expanded(
       child: InkWell(
         borderRadius: BorderRadius.circular(14),
         onTap: onTap,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 220),
-          height: 80,
-          margin: const EdgeInsets.symmetric(horizontal: 6),
+          height: 60,
+          margin: const EdgeInsets.symmetric(horizontal: 2),
           decoration: BoxDecoration(
-            color: isSelected ? Colors.green.shade600 : Colors.grey.shade200,
+            color: isSelected
+                ? verficationLock
+                    ? const Color.fromARGB(255, 136, 134, 134)
+                    : Colors.green.shade600
+                : Colors.grey.shade200,
             borderRadius: BorderRadius.circular(14),
             border: Border.all(
               width: 2,
-              color: isSelected ? Colors.green.shade800 : Colors.grey.shade400,
+              color: isSelected
+                  ? verficationLock
+                      ? const Color.fromARGB(255, 136, 134, 134)
+                      : Colors.green.shade800
+                  : Colors.grey.shade400,
             ),
             boxShadow: [
               if (isSelected)
@@ -223,7 +279,7 @@ class MeetupModal extends StatelessWidget {
             child: Text(
               label,
               style: TextStyle(
-                fontSize: 20,
+                fontSize: 15,
                 fontWeight: FontWeight.bold,
                 color: isSelected ? Colors.white : Colors.grey.shade800,
               ),
@@ -239,7 +295,7 @@ class MeetupModal extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         const SizedBox(height: 24),
-        if (vm.getRole() == "donor")
+        if (vm.isDonor)
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -250,18 +306,20 @@ class MeetupModal extends StatelessWidget {
                     isSelected: vm.isAcceptedByDonor,
                     label: 'Accepted',
                     onTap: () => vm.setacceptedbyDonor(true),
+                    verficationLock: vm.verificationLock,
                   ),
                   _booleanCard(
                     isSelected: !vm.isAcceptedByDonor,
                     label: 'Not Accepted',
                     onTap: () => vm.setacceptedbyDonor(false),
+                    verficationLock: vm.verificationLock,
                   ),
                 ],
               ),
             ],
           ),
         const SizedBox(height: 18),
-        if (vm.getRole() == "adopter")
+        if (vm.isAdopter)
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -272,11 +330,13 @@ class MeetupModal extends StatelessWidget {
                     isSelected: vm.isAcceptedByAdopter,
                     label: 'Accepted',
                     onTap: () => vm.setacceptedbyAdopter(true),
+                    verficationLock: vm.verificationLock,
                   ),
                   _booleanCard(
                     isSelected: !vm.isAcceptedByAdopter,
                     label: 'Not Accepted',
                     onTap: () => vm.setacceptedbyAdopter(false),
+                    verficationLock: vm.verificationLock,
                   ),
                 ],
               ),
@@ -446,6 +506,88 @@ class MeetupModal extends StatelessWidget {
     );
   }
 
+  Widget buildPaymentVerificationSection(
+      BuildContext context, SecuremeetupAdminViewModel viewModel) {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [Color(0xFF0F2027), Color(0xFF203A43), Color(0xFF2C5364)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.3),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Title
+            Text(
+              "Actions Required",
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              "Complete payment to unlock verification access.",
+              style: TextStyle(color: Colors.white70, fontSize: 12),
+            ),
+            const SizedBox(height: 24),
+
+            // Icon Row
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                // Payment Button
+                GestureDetector(
+                  onTap: () {},
+                  child: _buildIconButton(
+                    icon: Icons.payment,
+                    label: 'Pay',
+                    color: Colors.greenAccent,
+                  ),
+                ),
+
+                // Verification Button
+                GestureDetector(
+                  onTap: () {
+                    if (!viewModel.verificationLock) {
+                      // Navigate to verification page
+                    } else {
+                      _showGatewayDialog(context,
+                          "Please complete the payment to unlock verification.");
+                    }
+                  },
+                  child: _buildIconButton(
+                    icon: viewModel.verificationLock
+                        ? Icons.lock
+                        : Icons.verified_user,
+                    label: 'Verify',
+                    color: viewModel.verificationLock
+                        ? Colors.grey
+                        : Colors.cyanAccent,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildAcceptanceSwitch(BuildContext context,
       {required String title,
       required bool value,
@@ -519,4 +661,35 @@ class _SectionLabel extends StatelessWidget {
               ?.copyWith(fontWeight: FontWeight.w600),
         ),
       );
+}
+
+Widget _buildIconButton({
+  required IconData icon,
+  required String label,
+  required Color color,
+}) {
+  return Column(
+    children: [
+      Container(
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: color.withOpacity(0.15),
+          boxShadow: [
+            BoxShadow(
+              color: color.withOpacity(.4),
+              blurRadius: 10,
+              spreadRadius: 1,
+            ),
+          ],
+        ),
+        child: Icon(icon, size: 28, color: color),
+      ),
+      const SizedBox(height: 8),
+      Text(
+        label,
+        style: TextStyle(color: color, fontWeight: FontWeight.w600),
+      ),
+    ],
+  );
 }

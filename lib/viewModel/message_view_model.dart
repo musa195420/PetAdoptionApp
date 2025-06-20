@@ -12,7 +12,9 @@ import '../models/hive_models/user.dart';
 import '../models/message.dart';
 import '../models/request_models/delete_user.dart';
 import '../models/request_models/receiver_model.dart';
+import '../models/response_models/application.dart';
 import '../models/response_models/meetup.dart';
+import '../models/response_models/payment.dart';
 import '../services/dialog_service.dart';
 import '../services/navigation_service.dart';
 import '../views/modals/meetup_modal.dart';
@@ -338,21 +340,55 @@ class MessageViewModel extends BaseViewModel {
       case "update meetup":
         addmeetupModal();
         break;
-      // future options can go here
+      case "confirm meetup":
+        addmeetupModal();
+        break;
+    }
+  }
+
+  void checkRole() {
+    if (meets != null) {
+      if (meets!.adopterId == _globalService.getuser()!.userId) {
+        _meetupModel.isAdopter = true;
+        _meetupModel.isDonor = false;
+      } else {
+        _meetupModel.isAdopter = false;
+        _meetupModel.isDonor = true;
+      }
+    } else {
+      if (_globalService.getuser()!.role!.toLowerCase() == "adopter") {
+        _meetupModel.isAdopter = true;
+        _meetupModel.isDonor = false;
+      } else {
+        _meetupModel.isAdopter = false;
+        _meetupModel.isDonor = true;
+      }
     }
   }
 
   Future<void> drawerLogic() async {
     try {
       _meetupModel.setisUpdate(false);
+      await addDonorActions();
+      checkRole();
+
       if (user == null) return;
       listItems = [];
-      if (user!.role!.toLowerCase() == "donor") {
-        await addDonorActions();
+      if (_meetupModel.isDonor) {
+        _meetupModel.isAdopter = false;
+        _meetupModel.isDonor = true;
+
         if (meets == null) {
           listItems.add("Add Meetup");
+          _meetupModel.isLock();
         } else {
           listItems.add("Update Meetup");
+        }
+      } else {
+        await addAdopterActions();
+        if (meets != null) {
+          checkRole();
+          listItems.add("Confirm Meetup");
         }
       }
     } catch (e, s) {
@@ -363,16 +399,32 @@ class MessageViewModel extends BaseViewModel {
     }
   }
 
+  Future<void> addAdopterActions() async {
+    try {
+      _meetupModel.application = null;
+      _meetupModel.payment = null;
+
+      await _meetupModel.getPaymentInfo(_globalService.getuser()!.userId);
+      await _meetupModel.getApplicationInfo(_globalService.getuser()!.userId);
+      _meetupModel.isLock();
+    } catch (e) {
+      loading(false);
+    }
+  }
+
   Meetup? meets;
   Future<void> addDonorActions() async {
     try {
+      meets = null;
+      _meetupModel.setDefault();
       loading(true, loadingText: "Getting Events ....");
       var res = await _apiService.getMeetupsBetweenUserId(Meetup(
           userId: _globalService.getuser()!.userId, receiverId: receiverId));
       if (res.errorCode == "PA0004") {
         meets = res.data;
         _meetupModel.setData(meets!);
-        // _meetupModel.setisUpdate(true);
+        _meetupModel.setisUpdate(true);
+        _meetupModel.isLock();
       }
     } catch (e) {
       loading(false);
