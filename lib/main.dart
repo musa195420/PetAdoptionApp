@@ -5,7 +5,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:petadoption/helpers/constants.dart';
 import 'package:petadoption/services/db_service.dart';
 import 'package:petadoption/services/error_reporting_service.dart';
 import 'package:petadoption/services/global_service.dart';
@@ -27,7 +29,7 @@ void main() async {
     () async {
       registerLoader();
       await LocatorInjector.setupLocator();
-
+      Stripe.publishableKey = PUBLISH_KEY;
       await Hive.initFlutter();
 
       await configSettings();

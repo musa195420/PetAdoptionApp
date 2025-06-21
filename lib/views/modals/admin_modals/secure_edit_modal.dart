@@ -26,8 +26,8 @@ class SecureEdit extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SecuremeetupAdminViewModel viewModel =
-        context.watch<SecuremeetupAdminViewModel>();
+    SecureMeetupAdminViewModel viewModel =
+        context.watch<SecureMeetupAdminViewModel>();
     viewModel.setSecureMeetup(meetup);
     phoneNumberController =
         TextEditingController(text: viewModel.meetup!.phoneNumber ?? "");
@@ -159,7 +159,7 @@ class SecureEdit extends StatelessWidget {
     );
   }
 
-  Widget _buildUpdateSecure(SecuremeetupAdminViewModel viewModel) {
+  Widget _buildUpdateSecure(SecureMeetupAdminViewModel viewModel) {
     return Form(
       key: formKey,
       child: Column(
@@ -214,7 +214,7 @@ class SecureEdit extends StatelessWidget {
     );
   }
 
-  Widget _buildCharacterImage(SecuremeetupAdminViewModel viewModel,
+  Widget _buildCharacterImage(SecureMeetupAdminViewModel viewModel,
       String? path, String? url, String type, String heading) {
     return Column(
       spacing: 5,
@@ -340,7 +340,7 @@ class SecureEdit extends StatelessWidget {
     );
   }
 
-  Widget _buildAdminEdit(SecuremeetupAdminViewModel viewModel) {
+  Widget _buildAdminEdit(SecureMeetupAdminViewModel viewModel) {
     return Padding(
       padding: const EdgeInsets.all(12.0),
       child: Container(

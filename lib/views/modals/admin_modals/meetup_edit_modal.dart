@@ -25,8 +25,8 @@ class MeetupEdit extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SecuremeetupAdminViewModel viewModel =
-        context.watch<SecuremeetupAdminViewModel>();
+    SecureMeetupAdminViewModel viewModel =
+        context.watch<SecureMeetupAdminViewModel>();
     viewModel.setMeetup(meetup);
     locationController =
         TextEditingController(text: viewModel.meets!.location ?? "");
@@ -133,7 +133,7 @@ class MeetupEdit extends StatelessWidget {
     );
   }
 
-  Widget _buildbox(SecuremeetupAdminViewModel viewModel) {
+  Widget _buildbox(SecureMeetupAdminViewModel viewModel) {
     final bool isAdopterAccepted =
         viewModel.meets!.isAcceptedByAdopter ?? false;
     final bool isDonorAccepted = viewModel.meets!.isAcceptedByDonor ?? false;
@@ -212,7 +212,7 @@ class MeetupEdit extends StatelessWidget {
     );
   }
 
-  Widget _buildUpdateSecure(SecuremeetupAdminViewModel viewModel) {
+  Widget _buildUpdateSecure(SecureMeetupAdminViewModel viewModel) {
     return Form(
       key: formKey,
       child: Column(

@@ -33,22 +33,24 @@ class _DateTimePickerDialogState extends State<DateTimePickerDialog> {
     }
 
     // 2. Clock
-    final time = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.fromDateTime(widget.initialDateTime),
-    );
-    if (time == null) {
-      _isPicking = false;
-      return;
-    }
+    TimeOfDay? time;
+    final DateTime tomorrow = DateTime.now().add(Duration(days: 1));
+    final TimeOfDay initialTime = TimeOfDay.fromDateTime(tomorrow);
+    if (mounted) {
+      time = await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.fromDateTime(widget.initialDateTime),
+      );
 
+      time ??= initialTime;
+    }
     setState(() {
       _selected = DateTime(
         date.year,
         date.month,
         date.day,
-        time.hour,
-        time.minute,
+        time!.hour,
+        time!.minute,
       );
     });
     _isPicking = false;

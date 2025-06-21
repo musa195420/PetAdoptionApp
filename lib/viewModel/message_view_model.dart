@@ -12,9 +12,7 @@ import '../models/hive_models/user.dart';
 import '../models/message.dart';
 import '../models/request_models/delete_user.dart';
 import '../models/request_models/receiver_model.dart';
-import '../models/response_models/application.dart';
 import '../models/response_models/meetup.dart';
-import '../models/response_models/payment.dart';
 import '../services/dialog_service.dart';
 import '../services/navigation_service.dart';
 import '../views/modals/meetup_modal.dart';
@@ -24,8 +22,8 @@ class MessageViewModel extends BaseViewModel {
   IDialogService get _dialogService => locator<IDialogService>();
   IAPIService get _apiService => locator<IAPIService>();
   GlobalService get _globalService => locator<GlobalService>();
-  SecuremeetupAdminViewModel get _meetupModel =>
-      locator<SecuremeetupAdminViewModel>();
+  SecureMeetupAdminViewModel get _meetupModel =>
+      locator<SecureMeetupAdminViewModel>();
 
   MessageModel? message;
   List<MessageModel>? messages;

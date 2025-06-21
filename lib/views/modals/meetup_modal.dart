@@ -20,8 +20,8 @@ class MeetupModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SecuremeetupAdminViewModel viewModel =
-        context.watch<SecuremeetupAdminViewModel>();
+    SecureMeetupAdminViewModel viewModel =
+        context.watch<SecureMeetupAdminViewModel>();
 
     return StatefulWrapper(
       onInit: () async {
@@ -91,11 +91,7 @@ class MeetupModal extends StatelessWidget {
                                         viewModel.isUpdate
                                             ? await viewModel.updateMeetup(
                                                 viewModel.meetupId ?? "",
-                                                userId,
-                                                adopterId,
                                                 viewModel.petId ?? "",
-                                                userId,
-                                                adopterId,
                                                 viewModel.locationNameController
                                                     .text,
                                                 viewModel.latitude ?? "",
@@ -133,7 +129,7 @@ class MeetupModal extends StatelessWidget {
   }
 
   Widget _buildePetForm(
-      SecuremeetupAdminViewModel viewModel, BuildContext context) {
+      SecureMeetupAdminViewModel viewModel, BuildContext context) {
     return Column(
       children: [
         Container(
@@ -151,7 +147,7 @@ class MeetupModal extends StatelessWidget {
               ),
             ),
             child: Column(spacing: 10, children: [
-              if (viewModel.isAdopter)
+              if (viewModel.verificationLock)
                 InkWell(
                   onTap: () {
                     _showGatewayDialog(context,
@@ -290,7 +286,7 @@ class MeetupModal extends StatelessWidget {
     );
   }
 
-  Widget _buildAcceptanceSection(SecuremeetupAdminViewModel vm) {
+  Widget _buildAcceptanceSection(SecureMeetupAdminViewModel vm) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -361,7 +357,7 @@ class MeetupModal extends StatelessWidget {
   }
 
   Widget _buildVerificationEdit(
-      SecuremeetupAdminViewModel viewModel, BuildContext context) {
+      SecureMeetupAdminViewModel viewModel, BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(12.0),
       child: Container(
@@ -507,13 +503,17 @@ class MeetupModal extends StatelessWidget {
   }
 
   Widget buildPaymentVerificationSection(
-      BuildContext context, SecuremeetupAdminViewModel viewModel) {
+      BuildContext context, SecureMeetupAdminViewModel viewModel) {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Container(
         decoration: BoxDecoration(
           gradient: const LinearGradient(
-            colors: [Color(0xFF0F2027), Color(0xFF203A43), Color(0xFF2C5364)],
+            colors: [
+              Color.fromARGB(255, 39, 24, 15),
+              Color.fromARGB(255, 157, 113, 37),
+              Color.fromARGB(255, 75, 31, 11)
+            ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -552,7 +552,9 @@ class MeetupModal extends StatelessWidget {
               children: [
                 // Payment Button
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () async {
+                    viewModel.gotoPaymentPage();
+                  },
                   child: _buildIconButton(
                     icon: Icons.payment,
                     label: 'Pay',

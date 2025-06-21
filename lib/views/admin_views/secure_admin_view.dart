@@ -14,7 +14,7 @@ class SecureAdminView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = context.watch<SecuremeetupAdminViewModel>();
+    final viewModel = context.watch<SecureMeetupAdminViewModel>();
 
     return StatefulWrapper(
       onInit: () => viewModel.getSecureMeetups(),
@@ -98,7 +98,7 @@ class SecureAdminView extends StatelessWidget {
   }
 
   Widget _buildUserCard(BuildContext context, SecureMeetup secure,
-      SecuremeetupAdminViewModel viewModel) {
+      SecureMeetupAdminViewModel viewModel) {
     Color color = viewModel.getColor(secure.approval ?? "");
 
     return Card(

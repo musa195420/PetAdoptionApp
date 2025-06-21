@@ -41,6 +41,7 @@ import '../views/modals/admin_modals/health_info_modal.dart';
 import '../views/modals/admin_modals/meetup_edit_modal.dart';
 import '../views/modals/admin_modals/userlink_modal.dart';
 import '../views/modals/detail_modal.dart';
+import '../views/modals/payment_modal.dart';
 import 'global_service.dart';
 
 class Routes {
@@ -83,6 +84,7 @@ class Routes {
   static const String disease_modal = "disease_modal";
   static const String detail_modal = "detail_modal";
   static const String meetup_modal = "meetup_modal";
+  static const String payment_modal = "payment_modal";
 }
 
 class NavigationService {
@@ -346,6 +348,18 @@ class NavigationService {
               backgroundColor: Colors.transparent,
               builder: (context) =>
                   AnimalDiseaseModal(animalId: data.animalId));
+        }
+        break;
+      case Routes.payment_modal:
+        {
+          showBarModalBottomSheet(
+              expand: true,
+              context: navigatorKey.currentContext!,
+              backgroundColor: Colors.transparent,
+              builder: (context) => PaymentModal(
+                    meetup: data.meetup,
+                    user: data.user,
+                  ));
         }
         break;
       case Routes.vaccination_modal:

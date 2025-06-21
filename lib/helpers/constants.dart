@@ -2,22 +2,5 @@
 
 double height = 800;
 double width = 400;
-
-enum VerificationStatus { Applied, Rejected, Approved }
-
-VerificationStatus? parseVerificationStatus(String? value) {
-  switch (value) {
-    case 'Applied':
-      return VerificationStatus.Applied;
-    case 'Rejected':
-      return VerificationStatus.Rejected;
-    case 'Approved':
-      return VerificationStatus.Approved;
-    default:
-      return null;
-  }
-}
-
-String? verificationStatusToString(VerificationStatus? status) {
-  return status?.name;
-}
+String PUBLISH_KEY =
+    "pk_test_51P71EDP60I2IMTaCJn7ucGnRl9y8MT4CePtyLOeBgCAmmtBP0fj9tG3Z3KDtXkMKSyzTRTvtpSMotL8fKSNn1GXF00SbHcA54Q";

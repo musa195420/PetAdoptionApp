@@ -5,6 +5,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:petadoption/custom_widgets/os_map_picker.dart';
 import 'package:petadoption/helpers/locator.dart';
+// ignore: unused_import
 import 'package:petadoption/models/hive_models/user.dart';
 import 'package:petadoption/models/message.dart';
 import 'package:petadoption/models/request_models/proof_image.dart';
@@ -27,9 +28,10 @@ import '../../models/response_models/meetup_verification.dart';
 import '../../models/response_models/pet_response.dart';
 import '../../models/response_models/secure_meetup.dart';
 import '../../views/modals/admin_modals/pet_edit_modal.dart';
+import '../../views/modals/payment_modal.dart';
 import 'user_admin_view_model.dart';
 
-class SecuremeetupAdminViewModel extends BaseViewModel {
+class SecureMeetupAdminViewModel extends BaseViewModel {
   NavigationService get _navigationService => locator<NavigationService>();
   IDialogService get _dialogService => locator<IDialogService>();
   IAPIService get _apiService => locator<IAPIService>();
@@ -55,7 +57,7 @@ class SecuremeetupAdminViewModel extends BaseViewModel {
           return Colors.grey;
         }
 
-      case 'valid' || 'approved':
+      case 'valid' || 'approved' || 'applied':
         {
           return Colors.green;
         }
@@ -63,10 +65,6 @@ class SecuremeetupAdminViewModel extends BaseViewModel {
       case 'invalid' || 'rejected':
         {
           return Colors.red;
-        }
-      case 'applied':
-        {
-          return const Color.fromARGB(255, 39, 50, 249);
         }
 
       default:
@@ -452,11 +450,7 @@ class SecuremeetupAdminViewModel extends BaseViewModel {
 
   Future<void> updateMeetup(
     String meetupId,
-    String userId,
-    String receiverId,
     String petId,
-    String donorId,
-    String adopterId,
     String location,
     String latitude,
     String longitude,
@@ -471,8 +465,6 @@ class SecuremeetupAdminViewModel extends BaseViewModel {
       Meetup updatedMeetup = Meetup(
         meetupId: meetupId,
         petId: petId,
-        donorId: donorId,
-        adopterId: adopterId,
         location: location,
         latitude: latitude,
         longitude: longitude,
@@ -496,7 +488,7 @@ class SecuremeetupAdminViewModel extends BaseViewModel {
               await _apiService.addMeetupVerification(MeetupVerification(
             meetupId: meetupId,
             adopterVerificationStatus: meetupVerification[0],
-            paymentStatus: paymentStatus[1],
+            paymentStatus: paymentStatus[0],
           ));
           if (verRes.errorCode == "PA0004") {
             _dialogService.showSuccess(text: "Updated Meetup");
@@ -610,7 +602,7 @@ class SecuremeetupAdminViewModel extends BaseViewModel {
         var verRes = await _apiService.addMeetupVerification(MeetupVerification(
           meetupId: meetup.meetupId ?? "",
           adopterVerificationStatus: meetupVerification[0],
-          paymentStatus: paymentStatus[1],
+          paymentStatus: paymentStatus[0],
         ));
         if (verRes.errorCode == "PA0004") {
           _dialogService.showSuccess(text: "Add Meetup");
@@ -780,5 +772,13 @@ class SecuremeetupAdminViewModel extends BaseViewModel {
     }
     verificationLock = true;
     return;
+  }
+
+  void gotoPaymentPage() async {
+    _navigationService.pushModalBottom(Routes.payment_modal,
+        data: PaymentModal(
+          user: _globalService.getuser()!,
+          meetup: meets!,
+        ));
   }
 }

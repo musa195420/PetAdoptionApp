@@ -26,6 +26,7 @@ import '../viewModel/admin_view_models/health_admin_view_model.dart';
 import '../viewModel/admin_view_models/user_admin_view_model.dart';
 import '../viewModel/detail_view_model.dart';
 import '../viewModel/favourite_viewmodel.dart';
+import '../viewModel/payment_view_model.dart';
 import '../viewModel/pet_view_model.dart';
 import '../viewModel/profile_view_model.dart';
 import '../viewModel/signup_view_model.dart';
@@ -62,12 +63,13 @@ class LocatorInjector {
       locator.registerLazySingleton(() => DonorAdminViewModel());
       locator.registerLazySingleton(() => PetAdminViewModel());
       locator.registerLazySingleton(() => GeneralConfigViewModel());
-      locator.registerLazySingleton(() => SecuremeetupAdminViewModel());
+      locator.registerLazySingleton(() => SecureMeetupAdminViewModel());
       locator.registerLazySingleton(() => HealthAdminViewModel());
       locator.registerLazySingleton(() => DetailViewModel());
       locator.registerLazySingleton(() => MessageViewModel());
       locator.registerLazySingleton(() => ProfileViewModel());
       locator.registerLazySingleton(() => FavouriteViewmodel());
+       locator.registerLazySingleton(() => PaymentViewModel());
 
       // Repos
 

@@ -28,7 +28,8 @@ class HttpService {
     return response;
   }
 
-  Future<dynamic> postData(String endpoint, Map<String, dynamic>? data) async {
+  Future<dynamic> postData(String endpoint, Map<String, dynamic>? data,
+      {Map<String, String>? customHeaders}) async {
     headers.addAll({
       "Authorization": "Bearer ${await _prefService.getString(PrefKey.token)}"
     });
@@ -36,15 +37,13 @@ class HttpService {
         .post(
           Uri.parse('${await _globalService.getHost()}/$endpoint'),
           body: json.encode(data),
-          headers: headers,
+          headers: customHeaders ?? headers,
         )
         .timeout(const Duration(minutes: 1));
 
     return response;
   }
 
-
-  
   Future<dynamic> patchData(String endpoint, Map<String, dynamic>? data) async {
     headers.addAll({
       "Authorization": "Bearer ${await _prefService.getString(PrefKey.token)}"
@@ -92,14 +91,14 @@ class HttpService {
     return response;
   }
 
-  Future<dynamic> deleteData(String endpoint, Map<String, dynamic>? data) async {
+  Future<dynamic> deleteData(
+      String endpoint, Map<String, dynamic>? data) async {
     headers.addAll({
       "Authorization": "Bearer ${await _prefService.getString(PrefKey.token)}"
     });
     final response = await http
         .delete(Uri.parse('${await _globalService.getHost()}/$endpoint'),
-        body: json.encode(data),
-            headers: headers)
+            body: json.encode(data), headers: headers)
         .timeout(const Duration(minutes: 1));
 
     return response;
@@ -124,32 +123,31 @@ class HttpService {
     return await request.send();
   }
 
-
   Future<http.StreamedResponse> uploadMultipleImages(
     String endpoint,
     Map<String, String> fields,
     Map<String, String> filePaths,
-) async {
-  final request = http.MultipartRequest(
-    'POST',
-    Uri.parse('${await _globalService.getHost()}/$endpoint'),
-  );
-
-  final token = await _prefService.getString(PrefKey.token);
-  request.headers.addAll({
-    "Authorization": "Bearer $token",
-    "WLID": "94DE1528-DE42-498A-A07E-4A458E97240E"
-  });
-
-  request.fields.addAll(fields);
-
-  // Attach multiple images with their correct field names
-  for (final entry in filePaths.entries) {
-    request.files.add(
-      await http.MultipartFile.fromPath(entry.key, entry.value),
+  ) async {
+    final request = http.MultipartRequest(
+      'POST',
+      Uri.parse('${await _globalService.getHost()}/$endpoint'),
     );
-  }
 
-  return await request.send();
-}
+    final token = await _prefService.getString(PrefKey.token);
+    request.headers.addAll({
+      "Authorization": "Bearer $token",
+      "WLID": "94DE1528-DE42-498A-A07E-4A458E97240E"
+    });
+
+    request.fields.addAll(fields);
+
+    // Attach multiple images with their correct field names
+    for (final entry in filePaths.entries) {
+      request.files.add(
+        await http.MultipartFile.fromPath(entry.key, entry.value),
+      );
+    }
+
+    return await request.send();
+  }
 }

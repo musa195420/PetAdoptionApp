@@ -17,6 +17,7 @@ import '../viewModel/admin_view_models/user_admin_view_model.dart';
 import '../viewModel/detail_view_model.dart';
 import '../viewModel/home_view_model.dart';
 import '../viewModel/message_view_model.dart';
+import '../viewModel/payment_view_model.dart';
 import '../viewModel/pet_view_model.dart';
 import '../viewModel/profile_view_model.dart';
 
@@ -41,12 +42,12 @@ class ProviderInjector {
     ChangeNotifierProvider(create: (_) => locator<PetAdminViewModel>()),
     ChangeNotifierProvider(create: (_) => locator<GeneralConfigViewModel>()),
     ChangeNotifierProvider(
-        create: (_) => locator<SecuremeetupAdminViewModel>()),
+        create: (_) => locator<SecureMeetupAdminViewModel>()),
     ChangeNotifierProvider(create: (_) => locator<DetailViewModel>()),
     ChangeNotifierProvider(create: (_) => locator<ProfileViewModel>()),
     ChangeNotifierProvider(create: (_) => locator<MessageViewModel>()),
     ChangeNotifierProvider(create: (_) => locator<HealthAdminViewModel>()),
-
+    ChangeNotifierProvider(create: (_) => locator<PaymentViewModel>()),
     ChangeNotifierProvider(create: (_) => locator<FavouriteViewmodel>()),
   ];
 

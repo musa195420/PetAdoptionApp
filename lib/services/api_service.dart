@@ -27,6 +27,7 @@ import "package:petadoption/models/response_models/breed_type.dart";
 import "package:petadoption/models/response_models/health_info.dart";
 import "package:petadoption/models/response_models/meetup_verification.dart";
 import "package:petadoption/models/response_models/payment.dart";
+import "package:petadoption/models/response_models/payment_intent_model.dart";
 import "package:petadoption/models/response_models/user_profile.dart";
 import "package:petadoption/models/response_models/user_verification.dart";
 import "package:petadoption/services/dialog_service.dart";
@@ -4661,9 +4662,58 @@ class APIService implements IAPIService {
       return ApiStatus(data: e, errorCode: "SM_UPLOAD_EXCEPTION");
     }
   }
+
+  @override
+  Future<ApiStatus> createPaymentIntent(PaymentIntentRequest request) async {
+    try {
+      final response =
+          await _httpService.postData('api/payment/intent', request.toJson());
+      if (response.statusCode == 404) {
+        return ApiStatus(data: null, errorCode: "PA0002");
+      }
+      if (response.statusCode == 401) {
+        return ApiStatus(data: null, errorCode: "PA0001");
+      }
+      ApiResponse res = ApiResponse.fromJson(json.decode(response.body));
+      if (response.statusCode == 201) {
+        if (res.success ?? true) {
+          return ApiStatus(
+            data: PaymentIntentResponse.fromJson(res.data),
+            errorCode: "PA0004",
+          );
+        } else {
+          return ApiStatus(
+              data: ErrorResponse.fromJson(res.toJson()),
+              errorCode: res.status.toString());
+        }
+      } else {
+        return ApiStatus(
+            data: ErrorResponse.fromJson(res.toJson()),
+            errorCode: res.status.toString());
+      }
+    } on HttpException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0013");
+    } on FormatException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0007");
+    } on TimeoutException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0003");
+    } catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0006");
+    }
+  }
 }
 
 abstract class IAPIService {
+  //<============================Strip Gateway====================================>
+  Future<ApiStatus> createPaymentIntent(PaymentIntentRequest request);
 //<=========================== Image Upload Requests =======================>
   Future<ApiStatus> uploadSecureMeetupImages(ProofImages image);
   Future<ApiStatus> uploadProfileImage(String filePath, String userId);
