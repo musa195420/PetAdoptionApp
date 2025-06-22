@@ -8,6 +8,8 @@ import 'package:petadoption/models/response_models/pet_response.dart';
 import 'package:petadoption/viewModel/profile_view_model.dart';
 import 'package:provider/provider.dart';
 
+import '../helpers/constants.dart';
+
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
@@ -28,14 +30,41 @@ class ProfilePage extends StatelessWidget {
             ? const Center(child: CircularProgressIndicator())
             : SafeArea(
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(16),
                   child: Column(
-                    spacing: 20,
                     children: [
-                      _profileHeader(viewModel),
-                      updateInfo(viewModel, accentColor),
-                      _buildInfoSection(viewModel),
-                      _logoutButton(context, viewModel),
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        decoration: BoxDecoration(
+                          gradient: appBarGradient,
+                          borderRadius: const BorderRadius.only(
+                            bottomLeft: Radius.circular(30),
+                            bottomRight: Radius.circular(30),
+                          ),
+                        ),
+                        child: const Center(
+                          child: Text(
+                            'Profile',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          spacing: 20,
+                          children: [
+                            _profileHeader(viewModel),
+                            _updateInfo(viewModel, accentColor),
+                            _buildInfoSection(viewModel),
+                            _logoutButton(context, viewModel),
+                          ],
+                        ),
+                      )
                     ],
                   ),
                 ),
@@ -44,7 +73,7 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget updateInfo(ProfileViewModel viewModel, Color accentColor) {
+  Widget _updateInfo(ProfileViewModel viewModel, Color accentColor) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -54,6 +83,7 @@ class ProfilePage extends StatelessWidget {
             viewModel.seteditMode(!viewModel.editMode);
           },
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Text(
                 "Edit ",
@@ -328,7 +358,8 @@ class ProfilePage extends StatelessWidget {
                 _infoLine("Location", pet.location),
                 if (pet.description != null)
                   _infoLine("About", pet.description),
-                if (pet.rejectionReason != null)
+                if (pet.rejectionReason != null &&
+                    pet.rejectionReason!.isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.only(top: 6),
                     child: Text(

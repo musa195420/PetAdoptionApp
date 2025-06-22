@@ -4,10 +4,9 @@ import 'package:petadoption/viewModel/home_view_model.dart';
 import 'package:petadoption/views/message_info.dart';
 import 'package:petadoption/views/profile_page.dart';
 import 'package:petadoption/views/home_page.dart';
-
 import 'package:provider/provider.dart';
-
 import 'favourite_page.dart';
+import 'search_page.dart';
 
 class Home extends StatelessWidget {
   Home({super.key});
@@ -18,96 +17,47 @@ class Home extends StatelessWidget {
     HomeViewModel viewModel = context.watch<HomeViewModel>();
     PageController pageController =
         PageController(initialPage: viewModel.tabIndex);
+
     return Scaffold(
+      key: scaffoldKey,
+      backgroundColor: const Color.fromARGB(255, 99, 34, 10),
       extendBody: true,
-      bottomNavigationBar: CircleNavBar(
-        activeIcons: const [
-          Icon(Icons.favorite, color: Colors.white),
-          Icon(Icons.search, color: Colors.white),
-          Icon(Icons.home, color: Colors.white),
-          Icon(Icons.message, color: Colors.white),
-          Icon(Icons.person, color: Colors.white),
-        ],
-        inactiveIcons: const [
-          Column(
-            children: [
-              Icon(Icons.favorite, color: Colors.white),
-              // Text(
-              //   "Favourite",
-              //   style: TextStyle(
-              //       color: Colors.white,
-              //       fontSize: 15,
-              //       fontWeight: FontWeight.w400),
-              // ),
-            ],
+      bottomNavigationBar: SafeArea(
+        minimum: const EdgeInsets.only(bottom: 0), // Pushes above nav bar
+        child: CircleNavBar(
+          activeIcons: const [
+            Icon(Icons.favorite, color: Colors.white),
+            Icon(Icons.search, color: Colors.white),
+            Icon(Icons.home, color: Colors.white),
+            Icon(Icons.message, color: Colors.white),
+            Icon(Icons.person, color: Colors.white),
+          ],
+          inactiveIcons: const [
+            Column(children: [Icon(Icons.favorite, color: Colors.white)]),
+            Column(children: [Icon(Icons.search, color: Colors.white)]),
+            Column(children: [Icon(Icons.home, color: Colors.white)]),
+            Column(
+                children: [Icon(Icons.message_rounded, color: Colors.white)]),
+            Column(children: [Icon(Icons.person, color: Colors.white)]),
+          ],
+          color: const Color.fromARGB(255, 99, 34, 10),
+          height: 50,
+          circleWidth: 50,
+          activeIndex: viewModel.tabIndex,
+          onTap: (index) {
+            viewModel.tabIndex = index;
+            pageController.jumpToPage(viewModel.tabIndex);
+          },
+          padding: EdgeInsets.zero,
+          cornerRadius: const BorderRadius.only(
+            topLeft: Radius.circular(8),
+            topRight: Radius.circular(8),
+            bottomRight: Radius.circular(0),
+            bottomLeft: Radius.circular(0),
           ),
-          Column(
-            children: [
-              Icon(Icons.search, color: Colors.white),
-              // Text(
-              //   "Search",
-              //   style: TextStyle(
-              //       color: Colors.white,
-              //       fontSize: 15,
-              //       fontWeight: FontWeight.w400),
-              // ),
-            ],
-          ),
-          Column(
-            children: [
-              Icon(Icons.home, color: Colors.white),
-              // Text(
-              //   "Home",
-              //   style: TextStyle(
-              //       color: Colors.white,
-              //       fontSize: 15,
-              //       fontWeight: FontWeight.w400),
-              // ),
-            ],
-          ),
-          Column(
-            children: [
-              Icon(Icons.message_rounded, color: Colors.white),
-              // Text(
-              //   "Message",
-              //   style: TextStyle(
-              //       color: Colors.white,
-              //       fontSize: 15,
-              //       fontWeight: FontWeight.w400),
-              // ),
-            ],
-          ),
-          Column(
-            children: [
-              Icon(Icons.person, color: Colors.white),
-              // Text(
-              //   "Account",
-              //   style: TextStyle(
-              //       color: Colors.white,
-              //       fontSize: 15,
-              //       fontWeight: FontWeight.w400),
-              // ),
-            ],
-          ),
-        ],
-        color: Color.fromARGB(255, 99, 34, 10),
-        //   Color.fromARGB(255, 213, 101, 25)
-        height: 50,
-        circleWidth: 50,
-        activeIndex: viewModel.tabIndex,
-        onTap: (index) {
-          viewModel.tabIndex = index;
-          pageController.jumpToPage(viewModel.tabIndex);
-        },
-        padding: const EdgeInsets.only(left: 0, right: 0, bottom: 0),
-        cornerRadius: const BorderRadius.only(
-          topLeft: Radius.circular(8),
-          topRight: Radius.circular(8),
-          bottomRight: Radius.circular(12),
-          bottomLeft: Radius.circular(12),
+          shadowColor: const Color(0xFF3E2723),
+          elevation: 10,
         ),
-        shadowColor: Color(0xFF3E2723),
-        elevation: 10,
       ),
       body: PageView(
         controller: pageController,
@@ -116,10 +66,7 @@ class Home extends StatelessWidget {
         },
         children: [
           FavouritePage(),
-          Container(
-              width: double.infinity,
-              height: double.infinity,
-              color: Colors.white),
+          SearchPage(),
           HomePage(),
           MessageInfo(),
           ProfilePage(),

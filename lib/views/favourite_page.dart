@@ -25,7 +25,7 @@ class FavouritePage extends StatelessWidget {
       onDispose: () {},
       child: Scaffold(
         key: scaffoldKey,
-        backgroundColor: lightBrown.withOpacity(0.2),
+        //backgroundColor: lightBrown.withOpacity(0.2),
         body: Column(
           children: [
             Container(
@@ -39,13 +39,24 @@ class FavouritePage extends StatelessWidget {
                 ),
               ),
               child: const Center(
-                child: Text(
-                  'Favourites',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                  ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.favorite_rounded,
+                      color: Colors.white,
+                      size: 28,
+                    ),
+                    Text(
+                      '  Favourites',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),

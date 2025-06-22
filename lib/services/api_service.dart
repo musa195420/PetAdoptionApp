@@ -1605,6 +1605,99 @@ class APIService implements IAPIService {
   }
 
   @override
+  Future<ApiStatus> getPetsByAnimalId(PetResponse pet) async {
+    try {
+      var response =
+          await _httpService.postData("api/pet/animal", pet.toJson());
+      if (response.statusCode == 404) {
+        return ApiStatus(data: null, errorCode: "PA0002");
+      }
+      if (response.statusCode == 401) {
+        return ApiStatus(data: null, errorCode: "PA0001");
+      }
+      ApiResponse res = ApiResponse.fromJson(json.decode(response.body));
+      if (response.statusCode == 200) {
+        if (res.success ?? true) {
+          return ApiStatus(
+            data: res.data,
+            errorCode: "PA0004",
+          );
+        } else {
+          return ApiStatus(
+              data: ErrorResponse.fromJson(res.toJson()),
+              errorCode: res.status.toString());
+        }
+      } else {
+        return ApiStatus(
+            data: ErrorResponse.fromJson(res.toJson()),
+            errorCode: res.status.toString());
+      }
+    } on HttpException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0013");
+    } on FormatException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0007");
+    } on TimeoutException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0003");
+    } catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0006");
+    }
+  }
+
+  @override
+  Future<ApiStatus> getPetsByBreedId(PetResponse pet) async {
+    try {
+      var response = await _httpService.postData("api/pet/breed", pet.toJson());
+      if (response.statusCode == 404) {
+        return ApiStatus(data: null, errorCode: "PA0002");
+      }
+      if (response.statusCode == 401) {
+        return ApiStatus(data: null, errorCode: "PA0001");
+      }
+      ApiResponse res = ApiResponse.fromJson(json.decode(response.body));
+      if (response.statusCode == 200) {
+        if (res.success ?? true) {
+          return ApiStatus(
+            data: res.data,
+            errorCode: "PA0004",
+          );
+        } else {
+          return ApiStatus(
+              data: ErrorResponse.fromJson(res.toJson()),
+              errorCode: res.status.toString());
+        }
+      } else {
+        return ApiStatus(
+            data: ErrorResponse.fromJson(res.toJson()),
+            errorCode: res.status.toString());
+      }
+    } on HttpException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0013");
+    } on FormatException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0007");
+    } on TimeoutException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0003");
+    } catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0006");
+    }
+  }
+
+  @override
   Future<ApiStatus> getFavourite(Favourite favourite) async {
     try {
       var response = await _httpService.postData(
@@ -4793,6 +4886,8 @@ abstract class IAPIService {
 //<=========================== Pet Requests =======================>
   Future<ApiStatus> getPets();
   Future<ApiStatus> getPetById(SinglePet pet);
+  Future<ApiStatus> getPetsByAnimalId(PetResponse pet);
+  Future<ApiStatus> getPetsByBreedId(PetResponse pet);
   Future<ApiStatus> getPetByUserId(SingleUser user);
   Future<ApiStatus> deletePet(SinglePet pet);
   Future<ApiStatus> updatePet(PetResponse pet);

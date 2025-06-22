@@ -18,10 +18,10 @@ class PetResponse {
   String? location;
 
   PetResponse({
-    required this.petId,
-    required this.donorId,
-    required this.breedId,
-    required this.animalId,
+    this.petId,
+    this.donorId,
+    this.breedId,
+    this.animalId,
     this.name,
     this.age,
     this.gender,
@@ -58,24 +58,24 @@ class PetResponse {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'pet_id': petId,
-      'donor_id': donorId,
-      'breed_id': breedId,
-      'animal_id': animalId,
-      'name': name,
-      'age': age,
-      'gender': gender,
-      'description': description,
-      'is_approved': isApproved,
-      'rejection_reason': rejectionReason,
-      'is_live': isLive,
-      'created_at': createdAt,
-      'image': image,
-      'animal': animal,
-      'breed': breed,
-      'user_email': userEmail,
-      'location': location,
-    };
+    final Map<String, dynamic> data = {};
+    if (petId != null) data['pet_id'] = petId;
+    if (donorId != null) data['donor_id'] = donorId;
+    if (breedId != null) data['breed_id'] = breedId;
+    if (animalId != null) data['animal_id'] = animalId;
+    if (name != null) data['name'] = name;
+    if (age != null) data['age'] = age;
+    if (gender != null) data['gender'] = gender;
+    if (description != null) data['description'] = description;
+    if (isApproved != null) data['is_approved'] = isApproved;
+    if (rejectionReason != null) data['rejection_reason'] = rejectionReason;
+    if (isLive != null) data['is_live'] = isLive;
+    if (createdAt != null) data['created_at'] = createdAt;
+    if (image != null) data['image'] = image;
+    if (animal != null) data['animal'] = animal;
+    if (breed != null) data['breed'] = breed;
+    if (userEmail != null) data['user_email'] = userEmail;
+    if (location != null) data['location'] = location;
+    return data;
   }
 }

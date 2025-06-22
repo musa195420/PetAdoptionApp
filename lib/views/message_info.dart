@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:petadoption/viewModel/message_view_model.dart';
 import '../custom_widgets/stateful_wrapper.dart';
+import '../helpers/constants.dart';
 
 class MessageInfo extends StatelessWidget {
   MessageInfo({super.key});
@@ -11,12 +12,6 @@ class MessageInfo extends StatelessWidget {
   final Color darkBrown = const Color(0xFF3E2723);
   final Color softGrey = Colors.grey;
   final Color cardBackground = Colors.white;
-
-  final Gradient appBarGradient = const LinearGradient(
-    colors: [Color(0xFF3D1B00), Color(0xFFFF7700)],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-  );
 
   @override
   Widget build(BuildContext context) {

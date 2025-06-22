@@ -27,6 +27,7 @@ import '../viewModel/admin_view_models/user_admin_view_model.dart';
 import '../viewModel/detail_view_model.dart';
 import '../viewModel/favourite_viewmodel.dart';
 import '../viewModel/payment_view_model.dart';
+import '../viewModel/search_view_model.dart';
 import '../viewModel/pet_view_model.dart';
 import '../viewModel/profile_view_model.dart';
 import '../viewModel/signup_view_model.dart';
@@ -69,7 +70,8 @@ class LocatorInjector {
       locator.registerLazySingleton(() => MessageViewModel());
       locator.registerLazySingleton(() => ProfileViewModel());
       locator.registerLazySingleton(() => FavouriteViewmodel());
-       locator.registerLazySingleton(() => PaymentViewModel());
+      locator.registerLazySingleton(() => PaymentViewModel());
+      locator.registerLazySingleton(() => SearchViewModel());
 
       // Repos
 

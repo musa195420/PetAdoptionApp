@@ -1,5 +1,14 @@
 // ignore_for_file: constant_identifier_names
 
+import 'dart:ui';
+
+import 'package:flutter/material.dart';
+
+final Gradient appBarGradient = const LinearGradient(
+  colors: [Color(0xFF3D1B00), Color(0xFFFF7700)],
+  begin: Alignment.topLeft,
+  end: Alignment.bottomRight,
+);
 double height = 800;
 double width = 400;
 String PUBLISH_KEY =

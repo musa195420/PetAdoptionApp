@@ -61,7 +61,7 @@ class FavouriteViewmodel extends BaseViewModel {
         return;
       }
       String userId = user!.userId;
-      loading(true);
+      // loading(true);
       var favRes = await _apiService.getFavourite(Favourite(userId: userId));
 
       if (favRes.errorCode == "PA0004") {
@@ -70,26 +70,26 @@ class FavouriteViewmodel extends BaseViewModel {
             .toList();
         filteredFavourite = List.from(favourites!);
       } else {
-        await _dialogService.showApiError(favRes.data);
+        // await _dialogService.showApiError(favRes.data);
       }
     } catch (e, s) {
       _globalService.logError(
           "Error Occured When Fetching Favourites", e.toString(), s);
     } finally {
       notifyListeners();
-      loading(false);
+      // loading(false);
     }
   }
 
   Future<void> addFavourites(String petId) async {
     try {
       String userId = user!.userId;
-      loading(true);
+      //  loading(true);
       var favRes = await _apiService
           .addFavourite(Favourite(userId: userId, petId: petId));
 
       if (favRes.errorCode == "PA0004") {
-        _dialogService.showSuccess(text: "Added To Favourites SuccessFully");
+        _dialogService.showSuccess(text: "Added To Favourites Successfully");
         await getFavourites();
       } else {
         await _dialogService.showApiError(favRes.data);
@@ -99,7 +99,7 @@ class FavouriteViewmodel extends BaseViewModel {
           "Error Occured When Fetching Favourites", e.toString(), s);
     } finally {
       notifyListeners();
-      loading(false);
+      //  loading(false);
     }
   }
 
@@ -122,21 +122,21 @@ class FavouriteViewmodel extends BaseViewModel {
 
   Future<void> deleteFavourites(String petId) async {
     try {
-      loading(true, loadingText: "Removing Favourite");
+      //loading(true, loadingText: "Removing Favourite");
       String userId = user!.userId;
       var resDelete = await _apiService
           .deleteFavourite(Favourite(petId: petId, userId: userId));
       if (resDelete.errorCode == "PA0004") {
-        _dialogService.showSuccess(text: "Removed From Favourites");
+        // _dialogService.showSuccess(text: "Removed From Favourites");
         await getFavourites();
       } else {
-        await _dialogService.showApiError(resDelete.data);
+        // await _dialogService.showApiError(resDelete.data);
       }
     } catch (e) {
-      loading(false);
+      // loading(false);
       debugPrint("Error => $e");
     } finally {
-      loading(false);
+      //loading(false);
     }
   }
 

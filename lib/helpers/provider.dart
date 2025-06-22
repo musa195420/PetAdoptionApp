@@ -18,6 +18,7 @@ import '../viewModel/detail_view_model.dart';
 import '../viewModel/home_view_model.dart';
 import '../viewModel/message_view_model.dart';
 import '../viewModel/payment_view_model.dart';
+import '../viewModel/search_view_model.dart';
 import '../viewModel/pet_view_model.dart';
 import '../viewModel/profile_view_model.dart';
 
@@ -49,6 +50,7 @@ class ProviderInjector {
     ChangeNotifierProvider(create: (_) => locator<HealthAdminViewModel>()),
     ChangeNotifierProvider(create: (_) => locator<PaymentViewModel>()),
     ChangeNotifierProvider(create: (_) => locator<FavouriteViewmodel>()),
+    ChangeNotifierProvider(create: (_) => locator<SearchViewModel>()),
   ];
 
   static final List<SingleChildWidget> _dependentServices = [];
