@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:petadoption/helpers/locator.dart';
 import 'package:petadoption/models/hive_models/user.dart';
@@ -8,6 +9,7 @@ import 'package:petadoption/services/global_service.dart';
 import 'package:petadoption/services/navigation_service.dart';
 import 'package:petadoption/services/pref_service.dart';
 import 'package:petadoption/viewModel/base_view_model.dart';
+import '../helpers/constants.dart';
 import '../models/request_models/refresh_token_request.dart';
 import '../models/response_models/refresh_token_response.dart';
 
@@ -21,11 +23,24 @@ class StartupViewModel extends BaseViewModel {
   GlobalService get _globalService => locator<GlobalService>();
 
   bool checkVersion = true;
+  Future<String> fetchServerUrl() async {
+    final doc = await FirebaseFirestore.instance
+        .collection('app_config')
+        .doc('production')
+        .get();
+
+    if (doc.exists) {
+      return doc.data()?['server_url'] ?? '';
+    } else {
+      throw Exception('Config not found');
+    }
+  }
 
   Future doStartupLogic(BuildContext context) async {
     try {
       await loading(true);
       await Future.delayed(const Duration(milliseconds: 100));
+      server_url = await fetchServerUrl();
       //await _prefService.clear();
       if (!await _prefService.getBool(PrefKey.isLoggedIn)) {
         _navigationService.pushNamedAndRemoveUntil(
@@ -53,8 +68,6 @@ class StartupViewModel extends BaseViewModel {
               _prefService.setString(
                   PrefKey.refreshToken, response.refreshToken ?? "");
 
-                 
-
               // Update with new expiry timestamp and current time
               DateTime newExpiryTime = DateTime.now().add(
                 Duration(
@@ -69,8 +82,7 @@ class StartupViewModel extends BaseViewModel {
               _gotoNextPage();
             }
           } else {
-            await _dialogService.showApiError(
-                refreshRes.data);
+            await _dialogService.showApiError(refreshRes.data);
             await logout();
             await _navigationService.pushNamedAndRemoveUntil(
               Routes.login,
@@ -84,9 +96,9 @@ class StartupViewModel extends BaseViewModel {
     } catch (e) {
       debugPrint(e.toString());
       _navigationService.pushNamedAndRemoveUntil(
-          Routes.login,
-          args: TransitionType.fade,
-        );
+        Routes.login,
+        args: TransitionType.fade,
+      );
     } finally {
       await loading(false);
     }
@@ -121,7 +133,7 @@ class StartupViewModel extends BaseViewModel {
     try {
       User? userResponse =
           await locator<IHiveService<User>>().getFirstOrDefault();
-_globalService.setuser(userResponse);
+      _globalService.setuser(userResponse);
       if (userResponse == null) {
         await logout();
         await _navigationService.pushNamedAndRemoveUntil(

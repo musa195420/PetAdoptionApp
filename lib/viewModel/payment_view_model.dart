@@ -12,10 +12,8 @@ import '../models/response_models/meetup.dart';
 import '../models/response_models/meetup_verification.dart';
 import '../models/response_models/payment_intent_model.dart';
 import '../services/dialog_service.dart';
-import '../services/navigation_service.dart';
 
 class PaymentViewModel extends BaseViewModel {
-  NavigationService get _navigationService => locator<NavigationService>();
   IAPIService get _apiService => locator<IAPIService>();
   IDialogService get _dialogService => locator<IDialogService>();
   GlobalService get _globalService => locator<GlobalService>();

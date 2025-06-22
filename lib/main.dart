@@ -2,11 +2,13 @@
 
 import 'dart:async';
 import 'dart:io';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:petadoption/firebase_options.dart';
 import 'package:petadoption/helpers/constants.dart';
 import 'package:petadoption/services/db_service.dart';
 import 'package:petadoption/services/error_reporting_service.dart';
@@ -34,6 +36,9 @@ void main() async {
 
       await configSettings();
       HttpOverrides.global = CustomHttpOverrides();
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
       SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
       WidgetsFlutterBinding.ensureInitialized();
       runApp(const MyApp());

@@ -1,4 +1,4 @@
-// ignore_for_file: constant_identifier_names
+// ignore_for_file: constant_identifier_names, non_constant_identifier_names
 
 import 'dart:ui';
 
@@ -11,5 +11,6 @@ final Gradient appBarGradient = const LinearGradient(
 );
 double height = 800;
 double width = 400;
+String server_url = "http://localhost:3030";
 String PUBLISH_KEY =
     "pk_test_51P71EDP60I2IMTaCJn7ucGnRl9y8MT4CePtyLOeBgCAmmtBP0fj9tG3Z3KDtXkMKSyzTRTvtpSMotL8fKSNn1GXF00SbHcA54Q";

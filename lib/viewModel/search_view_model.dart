@@ -9,7 +9,6 @@ import 'package:petadoption/services/dialog_service.dart';
 import 'package:petadoption/services/global_service.dart';
 import 'package:petadoption/services/navigation_service.dart';
 import 'package:petadoption/viewModel/base_view_model.dart';
-import 'package:petadoption/viewModel/startup_viewmodel.dart';
 import 'package:petadoption/views/modals/detail_modal.dart';
 
 import '../models/response_models/animal_Type.dart';

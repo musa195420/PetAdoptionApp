@@ -50,7 +50,7 @@ class _DateTimePickerDialogState extends State<DateTimePickerDialog> {
         date.month,
         date.day,
         time!.hour,
-        time!.minute,
+        time.minute,
       );
     });
     _isPicking = false;
