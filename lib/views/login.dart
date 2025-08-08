@@ -1,91 +1,103 @@
-// ignore_for_file: must_be_immutable
-
 import 'package:flutter/material.dart';
 import 'package:petadoption/custom_widgets/default_text_input.dart';
-import 'package:petadoption/custom_widgets/stateful_wrapper.dart';
 import 'package:provider/provider.dart';
 import '../viewModel/authentication_view_model.dart';
 
-final TextEditingController emailController = TextEditingController();
-final TextEditingController passwordController = TextEditingController();
-final formKey = GlobalKey<FormState>();
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
 
-class LoginPage extends StatelessWidget {
-  LoginPage({super.key});
-  final scaffoldKey = GlobalKey<ScaffoldState>();
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  late TextEditingController _emailController;
+  late TextEditingController _passwordController;
+
+  @override
+  void initState() {
+    super.initState();
+    _emailController = TextEditingController();
+    _passwordController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    AuthenticationViewModel viewModel =
-        context.watch<AuthenticationViewModel>();
+    final viewModel = context.watch<AuthenticationViewModel>();
 
-    return StatefulWrapper(
-      onInit: () {},
-      onDispose: () {},
-      child: Scaffold(
-        key: scaffoldKey,
-        body: Stack(
-          fit: StackFit.expand,
-          children: [
-            // Background image
-            Image.asset(
-              'assets/images/bg.png',
-              fit: BoxFit.cover,
-            ),
-
-            SafeArea(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  children: [
-                    Stack(
-                      clipBehavior: Clip.none,
-                      alignment: Alignment.topCenter,
-                      children: [
-                        // Login form container
-                        Container(
-                          margin: const EdgeInsets.only(top: 130),
-                          decoration: BoxDecoration(
-                            color: const Color.fromARGB(255, 255, 247, 240),
-                            borderRadius: BorderRadius.circular(16),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black12,
-                                blurRadius: 10,
-                                offset: Offset(0, 4),
-                              ),
-                            ],
-                          ),
-                          padding: const EdgeInsets.fromLTRB(20, 80, 20, 20),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              _buildLoginForm(viewModel),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  _buildForgotPasswordText(),
-                                ],
-                              ),
-                              _buildLoginButton(viewModel),
-                              _buildSignup(viewModel),
-                            ],
-                          ),
+    return Scaffold(
+      key: _scaffoldKey,
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          // Background image
+          Image.asset(
+            'assets/images/bg.png',
+            fit: BoxFit.cover,
+          ),
+          SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                children: [
+                  Stack(
+                    clipBehavior: Clip.none,
+                    alignment: Alignment.topCenter,
+                    children: [
+                      // Login form container
+                      Container(
+                        margin: const EdgeInsets.only(top: 130),
+                        decoration: BoxDecoration(
+                          color: const Color.fromARGB(255, 255, 247, 240),
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black12,
+                              blurRadius: 12,
+                              offset: Offset(0, 5),
+                            ),
+                          ],
                         ),
-
-                        // Character image stacked above box
-                        Positioned(
-                          top: 0,
-                          child: _buildCharacterImage(),
+                        padding: const EdgeInsets.fromLTRB(20, 80, 20, 20),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            _buildLoginForm(viewModel),
+                            const SizedBox(height: 6),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                _buildForgotPasswordText(),
+                              ],
+                            ),
+                            _buildLoginButton(viewModel),
+                            _buildSignup(viewModel),
+                          ],
                         ),
-                      ],
-                    ),
-                  ],
-                ),
+                      ),
+
+                      // Character image stacked above box
+                      Positioned(
+                        top: 0,
+                        child: _buildCharacterImage(),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -100,32 +112,33 @@ class LoginPage extends StatelessWidget {
 
   Widget _buildLoginForm(AuthenticationViewModel viewModel) {
     return Form(
-      key: formKey,
+      key: _formKey,
       child: Column(
         children: [
           Text(
             "LOGIN",
             style: TextStyle(
-              color: const Color.fromARGB(255, 146, 61, 5),
-              fontSize: 40,
-              fontWeight: FontWeight.w700,
+              color: Colors.brown.shade700,
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1,
             ),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 5),
           DefaultTextInput(
-            controller: emailController,
+            controller: _emailController,
             hintText: "Email",
             icon: Icons.email_outlined,
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Enter Your Email Please';
+                return 'Enter your email';
               }
               return null;
             },
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 12),
           DefaultTextInput(
-            controller: passwordController,
+            controller: _passwordController,
             hintText: "Password",
             icon: Icons.lock_outline,
             isPassword: true,
@@ -137,7 +150,7 @@ class LoginPage extends StatelessWidget {
             },
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Enter Your Password Please';
+                return 'Enter your password';
               }
               return null;
             },
@@ -149,20 +162,35 @@ class LoginPage extends StatelessWidget {
 
   Widget _buildLoginButton(AuthenticationViewModel viewModel) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 10),
-      padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 10),
+      margin: const EdgeInsets.symmetric(vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 12),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(50),
-        color: Colors.deepOrange,
+        borderRadius: BorderRadius.circular(30),
+        color: const Color.fromARGB(255, 148, 40, 7),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black26,
+            blurRadius: 6,
+            offset: Offset(0, 3),
+          )
+        ],
       ),
       child: GestureDetector(
         child: const Text(
           "Log in",
-          style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
+            fontSize: 15,
+            letterSpacing: 0.5,
+          ),
         ),
         onTap: () {
-          if (formKey.currentState!.validate()) {
-            viewModel.Login(emailController.text, passwordController.text);
+          if (_formKey.currentState!.validate()) {
+            viewModel.Login(
+              _emailController.text,
+              _passwordController.text,
+            );
           }
         },
       ),
@@ -171,10 +199,15 @@ class LoginPage extends StatelessWidget {
 
   Widget _buildForgotPasswordText() {
     return TextButton(
-      onPressed: () {},
+      onPressed: () {
+        // implement forgot password logic
+      },
       child: const Text(
         "Forgot password?",
-        style: TextStyle(color: Colors.black54),
+        style: TextStyle(
+          color: Colors.black54,
+          fontSize: 13,
+        ),
       ),
     );
   }
@@ -188,14 +221,18 @@ class LoginPage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: const [
           Text(
-            "Don't Have An Account ?",
-            style: TextStyle(color: Colors.black54),
+            "Don't have an account?",
+            style: TextStyle(
+              color: Colors.black45,
+              fontSize: 13,
+            ),
           ),
           Text(
             "  Signup",
             style: TextStyle(
               fontWeight: FontWeight.w600,
-              color: Colors.deepOrange,
+              color: Color.fromARGB(255, 194, 55, 13),
+              fontSize: 13.5,
             ),
           )
         ],

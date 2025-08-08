@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:petadoption/helpers/image_processor.dart';
 import 'package:petadoption/helpers/locator.dart';
 import 'package:petadoption/models/health_info.dart';
 import 'package:petadoption/models/message.dart';
+import 'package:petadoption/models/pet_prediction_model.dart';
 import 'package:petadoption/models/request_models/animal_breed_request.dart';
 import 'package:petadoption/models/request_models/pet_request.dart';
 import 'package:petadoption/models/response_models/animal_Type.dart';
@@ -40,14 +44,59 @@ class PetViewModel extends BaseViewModel {
   TextEditingController petNameController = TextEditingController();
   TextEditingController animaltypeController = TextEditingController();
   List<AnimalType>? animals;
+  List<Map<String, dynamic>>? predictions;
+  final ImageProcessor _imageProcessor = ImageProcessor();
+
+  PetPrediction? predictionsModel;
   Future<void> savePetImagePath() async {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
     if (pickedFile == null) return;
     path = pickedFile.path;
+    File selectedImage = File(path!);
+
+    final rawPredictions = await _imageProcessor.runModel(selectedImage);
+
+    if (rawPredictions.isNotEmpty) {
+      final firstMap = rawPredictions.first;
+
+      // Convert to model
+      final petPrediction = PetPrediction.fromMap(firstMap, path!);
+
+      // Store in your viewModel
+      predictionsModel = petPrediction;
+
+      await setAnimaltype(predictionsModel?.type ?? "");
+
+      // Optionally update controller
+    }
 
     notifyListeners();
+  }
+
+  setAnimaltype(String type) async {
+    var animalRes = await _apiService.getAnimalType();
+
+    if (animalRes.errorCode == "PA0004") {
+      debugPrint(animalRes.data.toString());
+
+      // Parse the response
+      animals = (animalRes.data as List)
+          .map((json) => AnimalType.fromJson(json as Map<String, dynamic>))
+          .toList();
+
+      if (animals != null || animals!.isNotEmpty) {
+        for (var animal in animals!) {
+          if (animal.name.toLowerCase() == type.toLowerCase()) {
+            selectedAnimalTypeId = animal.animalId;
+            selectedAnimalTypeName = animal.name;
+            animaltypeController.text = animal.name;
+            return true;
+          }
+        }
+      }
+    }
   }
 
   String? selectedAnimalTypeId;

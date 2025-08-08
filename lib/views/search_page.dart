@@ -4,7 +4,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../custom_widgets/stateful_wrapper.dart';
-import '../models/response_models/breed_type.dart';
 import '../viewModel/search_view_model.dart';
 import '../models/response_models/animal_Type.dart';
 import '../models/response_models/pet_response.dart';

@@ -14,6 +14,7 @@ TextEditingController ageController = TextEditingController();
 TextEditingController breedController = TextEditingController();
 TextEditingController genderController = TextEditingController();
 TextEditingController descriptionController = TextEditingController();
+TextEditingController animalTypeController = TextEditingController();
 TextEditingController rejectionReason = TextEditingController();
 final formKey2 = GlobalKey<FormState>();
 final formKey = GlobalKey<FormState>();
@@ -31,28 +32,21 @@ class PetEditModal extends StatelessWidget {
   Widget build(BuildContext context) {
     PetAdminViewModel viewModel = context.watch<PetAdminViewModel>();
 
-    viewModel.setPet(pet);
-    breedController = TextEditingController(text: viewModel.pet!.breed);
-    animalTypeController = TextEditingController(text: viewModel.pet!.animal);
-    genderController = TextEditingController(text: pet.gender);
-
-    nameController = TextEditingController(text: pet.name);
-    ageController = TextEditingController(text: pet.age.toString());
-    descriptionController = TextEditingController(text: pet.description);
-    rejectionReason = TextEditingController(text: pet.rejectionReason);
-    viewModel.setPet(pet);
     return StatefulWrapper(
       onInit: () {
         viewModel.isApproved = pet.isApproved ?? "Pending";
+        viewModel.setPet(pet);
+        breedController = TextEditingController(text: viewModel.pet!.breed);
+        animalTypeController =
+            TextEditingController(text: viewModel.pet!.animal);
+        genderController = TextEditingController(text: pet.gender);
+
+        nameController = TextEditingController(text: pet.name);
+        ageController = TextEditingController(text: pet.age.toString());
+        descriptionController = TextEditingController(text: pet.description);
+        rejectionReason = TextEditingController(text: pet.rejectionReason);
       },
-      onDispose: () {
-        nameController.dispose();
-        ageController.dispose();
-        breedController.dispose();
-        genderController.dispose();
-        descriptionController.dispose();
-        rejectionReason.dispose();
-      },
+      onDispose: () {},
       child: Scaffold(
         key: scaffoldKey,
         body: Stack(

@@ -38,7 +38,7 @@ dependencies:
   image_picker: ^1.1.2
   geolocator: ^13.0.4 
   geocoding: ^3.0.0
-  flutter_launcher_icons: ^0.14.3
+  flutter_launcher_icons: ^0.11.0
   flutter_typeahead: ^5.2.0
   carousel_slider: ^5.0.0
   circle_nav_bar: ^2.2.0
@@ -83,7 +83,7 @@ dev_dependencies:
   path: ^1.8.3
   shared_preferences: ^2.2.2
   dartz: ^0.10.1
-  intl: ^0.19.0
+  intl: ^0.20.2
   url_launcher: ^6.3.0
   local_auth: ^2.3.0
   package_info_plus: ^8.1.2
@@ -97,6 +97,9 @@ dev_dependencies:
   flutter_easyloading: ^3.0.5
   device_info_plus: ^11.3.0
   modal_bottom_sheet: ^3.0.0
+  image_picker: ^1.1.2
+  tflite_flutter: ^0.11.0
+  tflite_flutter_helper_plus: ^0.0.2
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
@@ -120,6 +123,7 @@ flutter:
     - assets/json/
     - assets/svg/
     - assets/carousel/
+    - assets/models/pet_adoption_classifier.tflite
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

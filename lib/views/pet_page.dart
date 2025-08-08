@@ -1,132 +1,140 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:petadoption/custom_widgets/stateful_wrapper.dart';
-import 'package:petadoption/viewModel/pet_view_model.dart';
-
+import 'package:petadoption/helpers/locator.dart';
 import 'package:provider/provider.dart';
+import 'package:petadoption/viewModel/pet_view_model.dart';
+import 'package:petadoption/custom_widgets/default_text_input.dart';
+import 'package:petadoption/services/navigation_service.dart';
 
-import '../custom_widgets/default_text_input.dart';
+class PetPage extends StatefulWidget {
+  const PetPage({super.key});
 
-dynamic formKey = GlobalKey<FormState>();
+  @override
+  State<PetPage> createState() => _PetPageState();
+}
 
-  TextEditingController nameController = TextEditingController();
-  TextEditingController animalTypeController = TextEditingController();
-  TextEditingController breedController = TextEditingController();
-  TextEditingController ageController = TextEditingController();
-  TextEditingController genderController = TextEditingController();
-  TextEditingController descriptionController = TextEditingController();
-class PetPage extends StatelessWidget {
-  PetPage({super.key});
-  final scaffoldKey = GlobalKey<ScaffoldState>();
+class _PetPageState extends State<PetPage> {
+  final GlobalKey<FormState> formKeypet = GlobalKey<FormState>();
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  final NavigationService _navigationService = locator<NavigationService>();
+
+  late TextEditingController nameController;
+
+  late TextEditingController breedController;
+  late TextEditingController ageController;
+  late TextEditingController genderController;
+  late TextEditingController descriptionController;
+
+  @override
+  void initState() {
+    super.initState();
+    nameController = TextEditingController();
+
+    breedController = TextEditingController();
+    ageController = TextEditingController();
+    genderController = TextEditingController();
+    descriptionController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+
+    breedController.dispose();
+    ageController.dispose();
+    genderController.dispose();
+    descriptionController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     PetViewModel viewModel = context.watch<PetViewModel>();
-    animalTypeController =
-        TextEditingController(text: viewModel.selectedAnimalTypeName);
-    breedController = TextEditingController(text: viewModel.selectedBreedName);
-    genderController = TextEditingController(text: viewModel.gender);
-    return StatefulWrapper(
-      onDispose: () {
-        nameController.dispose();
-        animalTypeController.dispose();
-        breedController.dispose();
-        ageController.dispose();
-        genderController.dispose();
-        descriptionController.dispose();
-      },
-      onInit: () {},
-      child: Scaffold(
-        key: scaffoldKey,
-        body: Stack(
-          fit: StackFit.expand,
-          children: [
-            // Background image
-            Image.asset(
-              'assets/images/bg.png',
-              fit: BoxFit.cover,
-            ),
-            // Login form content with SafeArea
-            SafeArea(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Column(
-                    children: [
-                      // Character image at top, overlapping the container
-                      Row(children: [
- GestureDetector(
-                    onTap: () {
-                      viewModel.logout();
-                    },
-                    child: Container(
-                      padding: EdgeInsets.all(8),
+
+    viewModel.animaltypeController.text =
+        viewModel.selectedAnimalTypeName ?? "";
+    breedController.text = viewModel.selectedBreedName ?? "";
+    genderController.text = viewModel.gender;
+
+    return Scaffold(
+      key: scaffoldKey,
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          Image.asset('assets/images/bg.png', fit: BoxFit.cover),
+          SafeArea(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () => _navigationService.pop(),
+                          child: Container(
+                            padding: EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Color(0xFF5D1F00),
+                            ),
+                            child: Icon(
+                              Icons.arrow_back_ios_new_rounded,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    _buildCharacterImage(viewModel),
+                    Container(
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color:Color(0xFF5D1F00),
+                        color: const Color.fromARGB(255, 255, 247, 240),
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 10,
+                            offset: Offset(0, 4),
+                          ),
+                        ],
                       ),
-                      child: Icon(
-                        Icons.logout_rounded,
-                        color: Colors.white,
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        children: [
+                          _buildAddPetForm(viewModel),
+                          const SizedBox(height: 10),
+                          InkWell(
+                            onTap: () {
+                              if (formKeypet.currentState!.validate()) {
+                                viewModel.addPet(
+                                  nameController.text,
+                                  int.parse(ageController.text),
+                                  descriptionController.text,
+                                );
+                              }
+                            },
+                            child: _buildAddPetButton(),
+                          ),
+                        ],
                       ),
                     ),
-                  ),
-                      ],),
-                   _buildCharacterImage(viewModel),
-      
-                      // Padding to make space for the image
-                      Container(
-                        decoration: BoxDecoration(
-                          color: const Color.fromARGB(255, 255, 247, 240),
-                          borderRadius: BorderRadius.circular(16),
-                          boxShadow: const [
-                            BoxShadow(
-                              color: Colors.black12,
-                              blurRadius: 10,
-                              offset: Offset(0, 4),
-                            ),
-                          ],
-                        ),
-                        padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-                        child: Column(
-                          children: [
-                            _buildAddPetForm(viewModel),
-                            const SizedBox(height: 10),
-                          
-                            InkWell(
-                                onTap: () {
-                                  if (formKey.currentState!.validate()) {
-                                    viewModel.addPet(
-                                        nameController.text,
-                                        int.parse(ageController.text),
-                                        descriptionController.text);
-                                  }
-                                },
-                                child: _buildAddPetButton(viewModel)),
-                          ],
-                        ),
-                      ),
-                     
-                    ],
-                  ),
+                  ],
                 ),
               ),
-            )
-          ],
-        ),
+            ),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildCharacterImage(PetViewModel viewModel) {
     return Column(
-      spacing: 5,
       children: [
-
-       
         Container(
-          padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+          padding: EdgeInsets.symmetric(vertical: 5),
           decoration: BoxDecoration(
             color: Colors.white,
             border: Border.all(
@@ -144,8 +152,8 @@ class PetPage extends StatelessWidget {
                     width: 130,
                     fit: BoxFit.cover,
                   ),
-                ):
-               Image.asset(
+                )
+              : Image.asset(
                   'assets/images/signup.png',
                   height: 120,
                   fit: BoxFit.contain,
@@ -153,15 +161,15 @@ class PetPage extends StatelessWidget {
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
               decoration: BoxDecoration(
-                color:
-                    viewModel.path != null ? Colors.brown : Colors.deepOrange,
+                color: viewModel.path != null
+                    ? Colors.brown
+                    : const Color.fromARGB(255, 163, 49, 14),
                 borderRadius: BorderRadius.circular(30),
               ),
-              padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
+              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               child: GestureDetector(
                 onTap: () async {
                   await viewModel.savePetImagePath();
@@ -178,14 +186,12 @@ class PetPage extends StatelessWidget {
             ),
             if (viewModel.path != null)
               GestureDetector(
-                  onTap: () {
-                    // viewModel.removeImage();
-                    viewModel.logout();
-                  },
-                  child: Icon(
-                    Icons.delete,
-                    color: Colors.deepOrange,
-                  ))
+                onTap: () => viewModel.logout(),
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 8),
+                  child: Icon(Icons.delete, color: Colors.deepOrange),
+                ),
+              ),
           ],
         ),
       ],
@@ -194,128 +200,76 @@ class PetPage extends StatelessWidget {
 
   Widget _buildAddPetForm(PetViewModel viewModel) {
     return Form(
-      key: formKey,
+      key: formKeypet,
       child: Column(
         spacing: 5,
         children: [
-          SizedBox(
-            height: 15,
-          ),
+          const SizedBox(height: 15),
           DefaultTextInput(
             controller: nameController,
             hintText: "Name",
             icon: Icons.pets,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Enter Your Animal Name Please';
-              }
-              return null;
-            },
+            validator: (value) => value == null || value.isEmpty
+                ? 'Enter Your Animal Name Please'
+                : null,
           ),
           Row(
             children: [
               Expanded(
                 child: DefaultTextInput(
-                  onTap: () async {
-                    viewModel.getAnimalType();
-                  },
-                  readOnly: true,
-                  controller: animalTypeController,
+                  controller: viewModel.animaltypeController,
                   hintText: "Animal Type",
                   icon: Icons.animation,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Enter Your Animal Type Please';
-                    }
-                    return null;
+                  readOnly: true,
+                  onTap: () async {
+                    await viewModel.getAnimalType();
                   },
+                  validator: (value) => value == null || value.isEmpty
+                      ? 'Enter Animal Type Please'
+                      : null,
                 ),
               ),
               const SizedBox(width: 5),
-              GestureDetector(
-                onTap: () async {
-                  viewModel.addanimalType();
-                },
-                child: Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: Colors.brown,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Icon(
-                    Icons.add,
-                    color: Colors.white,
-                    size: 20,
-                  ),
-                ),
-              ),
+              _addIconButton(() => viewModel.addanimalType()),
             ],
           ),
           Row(
             children: [
               Expanded(
                 child: DefaultTextInput(
-                  onTap: () async {
-                    viewModel.getAnimalBreed(viewModel.selectedAnimalTypeId);
-                  },
-                  readOnly: true,
                   controller: breedController,
                   hintText: "Breed Type",
                   icon: Icons.type_specimen,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Enter Animal Breed Please';
-                    }
-                    return null;
-                  },
+                  readOnly: true,
+                  onTap: () async =>
+                      viewModel.getAnimalBreed(viewModel.selectedAnimalTypeId),
+                  validator: (value) => value == null || value.isEmpty
+                      ? 'Enter Animal Breed Please'
+                      : null,
                 ),
               ),
               const SizedBox(width: 5),
-              GestureDetector(
-                onTap: () async {
-                  viewModel.addanimalBreed();
-                },
-                child: Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: Colors.brown,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Icon(
-                    Icons.add,
-                    color: Colors.white,
-                    size: 20,
-                  ),
-                ),
-              ),
+              _addIconButton(() => viewModel.addanimalBreed()),
             ],
           ),
           DefaultTextInput(
             controller: ageController,
             keyboardType: TextInputType.number,
-            hintText: "AGE",
+            hintText: "Age",
             icon: Icons.height,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Enter Animals Age Please';
-              }
-              return null;
-            },
+            validator: (value) => value == null || value.isEmpty
+                ? 'Enter Animal Age Please'
+                : null,
           ),
           DefaultTextInput(
             controller: genderController,
             hintText: "Gender",
-            readOnly: true,
             icon: Icons.g_mobiledata,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Enter Animals Gender Please';
-              }
-              return null;
-            },
-            onTap: () {
-              viewModel.getGender();
-            },
+            readOnly: true,
+            onTap: () => viewModel.getGender(),
+            validator: (value) => value == null || value.isEmpty
+                ? 'Enter Animal Gender Please'
+                : null,
           ),
           DefaultTextInput(
             controller: descriptionController,
@@ -327,16 +281,34 @@ class PetPage extends StatelessWidget {
     );
   }
 
-  Widget _buildAddPetButton(PetViewModel viewModel) {
+  Widget _buildAddPetButton() {
     return Container(
-      padding: EdgeInsets.fromLTRB(60, 10, 60, 10),
+      padding: EdgeInsets.symmetric(horizontal: 60, vertical: 10),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(50),
-        color: Colors.deepOrange,
+        color: const Color.fromARGB(255, 163, 49, 14),
       ),
       child: Text(
         "Add pet",
         style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
+      ),
+    );
+  }
+
+  Widget _addIconButton(VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: Colors.brown,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+          size: 20,
+        ),
       ),
     );
   }

@@ -35,55 +35,55 @@ class SignupPage extends StatelessWidget {
             Image.asset(
               'assets/images/bg.png',
               fit: BoxFit.cover,
+              height: 90,
+              width: 90,
             ),
             // Login form content with SafeArea
-            SafeArea(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Column(
-                    children: [
-                      // Character image at top
-                      _buildCharacterImage(),
+            SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(0),
+                child: Column(
+                  children: [
+                    // Character image at top
+                    _buildCharacterImage(),
 
-                      Container(
-                        decoration: BoxDecoration(
-                          color: const Color.fromARGB(255, 255, 247, 240),
-                          borderRadius: BorderRadius.circular(16),
-                          boxShadow: const [
-                            BoxShadow(
-                              color: Colors.black12,
-                              blurRadius: 10,
-                              offset: Offset(0, 4),
-                            ),
-                          ],
-                        ),
-                        padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-                        child: Column(
-                          children: [
-                            _buildLoginForm(viewModel),
-                            const SizedBox(height: 10),
-                            Text(
-                              "What You Are Select The Role?",
-                              style: TextStyle(
-                                  color: Colors.black54, fontSize: 13),
-                            ),
-                            const SizedBox(height: 5),
-                            buildRoleSelector(
-                              roles: roles,
-                              selectedRole: viewModel.role,
-                              onRoleSelected: (role) {
-                                viewModel.setRole(role);
-                              },
-                            ),
-                            const SizedBox(height: 20),
-                            _buildLoginButton(viewModel),
-                            _buildLogin(viewModel),
-                          ],
-                        ),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: const Color.fromARGB(255, 255, 247, 240),
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 10,
+                            offset: Offset(0, 4),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                      child: Column(
+                        children: [
+                          _buildLoginForm(viewModel),
+                          const SizedBox(height: 10),
+                          Text(
+                            "What You Are Select The Role?",
+                            style:
+                                TextStyle(color: Colors.black54, fontSize: 13),
+                          ),
+                          const SizedBox(height: 5),
+                          buildRoleSelector(
+                            roles: roles,
+                            selectedRole: viewModel.role,
+                            onRoleSelected: (role) {
+                              viewModel.setRole(role);
+                            },
+                          ),
+                          const SizedBox(height: 20),
+                          _buildLoginButton(viewModel),
+                          _buildLogin(viewModel),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -105,7 +105,7 @@ class SignupPage extends StatelessWidget {
     return Form(
       key: formKey,
       child: Column(
-        spacing: 15,
+        spacing: 5,
         children: [
           Text(
             "SIGNUP",
@@ -176,7 +176,7 @@ class SignupPage extends StatelessWidget {
       padding: EdgeInsets.fromLTRB(60, 10, 60, 10),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(50),
-        color: Colors.deepOrange,
+        color: const Color.fromARGB(255, 148, 40, 7),
       ),
       child: GestureDetector(
         child: Text(
@@ -206,11 +206,11 @@ class SignupPage extends StatelessWidget {
             "Already Have An Account ?",
             style: TextStyle(color: Colors.black54),
           ),
-          Text(
-            "  Login",
-            style: TextStyle(
-                fontWeight: FontWeight.w600, color: Colors.deepOrange),
-          )
+          Text("  Login",
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                color: const Color.fromARGB(255, 148, 40, 7),
+              ))
         ],
       ),
     );

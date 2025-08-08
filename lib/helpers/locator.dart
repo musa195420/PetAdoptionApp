@@ -50,8 +50,6 @@ class LocatorInjector {
           () => ErrorReportingService());
       locator.registerLazySingleton<IDialogService>(() => DialogService());
 
-      // ViewModels
-      // locator.registerLazySingleton(() => HomeViewModel());
       locator.registerLazySingleton(() => AuthenticationViewModel());
       locator.registerLazySingleton(() => SignupViewModel());
       locator.registerLazySingleton(() => StartupViewModel());
@@ -76,7 +74,6 @@ class LocatorInjector {
       // Repos
 
       locator.registerLazySingleton<IHiveService<User>>(() => UserRepo());
-      //locator.registerLazySingleton<IHiveService<APIQueue>>(() => APIQueueRepo());
     } catch (e) {
       debugPrint("Error ==> ${e.toString()}");
     }

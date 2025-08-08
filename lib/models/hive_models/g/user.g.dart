@@ -18,11 +18,11 @@ class UserAdapter extends TypeAdapter<User> {
     };
     return User(
       userId: fields[0] as String,
-      email: fields[1] as String,
-      phoneNumber: fields[2] as String,
-      password: fields[3] as String,
-      role: fields[4] as String,
-      deviceId: fields[5] as String,
+      email: fields[1] as String?,
+      phoneNumber: fields[2] as String?,
+      password: fields[3] as String?,
+      role: fields[4] as String?,
+      deviceId: fields[5] as String?,
       profileImage: fields[6] as String?,
     );
   }

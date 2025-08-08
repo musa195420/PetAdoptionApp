@@ -170,8 +170,9 @@ class StartupViewModel extends BaseViewModel {
           }
           break;
       }
-    } catch (e) {
-      debugPrint("Error Occured Startup ViewModel ${e.toString()}");
+    } catch (e, s) {
+      debugPrint(
+          "Error Occured Startup ViewModel ${e.toString()} Stack ${s.toString()}");
     }
   }
 }

@@ -4,11 +4,17 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:petadoption/custom_widgets/stateful_wrapper.dart';
+import 'package:petadoption/helpers/locator.dart';
+import 'package:petadoption/models/hive_models/user.dart';
 import 'package:petadoption/models/response_models/pet_response.dart';
+import 'package:petadoption/services/navigation_service.dart';
 import 'package:petadoption/viewModel/profile_view_model.dart';
 import 'package:provider/provider.dart';
 
 import '../helpers/constants.dart';
+
+NavigationService get _navigationService => locator<NavigationService>();
+TextEditingController animalTypeController = TextEditingController();
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -130,111 +136,162 @@ class ProfilePage extends StatelessWidget {
   }
 
   Widget _profileHeader(ProfileViewModel viewModel) {
-    final user = viewModel.user!;
+    User? user = viewModel.user;
     final profile = viewModel.userProfile;
 
-    return Column(
-      children: [
-        Stack(
-          alignment: Alignment.bottomRight,
-          children: [
-            CircleAvatar(
-              radius: 52,
-              backgroundColor: accentColor.withOpacity(0.1),
-              backgroundImage: viewModel.path != null
-                  ? FileImage(File(viewModel.path!))
-                  : user.profileImage != null
-                      ? NetworkImage(user.profileImage!)
-                      : const AssetImage('assets/images/noprofile.png'),
-            ),
-            if (viewModel.editMode)
-              InkWell(
-                onTap: () {
-                  if (viewModel.path != null) {
-                    viewModel.removeImagePath();
-                  } else {
-                    viewModel.saveImagePath();
-                  }
-                },
-                child: Container(
-                  padding: const EdgeInsets.all(6),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Colors.grey.shade300),
+    return user != null
+        ? Column(
+            children: [
+              Stack(
+                alignment: Alignment.bottomRight,
+                children: [
+                  CircleAvatar(
+                    radius: 52,
+                    backgroundColor: accentColor.withOpacity(0.1),
+                    backgroundImage: viewModel.path != null
+                        ? FileImage(File(viewModel.path ?? ""))
+                        : user.profileImage != null &&
+                                user.profileImage!.isNotEmpty
+                            ? NetworkImage(user.profileImage!)
+                            : const AssetImage('assets/images/noprofile.png'),
                   ),
-                  child: viewModel.path != null
-                      ? Icon(Icons.delete, size: 20, color: primaryColor)
-                      : Icon(Icons.camera_alt, size: 20, color: primaryColor),
+                  if (viewModel.editMode)
+                    InkWell(
+                      onTap: () {
+                        if (viewModel.path != null) {
+                          viewModel.removeImagePath();
+                        } else {
+                          viewModel.saveImagePath();
+                        }
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.grey.shade300),
+                        ),
+                        child: viewModel.path != null
+                            ? Icon(Icons.delete, size: 20, color: primaryColor)
+                            : Icon(Icons.camera_alt,
+                                size: 20, color: primaryColor),
+                      ),
+                    ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Text(
+                profile?.name ?? "Name not set",
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: primaryColor,
                 ),
               ),
-          ],
-        ),
-        const SizedBox(height: 12),
-        Text(
-          profile?.name ?? "Name not set",
-          style: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-            color: primaryColor,
-          ),
-        ),
-        if (user.email != null)
-          Text(
-            "@${(user.email ?? "N/A").split("@")[0]}",
-            style: const TextStyle(color: Colors.grey),
-          ),
-      ],
-    );
+              if (user.email != null)
+                Text(
+                  "@${(user.email ?? "N/A").split("@")[0]}",
+                  style: const TextStyle(color: Colors.grey),
+                ),
+            ],
+          )
+        : Center(
+            child: SizedBox(
+            child: Text("User is Null"),
+          ));
   }
 
   Widget _buildInfoSection(ProfileViewModel viewModel) {
-    final user = viewModel.user!;
+    User? user = viewModel.user;
     final profile = viewModel.userProfile;
 
-    return Column(
-      children: [
-        _buildExpandableCard(
-          title: "Personal Information",
-          children: [
-            viewModel.editMode
-                ? _editableField("Name", viewModel.nameController)
-                : _infoTile("Name", profile?.name ?? "-"),
-            _infoTile("Email", user.email ?? "N/A"),
-            viewModel.editMode
-                ? _editableField("Phone", viewModel.phoneController)
-                : _infoTile("Phone", user.phoneNumber ?? "N/A"),
-            viewModel.editMode
-                ? _editableField("Address", viewModel.addressController)
-                : _infoTile("Address", profile?.location ?? "-"),
-          ],
-        ),
-        const SizedBox(height: 16),
-        _buildExpandableCard(
-          title: "Login and Security",
-          children: [
-            _infoTile("Role", user.role ?? "N/A"),
-            _infoTile("Device ID", user.deviceId ?? "N/A"),
-            _infoTile(
-              "Is Active",
-              (profile?.isActive ?? false) ? "Yes" : "No",
-              color: (profile?.isActive ?? false)
-                  ? Colors.green
-                  : Colors.redAccent,
-            ),
-          ],
-        ),
-        if (viewModel.user!.role.toString().toLowerCase() == "donor")
-          _buildExpandableCard(title: "Your Pets", children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ...viewModel.pet!.map((pet) => _buildPetCard(pet, viewModel)),
-              ],
-            ),
-          ])
-      ],
-    );
+    return user != null
+        ? Column(
+            children: [
+              _buildExpandableCard(
+                title: "Personal Information",
+                children: [
+                  viewModel.editMode
+                      ? _editableField("Name", viewModel.nameController)
+                      : _infoTile("Name", profile?.name ?? "-"),
+                  _infoTile("Email", user.email ?? "N/A"),
+                  viewModel.editMode
+                      ? _editableField("Phone", viewModel.phoneController)
+                      : _infoTile("Phone", user.phoneNumber ?? "N/A"),
+                  viewModel.editMode
+                      ? _editableField("Address", viewModel.addressController)
+                      : _infoTile("Address", profile?.location ?? "-"),
+                ],
+              ),
+              const SizedBox(height: 16),
+              _buildExpandableCard(
+                title: "Login and Security",
+                children: [
+                  _infoTile("Role", user.role ?? "N/A"),
+                  _infoTile("Device ID", user.deviceId ?? "N/A"),
+                  _infoTile(
+                    "Is Active",
+                    (profile?.isActive ?? false) ? "Yes" : "No",
+                    color: (profile?.isActive ?? false)
+                        ? Colors.green
+                        : Colors.redAccent,
+                  ),
+                ],
+              ),
+              if (viewModel.user!.role.toString().toLowerCase() == "donor")
+                _buildExpandableCard(title: "Your Pets", children: [
+                  viewModel.pet != null
+                      ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ...viewModel.pet!
+                                .map((pet) => _buildPetCard(pet, viewModel)),
+                          ],
+                        )
+                      : Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              // SizedBox for spacing
+                              const SizedBox(height: 20),
+
+                              // "Add Pet" Button
+                              ElevatedButton.icon(
+                                onPressed: () {
+                                  _navigationService.pushNamed(Routes.petpage,
+                                      args: TransitionType.fade, data: null);
+                                },
+                                icon: const Icon(Icons.pets,
+                                    size: 24), // Paw icon
+                                label: const Text(
+                                  'Add Pet',
+                                  style: TextStyle(fontSize: 18),
+                                ),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(
+                                      0xFF8B4513), // Beautiful brown
+                                  foregroundColor:
+                                      Colors.white, // Icon and text color
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 32, vertical: 14),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  elevation: 6,
+                                  shadowColor: Colors.brown.shade200,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                ])
+            ],
+          )
+        : Center(
+            child: SizedBox(
+            child: Text("User is Null"),
+          ));
   }
 
   Widget _buildPetCard(PetResponse pet, ProfileViewModel viewModel) {
@@ -260,7 +317,7 @@ class ProfilePage extends StatelessWidget {
           // Rounded Image
           ClipRRect(
             borderRadius: BorderRadius.circular(50),
-            child: pet.image != null
+            child: pet.image != null && pet.image!.isNotEmpty
                 ? Image.network(
                     pet.image!,
                     width: 80,

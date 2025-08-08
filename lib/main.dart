@@ -70,7 +70,6 @@ Future configSettings() async {
   try {
     await locator<PrefService>().init();
     await locator<GlobalService>().init();
-    //await locator<ScheduleService>().init();
     await locator<LoggingService>().init();
     await locator<NetworkService>().init();
     await locator<IErrorReportingService>().initErrors();
@@ -79,10 +78,6 @@ Future configSettings() async {
         await path_provider.getApplicationDocumentsDirectory();
     Hive.init("${appDocumentDirectory.path}/pet_adoption");
     await locator<IHiveService<User>>().init();
-
-    locator<GlobalService>().log('-----------------------------------------');
-    locator<GlobalService>().log('---------------- App Start --------------');
-    locator<GlobalService>().log('-----------------------------------------');
   } catch (e) {
     debugPrint("Error => $e");
   }

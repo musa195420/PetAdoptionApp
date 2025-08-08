@@ -50,7 +50,6 @@ class DefaultTextInput extends StatelessWidget {
     this.border = true,
     this.fillColor = Colors.white,
   });
-
   @override
   Widget build(BuildContext context) {
     return Visibility(
@@ -68,19 +67,41 @@ class DefaultTextInput extends StatelessWidget {
         controller: controller,
         validator: validator,
         onChanged: onChanged,
+        style: const TextStyle(fontSize: 14, height: 1.3),
         decoration: InputDecoration(
           hintText: hintText,
           labelText: labelText,
-          prefixIcon: icon != null ? Icon(icon) : null,
+          prefixIcon: icon != null ? Icon(icon, size: 20) : null,
           suffixIcon: suffixicon
               ? IconButton(
                   onPressed: onEyePressed,
-                  icon: Icon(Icons.remove_red_eye),
+                  icon: Icon(
+                    secureText ? Icons.visibility_off : Icons.visibility,
+                    size: 20,
+                  ),
                 )
               : null,
           filled: true,
           fillColor: fillColor,
-          border: border ? const OutlineInputBorder() : InputBorder.none,
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(50),
+            borderSide: const BorderSide(color: Colors.grey),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(50),
+            borderSide:
+                BorderSide(color: Theme.of(context).primaryColor, width: 1.5),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(50),
+            borderSide: const BorderSide(color: Colors.red),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(50),
+            borderSide: const BorderSide(color: Colors.red, width: 1.5),
+          ),
         ),
       ),
     );
