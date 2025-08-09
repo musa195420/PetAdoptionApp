@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:petadoption/models/response_models/pet_response.dart';
 import 'package:provider/provider.dart';
@@ -37,12 +38,17 @@ class DetailModal extends StatelessWidget {
                               topLeft: Radius.circular(screenWidth * 0.04),
                               topRight: Radius.circular(screenWidth * 0.04),
                             ),
-                            child: Image.network(pet.image ?? "",
-                                height: screenHeight * 0.35,
-                                width: screenWidth,
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) =>
-                                    AppWidget.imageLoad()),
+                            child: CachedNetworkImage(
+                              imageUrl: pet.image ?? '',
+                              height: screenHeight * 0.35,
+                              width: screenWidth,
+                              fit: BoxFit.cover,
+                              placeholder: (context, url) => Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                              errorWidget: (context, url, error) =>
+                                  AppWidget.imageLoad(),
+                            ),
                           ),
                           Positioned(
                             top: screenHeight * 0.02,
@@ -206,14 +212,17 @@ class DetailModal extends StatelessWidget {
                       radius: screenWidth * 0.08,
                       backgroundColor: Colors.grey[200],
                       child: ClipOval(
-                        child: Image.network(
-                          viewModel.user!.profileImage ?? "",
+                        child: CachedNetworkImage(
+                          imageUrl: viewModel.user!.profileImage ?? '',
                           fit: BoxFit.cover,
                           width: screenWidth * 0.16,
                           height: screenWidth * 0.16,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Image.asset("assets/images/noprofile.png");
-                          },
+                          placeholder: (context, url) => Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                          errorWidget: (context, url, error) => Image.asset(
+                            "assets/images/noprofile.png",
+                          ),
                         ),
                       ),
                     ),

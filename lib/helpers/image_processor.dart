@@ -1,27 +1,135 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image/image.dart' as img;
 import 'package:petadoption/helpers/animals.dart';
-
+import 'package:petadoption/helpers/error_handler.dart';
+import 'package:petadoption/helpers/locator.dart';
+import 'package:petadoption/models/message.dart';
+import 'package:petadoption/services/dialog_service.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
 
-class ImageProcessor {
-  Interpreter? _interpreter;
+IDialogService get _dialogService => locator<IDialogService>();
 
-  ImageProcessor() {
-    _loadModel();
+class ImageProcessor {
+  static const String tag = "ImageProcessor";
+  static const int _maxLoadAttempts = 3;
+  static const Duration _retryDelay = Duration(seconds: 1);
+  static const Duration _releaseModeDelay = Duration(milliseconds: 500);
+
+  Interpreter? _interpreter;
+  bool _isModelLoaded = false;
+  bool _isLoading = false;
+  int _loadAttempts = 0;
+
+  final List<Completer<void>> _loadWaiters = [];
+
+  Future<void> init() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    await _loadModelWithRetry();
   }
 
-  /// Loads the TensorFlow Lite model
-  Future<void> _loadModel() async {
+  Future<void> _loadModelWithRetry() async {
+    if (_isModelLoaded) return;
+    if (_isLoading) {
+      final completer = Completer<void>();
+      _loadWaiters.add(completer);
+      await completer.future;
+      return;
+    }
+
+    _isLoading = true;
+    _loadAttempts = 0;
+
+    while (_loadAttempts < _maxLoadAttempts && !_isModelLoaded) {
+      _loadAttempts++;
+      try {
+        // Add small delay for release mode
+        if (!kDebugMode) {
+          await Future.delayed(_releaseModeDelay);
+        }
+
+        await loadModel();
+        _isModelLoaded = true;
+        //  _dialogService.showBeautifulToast("✅ Model loaded successfully!");
+        debugPrint("✅ Model loaded successfully (attempt $_loadAttempts)");
+
+        for (var waiter in _loadWaiters) {
+          if (!waiter.isCompleted) waiter.complete();
+        }
+      } catch (e, s) {
+        printError(tag: tag, error: e.toString(), stack: s.toString());
+        debugPrint("❌ Model load attempt $_loadAttempts failed: $e");
+
+        if (_loadAttempts < _maxLoadAttempts) {
+          await Future.delayed(_retryDelay);
+        } else {
+          _dialogService.showBeautifulToast(
+            "⚠️ Failed to load model after $_maxLoadAttempts attempts",
+          );
+        }
+      }
+    }
+
+    _isLoading = false;
+    _loadWaiters.clear();
+  }
+
+  Future<void> loadModel() async {
     try {
-      _interpreter = await Interpreter.fromAsset(
-          'assets/models/pet_adoption_classifier.tflite');
-      debugPrint("✅ TFLite model loaded successfully!");
-    } catch (e) {
-      debugPrint("❌ Failed to load model: $e");
+      // Clear any previous interpreter first
+      _interpreter?.close();
+      _interpreter = null;
+
+      // Load with error handling for asset loading
+      final model = await _loadModelAsset();
+      _interpreter = Interpreter.fromBuffer(model);
+
+      // Verify the interpreter is usable
+      await _verifyInterpreter();
+    } catch (e, s) {
+      printError(tag: tag, error: e.toString(), stack: s.toString());
+      _dialogService.showErrorHandlingDialog(
+        "⚠️ Error loading model ${e.toString()} ${s.toString()}",
+      );
+      rethrow;
+    }
+  }
+
+  Future<Uint8List> _loadModelAsset() async {
+    try {
+      return await rootBundle
+          .load('assets/models/pet_adoption_classifier.tflite')
+          .then((byteData) => byteData.buffer.asUint8List());
+    } catch (e, s) {
+      printError(
+          tag: tag,
+          error: "Asset load failed: ${e.toString()}",
+          stack: s.toString());
+      throw Exception("Failed to load model asset");
+    }
+  }
+
+  Future<void> _verifyInterpreter() async {
+    try {
+      // Simple verification - try to get input tensors
+      final inputs = _interpreter?.getInputTensors();
+      if (inputs == null || inputs.isEmpty) {
+        throw Exception("Invalid model - no input tensors");
+      } else {
+        debugPrint("Model Loaded Successfully ✅ Model loaded successfully ");
+      }
+    } catch (e, s) {
+      printError(
+          tag: tag,
+          error: "Model verification failed: ${e.toString()}",
+          stack: s.toString());
+      _interpreter?.close();
+      _interpreter = null;
+      throw Exception("Model verification failed");
     }
   }
 
@@ -32,6 +140,9 @@ class ImageProcessor {
       img.Image? decodedImage = img.decodeImage(imageBytes);
 
       if (decodedImage == null) {
+        _dialogService.showBeautifulToast(
+          "⚠️ Error decoding image",
+        );
         debugPrint("❌ Error decoding image.");
         return null;
       }
@@ -54,7 +165,11 @@ class ImageProcessor {
       }
 
       return inputImage;
-    } catch (e) {
+    } catch (e, s) {
+      printError(tag: tag, error: e.toString(), stack: s.toString());
+      _dialogService.showBeautifulToast(
+        "⚠️ Error processing image",
+      );
       debugPrint("❌ Error processing image: $e");
       return null;
     }
@@ -63,12 +178,20 @@ class ImageProcessor {
   /// Runs inference on the processed image
   Future<List<Map<String, String>>> runModel(File imageFile) async {
     try {
-      if (_interpreter == null) {
-        await _loadModel();
+      // Ensure model is loaded
+      if (!_isModelLoaded) {
+        await _loadModelWithRetry();
+        if (!_isModelLoaded) {
+          return [];
+        }
       }
+
       // Preprocess the image
       Uint8List? inputImage = await _preprocessImage(imageFile);
       if (inputImage == null) {
+        _dialogService.showBeautifulToast(
+          "⚠️ Error processing image",
+        );
         debugPrint("❌ Error: Preprocessed image is null.");
         return [];
       }
@@ -81,8 +204,6 @@ class ImageProcessor {
 
       List<int> predictions = output[0];
 
-      // Animal list (ensure it is defined)
-
       // Get the top 5 predictions
       List<int> sortedIndices = List.generate(predictions.length, (i) => i)
         ..sort((a, b) => predictions[b].compareTo(predictions[a]));
@@ -94,13 +215,19 @@ class ImageProcessor {
         };
       }).toList();
 
-      debugPrint("🔍 Top 5 Predictions:");
+      StringBuffer result = StringBuffer("🔍 Top 5 Predictions:\n");
       for (var entry in top5) {
-        debugPrint("${entry['Animal']}: ${entry['Confidence']}");
+        result.write("${entry['Animal']}: ${entry['Confidence']}\n");
       }
 
+      await _dialogService.showSuccess(text: result.toString());
+
       return top5;
-    } catch (e) {
+    } catch (e, s) {
+      printError(tag: tag, error: e.toString(), stack: s.toString());
+      _dialogService.showBeautifulToast(
+        "⚠️ Error analyzing image",
+      );
       debugPrint("❌ Error running model: $e");
       return [];
     }

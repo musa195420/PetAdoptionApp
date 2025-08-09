@@ -1,6 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:petadoption/custom_widgets/default_text_input.dart';
 import 'package:petadoption/custom_widgets/stateful_wrapper.dart';
@@ -245,6 +246,9 @@ class SecureEdit extends StatelessWidget {
             ],
           ),
         ),
+
+// ...
+
         Container(
           padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
           decoration: BoxDecoration(
@@ -268,11 +272,21 @@ class SecureEdit extends StatelessWidget {
               : url != null && url.isNotEmpty
                   ? ClipRRect(
                       borderRadius: BorderRadius.circular(10),
-                      child: Image.network(
-                        url,
+                      child: CachedNetworkImage(
+                        imageUrl: url,
                         height: 150,
                         width: 530,
                         fit: BoxFit.cover,
+                        placeholder: (context, url) => SizedBox(
+                          height: 150,
+                          width: 530,
+                          child: Center(child: CircularProgressIndicator()),
+                        ),
+                        errorWidget: (context, url, error) => Image.asset(
+                          'assets/images/signup.png',
+                          height: 120,
+                          fit: BoxFit.contain,
+                        ),
                       ),
                     )
                   : Image.asset(
@@ -281,6 +295,7 @@ class SecureEdit extends StatelessWidget {
                       fit: BoxFit.contain,
                     ),
         ),
+
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:petadoption/helpers/image_processor.dart';
 import 'package:petadoption/helpers/locator.dart';
 import 'package:petadoption/models/hive_models/user.dart';
 import 'package:petadoption/services/api_service.dart';
@@ -13,11 +14,12 @@ import '../helpers/constants.dart';
 import '../models/request_models/refresh_token_request.dart';
 import '../models/response_models/refresh_token_response.dart';
 
+IDialogService get _dialogService => locator<IDialogService>();
+
 class StartupViewModel extends BaseViewModel {
   PrefService get _prefService => locator<PrefService>();
   NavigationService get _navigationService => locator<NavigationService>();
 
-  IDialogService get _dialogService => locator<IDialogService>();
   IAPIService get _apiService => locator<IAPIService>();
 
   GlobalService get _globalService => locator<GlobalService>();
@@ -134,6 +136,7 @@ class StartupViewModel extends BaseViewModel {
       User? userResponse =
           await locator<IHiveService<User>>().getFirstOrDefault();
       _globalService.setuser(userResponse);
+
       if (userResponse == null) {
         await logout();
         await _navigationService.pushNamedAndRemoveUntil(

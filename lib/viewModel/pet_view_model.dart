@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:petadoption/helpers/error_handler.dart';
 import 'package:petadoption/helpers/image_processor.dart';
 import 'package:petadoption/helpers/locator.dart';
 import 'package:petadoption/models/health_info.dart';
@@ -27,6 +28,8 @@ import '../views/modals/animalDisability_modal.dart';
 import '../views/modals/animalDisease_modal.dart';
 import '../views/modals/animal_Vaccination_modal.dart';
 
+String tag = "petviewModel";
+
 class PetViewModel extends BaseViewModel {
   NavigationService get _navigationService => locator<NavigationService>();
 
@@ -45,58 +48,115 @@ class PetViewModel extends BaseViewModel {
   TextEditingController animaltypeController = TextEditingController();
   List<AnimalType>? animals;
   List<Map<String, dynamic>>? predictions;
-  final ImageProcessor _imageProcessor = ImageProcessor();
+  ImageProcessor get _imageProcessor => locator<ImageProcessor>();
 
   PetPrediction? predictionsModel;
-  Future<void> savePetImagePath() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
-    if (pickedFile == null) return;
-    path = pickedFile.path;
-    File selectedImage = File(path!);
-
-    final rawPredictions = await _imageProcessor.runModel(selectedImage);
-
-    if (rawPredictions.isNotEmpty) {
-      final firstMap = rawPredictions.first;
-
-      // Convert to model
-      final petPrediction = PetPrediction.fromMap(firstMap, path!);
-
-      // Store in your viewModel
-      predictionsModel = petPrediction;
-
-      await setAnimaltype(predictionsModel?.type ?? "");
-
-      // Optionally update controller
-    }
-
-    notifyListeners();
+  void loadModel() async {
+    await locator<ImageProcessor>().loadModel();
   }
 
-  setAnimaltype(String type) async {
-    var animalRes = await _apiService.getAnimalType();
+  Future<void> savePetImagePath() async {
+    debugPrint("📸 savePetImagePath() started");
 
-    if (animalRes.errorCode == "PA0004") {
-      debugPrint(animalRes.data.toString());
+    try {
+      final picker = ImagePicker();
+      debugPrint("📥 Opening image picker...");
+      final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
-      // Parse the response
-      animals = (animalRes.data as List)
-          .map((json) => AnimalType.fromJson(json as Map<String, dynamic>))
-          .toList();
-
-      if (animals != null || animals!.isNotEmpty) {
-        for (var animal in animals!) {
-          if (animal.name.toLowerCase() == type.toLowerCase()) {
-            selectedAnimalTypeId = animal.animalId;
-            selectedAnimalTypeName = animal.name;
-            animaltypeController.text = animal.name;
-            return true;
-          }
-        }
+      if (pickedFile == null) {
+        debugPrint("❌ No image selected, exiting.");
+        return;
       }
+
+      path = pickedFile.path;
+      debugPrint("✅ Image selected: $path");
+
+      File selectedImage = File(path!);
+
+      debugPrint("🚀 Running model on selected image...");
+      List<Map<String, String>>? rawPredictions =
+          await _imageProcessor.runModel(selectedImage);
+
+      debugPrint("📊 rawPredictions length: ${rawPredictions.length}");
+      debugPrint("📊 rawPredictions content: $rawPredictions");
+
+      if (rawPredictions.isNotEmpty) {
+        debugPrint("✅ Entering predictions processing block...");
+        final firstMap = rawPredictions.first;
+        debugPrint("📌 First prediction map: $firstMap");
+
+        // Convert to model
+        final petPrediction = PetPrediction.fromMap(firstMap, path!);
+        debugPrint("📦 Converted to PetPrediction: type=${petPrediction.type}");
+
+        // Store in your viewModel
+        predictionsModel = petPrediction;
+
+        debugPrint(
+            "📡 Calling setAnimaltype() with type: ${predictionsModel?.type ?? ""}");
+        await setAnimaltype(predictionsModel?.type ?? "");
+      } else {
+        debugPrint("❌ No predictions returned from runModel()");
+      }
+
+      // Optionally update controller
+      debugPrint("🔔 Notifying listeners...");
+      notifyListeners();
+
+      debugPrint("🏁 savePetImagePath() completed");
+    } catch (e, s) {
+      debugPrint("💥 ERROR in savePetImagePath(): $e");
+      debugPrint("📜 Stack trace: $s");
+      printError(error: e.toString(), stack: s.toString(), tag: tag);
     }
+  }
+
+  Future<bool> setAnimaltype(String type) async {
+    debugPrint("🐾 setAnimaltype() started with type='$type'");
+
+    try {
+      var animalRes =
+          await _apiService.getAnimalType().timeout(Duration(seconds: 10));
+
+      debugPrint("📡 API Response errorCode: ${animalRes.errorCode}");
+      if (animalRes.errorCode == "PA0004") {
+        debugPrint("📦 Animal type API data: ${animalRes.data}");
+
+        // Parse the response
+        animals = (animalRes.data as List)
+            .map((json) => AnimalType.fromJson(json as Map<String, dynamic>))
+            .toList();
+
+        debugPrint("📋 Parsed animals count: ${animals?.length}");
+
+        if (animals != null && animals!.isNotEmpty) {
+          for (var animal in animals!) {
+            debugPrint("🔍 Checking animal: ${animal.name}");
+            if (animal.name.toLowerCase() == type.toLowerCase()) {
+              debugPrint(
+                  "🎯 Match found! ID=${animal.animalId}, Name=${animal.name}");
+              selectedAnimalTypeId = animal.animalId;
+              selectedAnimalTypeName = animal.name;
+              animaltypeController.text = animal.name;
+              return true;
+            }
+          }
+          debugPrint("⚠️ No animal match found for type='$type'");
+        } else {
+          debugPrint("⚠️ Animals list is empty or null.");
+        }
+      } else {
+        debugPrint(
+            "⚠️ API returned unexpected errorCode: ${animalRes.errorCode}");
+      }
+    } catch (e, s) {
+      debugPrint("💥 ERROR in setAnimaltype(): $e");
+      debugPrint("📜 Stack trace: $s");
+      printError(error: e.toString(), stack: s.toString(), tag: tag);
+    }
+
+    return false;
   }
 
   String? selectedAnimalTypeId;
@@ -426,7 +486,7 @@ class PetViewModel extends BaseViewModel {
             }
           } else {
             await _dialogService
-                .showAlert(Message(description: "No Breed Found For Animal"));
+                .showAlert(Message(description: "No Disease Found For Animal"));
           }
         } else {
           await _dialogService.showApiError(res.data);

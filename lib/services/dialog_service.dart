@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -9,6 +10,7 @@ import '../custom_widgets/date_time_part.dart';
 import '../models/error_models/error_reponse.dart';
 import '../models/message.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:flutter/services.dart';
 
 class DialogService implements IDialogService {
   NavigationService get _navigationService => locator<NavigationService>();
@@ -265,11 +267,7 @@ class DialogService implements IDialogService {
     code = errorResponse.errorCode ?? "404";
     message = errorResponse.message ??
         "Please  Contact the administrator. Or Get Back To Us Later!";
-
-    if (EasyLoading.isShow) {
-      await EasyLoading.dismiss();
-    }
-
+    FocusScope.of(_navigationService.navigatorKey.currentContext!).unfocus();
     var res = await showDialog<bool>(
           context: _navigationService.navigatorKey.currentContext!,
           barrierDismissible: true,
@@ -376,10 +374,6 @@ class DialogService implements IDialogService {
         ) ??
         false;
 
-    if (EasyLoading.isShow) {
-      await EasyLoading.show(status: 'Loading...');
-    }
-
     return res;
   }
 
@@ -458,8 +452,9 @@ class DialogService implements IDialogService {
   Future<void> showSuccess({String text = 'Operation Successful'}) async {
     showDialog(
       context: _navigationService.navigatorKey.currentContext!,
-      barrierDismissible: false, // prevent closing manually
+      barrierDismissible: false,
       builder: (BuildContext dialogContext) {
+        // Auto-close after 2 seconds
         Future.delayed(const Duration(seconds: 2), () {
           if (dialogContext.mounted) {
             Navigator.of(dialogContext).maybePop();
@@ -467,24 +462,71 @@ class DialogService implements IDialogService {
         });
 
         return Dialog(
+          backgroundColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
+          elevation: 8,
           child: Container(
-            width: 300,
+            width: 320,
             padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+            ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.check_circle, size: 60, color: Colors.green),
-                const SizedBox(height: 20),
+                // Circular Icon Background
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.brown.shade100,
+                    shape: BoxShape.circle,
+                  ),
+                  padding: const EdgeInsets.all(16),
+                  child: const Icon(
+                    Icons.info_outline,
+                    size: 50,
+                    color: Colors.brown,
+                  ),
+                ),
+                const SizedBox(height: 16),
+
+                // Title
+                Text(
+                  "Information",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.brown.shade800,
+                  ),
+                ),
+                const SizedBox(height: 8),
+
+                // Message
                 Text(
                   text,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.black87,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.brown.shade600,
+                  ),
+                ),
+
+                const SizedBox(height: 16),
+
+                // Thin Divider
+                Divider(
+                  color: Colors.brown.shade200,
+                  thickness: 1,
+                ),
+
+                // Closing Text
+                Text(
+                  "This will close automatically.",
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.brown.shade400,
                   ),
                 ),
               ],
@@ -512,9 +554,182 @@ class DialogService implements IDialogService {
       ),
     ); // If nothing came back, treat as cancelled
   }
+
+  @override
+  void showBeautifulToast(String message) {
+    final context = _navigationService.navigatorKey.currentContext!;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          message,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        backgroundColor: Colors.brown.shade700,
+        behavior: SnackBarBehavior.floating,
+        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        duration: const Duration(seconds: 2),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+        elevation: 6,
+      ),
+    );
+  }
+
+  @override
+  Future<void> showErrorHandlingDialog(String errorMessage) async {
+    final context = _navigationService.navigatorKey.currentContext!;
+    await showDialog(
+      context: context,
+      barrierDismissible: false, // Can't close by tapping outside
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          backgroundColor: Colors.brown.shade50,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          titlePadding: const EdgeInsets.fromLTRB(20, 16, 8, 0),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                "Error",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.brown,
+                  fontSize: 20,
+                ),
+              ),
+              IconButton(
+                icon: const Icon(Icons.close, color: Colors.brown),
+                onPressed: () => Navigator.of(dialogContext).pop(),
+              ),
+            ],
+          ),
+          content: SingleChildScrollView(
+            child: Text(
+              errorMessage,
+              style: const TextStyle(
+                color: Colors.brown,
+                fontSize: 16,
+              ),
+            ),
+          ),
+          actions: [
+            TextButton.icon(
+              icon: const Icon(Icons.copy, color: Colors.brown),
+              label: const Text(
+                "Copy",
+                style:
+                    TextStyle(color: Colors.brown, fontWeight: FontWeight.w600),
+              ),
+              onPressed: () {
+                Clipboard.setData(ClipboardData(text: errorMessage));
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: const Text("Copied to clipboard!"),
+                    backgroundColor: Colors.brown.shade700,
+                    duration: const Duration(seconds: 2),
+                  ),
+                );
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  @override
+  Future<void> showGlassyErrorDialog(String errorText) async {
+    final context = _navigationService.navigatorKey.currentContext!;
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext dialogContext) {
+        // Auto dismiss after 2 seconds
+        Future.delayed(const Duration(seconds: 2), () {
+          if (dialogContext.mounted) {
+            Navigator.of(dialogContext).maybePop();
+          }
+        });
+
+        return Dialog(
+          backgroundColor:
+              Colors.brown.shade50, // very light brown / off-white background
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Container(
+            width: 320,
+            padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 24),
+            decoration: BoxDecoration(
+              color: Colors.brown.shade100, // light brown container
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.brown.shade300.withOpacity(0.5),
+                  blurRadius: 18,
+                  offset: const Offset(0, 8),
+                ),
+              ],
+              border: Border.all(color: Colors.brown.shade400),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.brown.shade700, // dark brown circle
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.brown.shade900.withOpacity(0.7),
+                        blurRadius: 12,
+                        offset: const Offset(0, 6),
+                      )
+                    ],
+                  ),
+                  padding: const EdgeInsets.all(16),
+                  child: Icon(
+                    Icons.pets, // paw/animal icon from Material Icons
+                    size: 48,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  errorText,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.brown.shade900, // dark brown text
+                    shadows: [
+                      Shadow(
+                        color: Colors.brown.shade200.withOpacity(0.6),
+                        offset: const Offset(1, 1),
+                        blurRadius: 1,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
 }
 
 abstract class IDialogService {
+  void showBeautifulToast(String message);
   Future<void> showSuccess({String text = 'Operation Successful'});
   Future<bool> showAlertDialog(Message message);
   Future<int> showSelect(Message message);
@@ -525,4 +740,6 @@ abstract class IDialogService {
     DateTime? initialDateTime,
     bool barrierDismissible = false,
   });
+  Future<void> showErrorHandlingDialog(String errorMessage);
+  Future<void> showGlassyErrorDialog(String errorText);
 }

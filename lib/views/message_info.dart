@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:petadoption/viewModel/message_view_model.dart';
@@ -160,17 +161,18 @@ class MessageCard extends StatelessWidget {
                   color: lightBrown, // background color
                 ),
                 clipBehavior: Clip.antiAlias, // still needed
-                child: profileImage != null
+
+                child: profileImage != null && profileImage!.isNotEmpty
                     ? ClipOval(
-                        // <--- This makes the image circular
-                        child: Image.network(
-                          profileImage!,
+                        child: CachedNetworkImage(
+                          imageUrl: profileImage!,
                           fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return const Center(
-                              child: Icon(Icons.person, color: darkBrown),
-                            );
-                          },
+                          errorWidget: (context, url, error) => const Center(
+                            child: Icon(Icons.person, color: darkBrown),
+                          ),
+                          placeholder: (context, url) => const Center(
+                            child: CircularProgressIndicator(),
+                          ),
                         ),
                       )
                     : const Center(

@@ -2,11 +2,13 @@
 
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:petadoption/custom_widgets/stateful_wrapper.dart';
+import 'package:petadoption/custom_widgets/default_text_input.dart';
 import 'package:petadoption/helpers/locator.dart';
 import 'package:petadoption/models/hive_models/user.dart';
 import 'package:petadoption/models/response_models/pet_response.dart';
+import 'package:petadoption/models/response_models/user_profile.dart';
 import 'package:petadoption/services/navigation_service.dart';
 import 'package:petadoption/viewModel/profile_view_model.dart';
 import 'package:provider/provider.dart';
@@ -14,292 +16,412 @@ import 'package:provider/provider.dart';
 import '../helpers/constants.dart';
 
 NavigationService get _navigationService => locator<NavigationService>();
-TextEditingController animalTypeController = TextEditingController();
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
   final Color primaryColor = const Color(0xFF3E2723);
   final Color accentColor = const Color.fromARGB(255, 83, 36, 6);
   final Color backgroundColor = const Color(0xFFFAF3E0);
+  UserProfile? user;
+
+  late TextEditingController nameController;
+  late TextEditingController phoneController;
+  late TextEditingController addressController;
+
+  late ProfileViewModel viewModel;
+
+  @override
+  void initState() {
+    super.initState();
+    nameController = TextEditingController();
+    phoneController = TextEditingController();
+    addressController = TextEditingController();
+
+    viewModel = context.read<ProfileViewModel>();
+
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    final loadedUser = await viewModel.getUser();
+    if (loadedUser != null) {
+      debugPrint("User Loaded Successfully And not Null");
+      setState(() {
+        user = loadedUser;
+        nameController.text = user?.name ?? "";
+        addressController.text = user?.location ?? "";
+        phoneController.text = user?.phonenumber ?? "";
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    phoneController.dispose();
+    addressController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    ProfileViewModel viewModel = context.watch<ProfileViewModel>();
-
-    return StatefulWrapper(
-      onInit: () => viewModel.getUser(),
-      onDispose: () {},
-      child: Scaffold(
-        backgroundColor: backgroundColor,
-        body: viewModel.user == null
-            ? const Center(child: CircularProgressIndicator())
-            : SafeArea(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        decoration: BoxDecoration(
-                          gradient: appBarGradient,
-                          borderRadius: const BorderRadius.only(
-                            bottomLeft: Radius.circular(30),
-                            bottomRight: Radius.circular(30),
-                          ),
+    return Scaffold(
+      backgroundColor: backgroundColor,
+      body: user == null
+          ? const Center(child: CircularProgressIndicator())
+          : SafeArea(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(vertical: 20),
+                      decoration: BoxDecoration(
+                        gradient: appBarGradient,
+                        borderRadius: const BorderRadius.only(
+                          bottomLeft: Radius.circular(30),
+                          bottomRight: Radius.circular(30),
                         ),
-                        child: const Center(
-                          child: Text(
-                            'Profile',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                            ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            offset: const Offset(0, 3),
+                            blurRadius: 8,
+                          ),
+                        ],
+                      ),
+                      child: const Center(
+                        child: Text(
+                          'Profile',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1.1,
                           ),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          spacing: 20,
-                          children: [
-                            _profileHeader(viewModel),
-                            _updateInfo(viewModel, accentColor),
-                            _buildInfoSection(viewModel),
-                            _logoutButton(context, viewModel),
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-      ),
-    );
-  }
-
-  Widget _updateInfo(ProfileViewModel viewModel, Color accentColor) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        // Edit Button (Left)
-        InkWell(
-          onTap: () {
-            viewModel.seteditMode(!viewModel.editMode);
-          },
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Text(
-                "Edit ",
-                style: TextStyle(
-                  color: accentColor,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              Icon(
-                Icons.edit,
-                size: 18,
-                color: accentColor,
-              ),
-            ],
-          ),
-        ),
-
-        // Update Button (Right)
-        if (viewModel.editMode)
-          InkWell(
-            onTap: () async {
-              await viewModel.updateUser();
-            },
-            child: Container(
-              margin: EdgeInsets.all(5),
-              padding: EdgeInsets.symmetric(vertical: 5, horizontal: 20),
-              decoration: BoxDecoration(
-                color: Color.fromARGB(255, 99, 34, 10),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Text(
-                "Update",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          _profileHeaderWidget(),
+                          const SizedBox(height: 24),
+                          _updateInfoWidget(),
+                          const SizedBox(height: 24),
+                          _infoSectionWidget(),
+                          const SizedBox(height: 24),
+                          _logoutButton(),
+                          const SizedBox(height: 16),
+                        ],
+                      ),
+                    )
+                  ],
                 ),
               ),
             ),
-          ),
-      ],
     );
   }
 
-  Widget _profileHeader(ProfileViewModel viewModel) {
-    User? user = viewModel.user;
-    final profile = viewModel.userProfile;
+  Widget _profileHeaderWidget() {
+    return Consumer<ProfileViewModel>(
+      builder: (_, viewModel, __) {
+        User? user = viewModel.user;
+        final profile = viewModel.userProfile;
 
-    return user != null
-        ? Column(
-            children: [
-              Stack(
-                alignment: Alignment.bottomRight,
-                children: [
-                  CircleAvatar(
-                    radius: 52,
+        if (user == null) {
+          return const Center(child: Text("User data is unavailable"));
+        }
+
+        return Column(
+          children: [
+            Stack(
+              alignment: Alignment.bottomRight,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 15,
+                        offset: const Offset(0, 8),
+                      ),
+                    ],
+                  ),
+                  child: CircleAvatar(
+                    radius: 54,
                     backgroundColor: accentColor.withOpacity(0.1),
                     backgroundImage: viewModel.path != null
                         ? FileImage(File(viewModel.path ?? ""))
-                        : user.profileImage != null &&
-                                user.profileImage!.isNotEmpty
-                            ? NetworkImage(user.profileImage!)
+                        : (user.profileImage != null &&
+                                user.profileImage!.isNotEmpty)
+                            ? NetworkImage(user.profileImage!) as ImageProvider
                             : const AssetImage('assets/images/noprofile.png'),
                   ),
-                  if (viewModel.editMode)
-                    InkWell(
-                      onTap: () {
-                        if (viewModel.path != null) {
-                          viewModel.removeImagePath();
-                        } else {
-                          viewModel.saveImagePath();
-                        }
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.all(6),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                          border: Border.all(color: Colors.grey.shade300),
-                        ),
-                        child: viewModel.path != null
-                            ? Icon(Icons.delete, size: 20, color: primaryColor)
-                            : Icon(Icons.camera_alt,
-                                size: 20, color: primaryColor),
+                ),
+                if (viewModel.editMode)
+                  InkWell(
+                    onTap: () {
+                      if (viewModel.path != null) {
+                        viewModel.removeImagePath();
+                      } else {
+                        viewModel.saveImagePath();
+                      }
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.grey.shade300),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.15),
+                            blurRadius: 6,
+                          ),
+                        ],
                       ),
+                      child: viewModel.path != null
+                          ? Icon(Icons.delete, size: 22, color: primaryColor)
+                          : Icon(Icons.camera_alt,
+                              size: 22, color: primaryColor),
                     ),
-                ],
+                  ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Text(
+              profile?.name ?? "Name not set",
+              style: TextStyle(
+                fontSize: 26,
+                fontWeight: FontWeight.bold,
+                color: primaryColor,
+                letterSpacing: 0.4,
               ),
-              const SizedBox(height: 12),
-              Text(
-                profile?.name ?? "Name not set",
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: primaryColor,
-                ),
-              ),
-              if (user.email != null)
-                Text(
+            ),
+            if (user.email != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Text(
                   "@${(user.email ?? "N/A").split("@")[0]}",
-                  style: const TextStyle(color: Colors.grey),
+                  style: const TextStyle(
+                    color: Colors.grey,
+                    fontSize: 14,
+                    fontStyle: FontStyle.italic,
+                  ),
                 ),
-            ],
-          )
-        : Center(
-            child: SizedBox(
-            child: Text("User is Null"),
-          ));
+              ),
+          ],
+        );
+      },
+    );
   }
 
-  Widget _buildInfoSection(ProfileViewModel viewModel) {
-    User? user = viewModel.user;
-    final profile = viewModel.userProfile;
-
-    return user != null
-        ? Column(
-            children: [
-              _buildExpandableCard(
-                title: "Personal Information",
+  Widget _updateInfoWidget() {
+    return Consumer<ProfileViewModel>(
+      builder: (_, viewModel, __) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            ChoiceChip(
+              label: Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  viewModel.editMode
-                      ? _editableField("Name", viewModel.nameController)
-                      : _infoTile("Name", profile?.name ?? "-"),
-                  _infoTile("Email", user.email ?? "N/A"),
-                  viewModel.editMode
-                      ? _editableField("Phone", viewModel.phoneController)
-                      : _infoTile("Phone", user.phoneNumber ?? "N/A"),
-                  viewModel.editMode
-                      ? _editableField("Address", viewModel.addressController)
-                      : _infoTile("Address", profile?.location ?? "-"),
-                ],
-              ),
-              const SizedBox(height: 16),
-              _buildExpandableCard(
-                title: "Login and Security",
-                children: [
-                  _infoTile("Role", user.role ?? "N/A"),
-                  _infoTile("Device ID", user.deviceId ?? "N/A"),
-                  _infoTile(
-                    "Is Active",
-                    (profile?.isActive ?? false) ? "Yes" : "No",
-                    color: (profile?.isActive ?? false)
-                        ? Colors.green
-                        : Colors.redAccent,
+                  Text(
+                    "Edit",
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 12,
+                      letterSpacing: 0.8,
+                      color: viewModel.editMode
+                          ? Colors.white
+                          : Colors.brown.shade800,
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  Icon(
+                    viewModel.editMode ? Icons.edit_off_rounded : Icons.edit,
+                    size: 12,
+                    color: viewModel.editMode
+                        ? Colors.white
+                        : Colors.brown.shade800,
                   ),
                 ],
               ),
-              if (viewModel.user!.role.toString().toLowerCase() == "donor")
-                _buildExpandableCard(title: "Your Pets", children: [
-                  viewModel.pet != null
+              selected: viewModel.editMode,
+              selectedColor: Colors.brown.shade600,
+              backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20)),
+              elevation: viewModel.editMode ? 5 : 0,
+              pressElevation: 8,
+              onSelected: (selected) {
+                viewModel.seteditMode(selected);
+              },
+              labelPadding:
+                  const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
+            ),
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 300),
+              transitionBuilder: (child, animation) =>
+                  ScaleTransition(scale: animation, child: child),
+              child: viewModel.editMode
+                  ? InkWell(
+                      key: const ValueKey('update_button'),
+                      onTap: () async {
+                        await viewModel.updateUser(
+                          phoneController.text,
+                          addressController.text,
+                          nameController.text,
+                        );
+                        viewModel.seteditMode(false);
+                      },
+                      borderRadius: BorderRadius.circular(16),
+                      child: Container(
+                        margin: const EdgeInsets.only(left: 12),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 28),
+                        decoration: BoxDecoration(
+                          color: Colors.brown.shade700,
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.brown.shade900.withOpacity(0.5),
+                              blurRadius: 12,
+                              offset: const Offset(0, 5),
+                            ),
+                          ],
+                        ),
+                        child: const Text(
+                          "Update",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                      ),
+                    )
+                  : const SizedBox.shrink(),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _infoSectionWidget() {
+    return Consumer<ProfileViewModel>(
+      builder: (_, viewModel, __) {
+        User? user = viewModel.user;
+        final profile = viewModel.userProfile;
+
+        if (user == null) {
+          return const Center(child: Text("User data is unavailable"));
+        }
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          spacing: 5,
+          children: [
+            _buildExpandableCard(
+              icon: Icons.person,
+              title: "Personal Information",
+              children: [
+                viewModel.editMode
+                    ? _editableField("Name", nameController, Icons.person)
+                    : _infoTile("Name", profile?.name ?? "-"),
+                _infoTile("Email", user.email ?? "N/A"),
+                viewModel.editMode
+                    ? _editableField(
+                        "Phone", phoneController, Icons.phone_callback)
+                    : _infoTile("Phone", user.phoneNumber ?? "N/A"),
+                viewModel.editMode
+                    ? _editableField(
+                        "Address", addressController, Icons.location_on)
+                    : _infoTile("Address", profile?.location ?? "-"),
+              ],
+            ),
+            _buildExpandableCard(
+              icon: Icons.security,
+              title: "Login and Security",
+              children: [
+                _infoTile("Role", user.role ?? "N/A"),
+                _infoTile("Device ID", user.deviceId ?? "N/A"),
+                _infoTile(
+                  "Is Active",
+                  (profile?.isActive ?? false) ? "Yes" : "No",
+                  color:
+                      (profile?.isActive ?? false) ? Colors.green : Colors.red,
+                ),
+              ],
+            ),
+            if (user.role?.toLowerCase() == "donor")
+              _buildExpandableCard(
+                icon: Icons.pets,
+                title: "Your Pets",
+                children: [
+                  viewModel.pet != null && viewModel.pet!.isNotEmpty
                       ? Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            ...viewModel.pet!
-                                .map((pet) => _buildPetCard(pet, viewModel)),
-                          ],
+                          children: viewModel.pet!
+                              .map((pet) => _buildPetCard(pet))
+                              .toList(),
                         )
                       : Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              // SizedBox for spacing
-                              const SizedBox(height: 20),
-
-                              // "Add Pet" Button
-                              ElevatedButton.icon(
-                                onPressed: () {
-                                  _navigationService.pushNamed(Routes.petpage,
-                                      args: TransitionType.fade, data: null);
-                                },
-                                icon: const Icon(Icons.pets,
-                                    size: 24), // Paw icon
-                                label: const Text(
-                                  'Add Pet',
-                                  style: TextStyle(fontSize: 18),
-                                ),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(
-                                      0xFF8B4513), // Beautiful brown
-                                  foregroundColor:
-                                      Colors.white, // Icon and text color
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 32, vertical: 14),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  elevation: 6,
-                                  shadowColor: Colors.brown.shade200,
-                                ),
+                          child: Center(
+                            child: ElevatedButton.icon(
+                              onPressed: () {
+                                _navigationService.pushNamed(
+                                  Routes.petpage,
+                                  args: TransitionType.fade,
+                                  data: null,
+                                );
+                              },
+                              icon: const Icon(Icons.pets, size: 24),
+                              label: const Text(
+                                'Add Pet',
+                                style: TextStyle(fontSize: 18),
                               ),
-                            ],
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFF8B4513),
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 32, vertical: 14),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                elevation: 6,
+                                shadowColor: Colors.brown.shade200,
+                              ),
+                            ),
                           ),
                         ),
-                ])
-            ],
-          )
-        : Center(
-            child: SizedBox(
-            child: Text("User is Null"),
-          ));
+                ],
+              ),
+          ],
+        );
+      },
+    );
   }
 
-  Widget _buildPetCard(PetResponse pet, ProfileViewModel viewModel) {
+  Widget _buildPetCard(PetResponse pet) {
     final Color statusColor = viewModel.getColor(pet.isApproved ?? "");
 
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 10),
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
@@ -318,11 +440,23 @@ class ProfilePage extends StatelessWidget {
           ClipRRect(
             borderRadius: BorderRadius.circular(50),
             child: pet.image != null && pet.image!.isNotEmpty
-                ? Image.network(
-                    pet.image!,
+                ? CachedNetworkImage(
+                    imageUrl: pet.image!,
                     width: 80,
                     height: 80,
                     fit: BoxFit.cover,
+                    placeholder: (context, url) => SizedBox(
+                      width: 80,
+                      height: 80,
+                      child: Center(
+                          child: CircularProgressIndicator(strokeWidth: 2)),
+                    ),
+                    errorWidget: (context, url, error) => Image.asset(
+                      'assets/images/nopet.png',
+                      width: 80,
+                      height: 80,
+                      fit: BoxFit.cover,
+                    ),
                   )
                 : Image.asset(
                     'assets/images/nopet.png',
@@ -359,15 +493,14 @@ class ProfilePage extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: 8),
 
                 // Approval + Live Status Badges
                 Row(
                   children: [
-                    // isApproved Badge
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 4),
+                          horizontal: 10, vertical: 6),
                       decoration: BoxDecoration(
                         color: statusColor.withOpacity(0.2),
                         borderRadius: BorderRadius.circular(20),
@@ -376,17 +509,15 @@ class ProfilePage extends StatelessWidget {
                         pet.isApproved ?? "Pending",
                         style: TextStyle(
                           color: statusColor,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 13,
                         ),
                       ),
                     ),
-                    const SizedBox(width: 8),
-
-                    // isLive Badge
+                    const SizedBox(width: 12),
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 4),
+                          horizontal: 10, vertical: 6),
                       decoration: BoxDecoration(
                         color: (pet.isLive ?? false)
                             ? Colors.green.withOpacity(0.2)
@@ -398,16 +529,15 @@ class ProfilePage extends StatelessWidget {
                         style: TextStyle(
                           color:
                               (pet.isLive ?? false) ? Colors.green : Colors.red,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 13,
                         ),
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 12),
 
-                // Remaining Info
                 _infoLine("Animal", pet.animal),
                 _infoLine("Breed", pet.breed),
                 _infoLine("Age", pet.age?.toString()),
@@ -418,12 +548,12 @@ class ProfilePage extends StatelessWidget {
                 if (pet.rejectionReason != null &&
                     pet.rejectionReason!.isNotEmpty)
                   Padding(
-                    padding: const EdgeInsets.only(top: 6),
+                    padding: const EdgeInsets.only(top: 8),
                     child: Text(
                       "Rejected: ${pet.rejectionReason}",
                       style: const TextStyle(
                         color: Colors.redAccent,
-                        fontWeight: FontWeight.w500,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),
@@ -437,23 +567,23 @@ class ProfilePage extends StatelessWidget {
 
   Widget _infoLine(String label, String? value) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 4),
+      padding: const EdgeInsets.only(bottom: 6),
       child: RichText(
         text: TextSpan(
           children: [
             TextSpan(
               text: "$label: ",
               style: const TextStyle(
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.w700,
                 color: Colors.black87,
-                fontSize: 14,
+                fontSize: 15,
               ),
             ),
             TextSpan(
               text: value ?? "N/A",
               style: const TextStyle(
                 color: Colors.grey,
-                fontSize: 14,
+                fontSize: 15,
               ),
             ),
           ],
@@ -462,16 +592,14 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _editableField(String label, TextEditingController controller) {
+  Widget _editableField(
+      String label, TextEditingController controller, IconData? icon) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
-      child: TextFormField(
+      child: DefaultTextInput(
+        icon: icon,
         controller: controller,
-        decoration: InputDecoration(
-          labelText: label,
-          border: const OutlineInputBorder(),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 12),
-        ),
+        hintText: label,
       ),
     );
   }
@@ -479,35 +607,50 @@ class ProfilePage extends StatelessWidget {
   Widget _buildExpandableCard({
     required String title,
     required List<Widget> children,
+    IconData? icon, // optional icon parameter
   }) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.12),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
+            color: Colors.black12,
+            blurRadius: 6,
+            offset: const Offset(0, 3),
           ),
         ],
       ),
       child: Theme(
-        data: ThemeData().copyWith(
+        data: Theme.of(context).copyWith(
           dividerColor: Colors.transparent,
           splashColor: accentColor.withOpacity(0.1),
+          highlightColor: accentColor.withOpacity(0.05),
+          unselectedWidgetColor: accentColor,
         ),
         child: ExpansionTile(
-          tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          childrenPadding: const EdgeInsets.symmetric(horizontal: 16),
-          title: Text(
-            title,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: primaryColor,
-              fontSize: 16,
-            ),
+          tilePadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
+          childrenPadding:
+              const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          iconColor: accentColor,
+          collapsedIconColor: accentColor.withOpacity(0.7),
+          title: Row(
+            children: [
+              if (icon != null) ...[
+                Icon(icon, color: accentColor),
+                const SizedBox(width: 8),
+              ],
+              Text(
+                title,
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: primaryColor,
+                  fontSize: 15,
+                  letterSpacing: 0.2,
+                ),
+              ),
+            ],
           ),
           children: children,
         ),
@@ -518,33 +661,53 @@ class ProfilePage extends StatelessWidget {
   Widget _infoTile(String label, String value, {Color? color}) {
     return ListTile(
       contentPadding: EdgeInsets.zero,
-      title:
-          Text(label, style: const TextStyle(fontSize: 14, color: Colors.grey)),
-      subtitle: Text(value,
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-            color: color ?? primaryColor,
-          )),
+      dense: true,
+      title: Text(label,
+          style: const TextStyle(
+              fontSize: 14, color: Colors.grey, fontWeight: FontWeight.w600)),
+      subtitle: Text(
+        value,
+        style: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w600,
+          color: color ?? primaryColor,
+        ),
+      ),
     );
   }
 
-  Widget _logoutButton(BuildContext context, ProfileViewModel viewModel) {
-    return ElevatedButton.icon(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Color.fromARGB(255, 99, 34, 10),
-        foregroundColor: Colors.white,
-        minimumSize: const Size.fromHeight(48),
-        padding: EdgeInsets.all(20),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        elevation: 2,
+  Widget _logoutButton() {
+    return InkWell(
+      borderRadius: BorderRadius.circular(14),
+      onTap: () => viewModel.logout(),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+        decoration: BoxDecoration(
+          color: const Color.fromARGB(255, 57, 26, 21),
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: const [
+            Icon(
+              Icons.logout,
+              color: Colors.white,
+              size: 22,
+            ),
+            SizedBox(width: 10),
+            Text(
+              "Logout",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
       ),
-      icon: const Icon(
-        Icons.logout,
-        color: Colors.white,
-      ),
-      label: const Text("Logout", style: TextStyle(fontSize: 16)),
-      onPressed: () => viewModel.logout(),
     );
   }
 }

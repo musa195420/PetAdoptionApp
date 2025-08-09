@@ -6,13 +6,13 @@ import 'package:petadoption/services/api_service.dart';
 import 'package:petadoption/services/global_service.dart';
 import 'package:petadoption/viewModel/base_view_model.dart';
 import 'package:petadoption/viewModel/startup_viewmodel.dart';
+import 'package:petadoption/views/modals/admin_modals/pet_edit_modal.dart';
 
 import '../models/hive_models/user.dart';
 import '../models/request_models/delete_user.dart';
 import '../models/response_models/user_profile.dart';
 import '../services/dialog_service.dart';
 import '../services/navigation_service.dart';
-import '../views/modals/admin_modals/pet_edit_modal.dart';
 
 class ProfileViewModel extends BaseViewModel {
   NavigationService get _navigationService => locator<NavigationService>();
@@ -34,9 +34,6 @@ class ProfileViewModel extends BaseViewModel {
   }
 
   // Controllers
-  final nameController = TextEditingController();
-  final phoneController = TextEditingController();
-  final addressController = TextEditingController();
 
   void goBack() async {
     await _navigationService.pushNamedAndRemoveUntil(Routes.home,
@@ -86,25 +83,25 @@ class ProfileViewModel extends BaseViewModel {
     }
   }
 
-  Future<void> updateUser() async {
+  Future<void> updateUser(String phone, String location, String name) async {
     try {
       loading(true, loadingText: "Updating User");
       if (path != null) {
         await updateUserImage();
       }
 
-      await updateRel(user!.role ?? "N/A");
+      await updateRel(user!.role ?? "N/A", name, location);
       var updateUserRes = await _apiService.updateUser(User(
           userId: user!.userId,
-          phoneNumber: phoneController.text.toString(),
+          phoneNumber: phone,
           email: user!.email,
           deviceId: user!.deviceId,
           role: user!.role ?? "Adopter"));
       if (updateUserRes.errorCode == "PA0004") {
-        debugPrint("User Updated Success Fully");
+        debugPrint("User Updated SuccessFully");
         loading(false);
       } else {
-        await _dialogService.showApiError(updateUserRes.data);
+        await _dialogService.showGlassyErrorDialog(updateUserRes.data);
       }
 
       // ignore: empty_catches
@@ -117,63 +114,64 @@ class ProfileViewModel extends BaseViewModel {
     }
   }
 
-  Future<void> updateRel(String role) async {
+  Future<void> updateRel(String role, String name, String address) async {
     switch (role.toLowerCase()) {
       case "adopter":
         {
           var res = await _apiService.updateAdopter(UserProfile(
-              name: nameController.text,
-              location: addressController.text,
+              name: name,
+              location: address,
               adopterId: user!.userId,
               isActive: false));
           if (res.errorCode == "PA0004") {
             debugPrint("Adopter Updated Success Fully");
             loading(false);
           } else {
-            await _dialogService.showApiError(res.data);
+            await _dialogService.showGlassyErrorDialog(res.data);
           }
         }
       case "donor":
         {
           var res = await _apiService.updateDonor(UserProfile(
-              name: nameController.text,
-              location: addressController.text,
+              name: name,
+              location: address,
               donorId: user!.userId,
               isActive: false));
           if (res.errorCode == "PA0004") {
             debugPrint("Donor Updated Success Fully");
             loading(false);
           } else {
-            await _dialogService.showApiError(res.data);
+            await _dialogService.showGlassyErrorDialog(res.data);
           }
         }
     }
   }
 
-  void getUser() async {
+  Future<UserProfile?> getUser() async {
     try {
       String? userId = _globalService.getuser()!.userId;
       userProfile = null;
       loading(true, loadingText: "Checking Links");
 
       var userRes = await _apiService.userInfoById(SingleUser(userId: userId));
+
       if (userRes.errorCode == "PA0004") {
         user = userRes.data as User;
       } else {
-        return;
+        return null;
       }
 
       var profileRes = await _apiService.getProfile(SingleUser(userId: userId));
 
       if (profileRes.errorCode == "PA0004") {
         userProfile = profileRes.data as UserProfile;
+        userProfile?.phonenumber = user?.phoneNumber ?? "";
         if (user!.role.toString().toLowerCase() == "donor") {
           await getPet(userId);
         }
         // Pre-fill text fields
-        nameController.text = userProfile?.name ?? '';
-        phoneController.text = user?.phoneNumber ?? '';
-        addressController.text = userProfile?.location ?? '';
+
+        return userProfile;
       }
     } catch (e) {
       loading(false);
@@ -183,6 +181,7 @@ class ProfileViewModel extends BaseViewModel {
       }
       loading(false);
     }
+    return null;
   }
 
   Future<void> getPet(String userId) async {
@@ -209,8 +208,6 @@ class ProfileViewModel extends BaseViewModel {
     editMode = !editMode;
     notifyListeners();
   }
-
-  Future<void> updateProfile() async {}
 
   gotopetDetail(PetResponse pet) async {
     await _navigationService.pushModalBottom(Routes.pet_edit_modal,

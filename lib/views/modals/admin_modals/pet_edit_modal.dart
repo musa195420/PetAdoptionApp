@@ -1,6 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:petadoption/custom_widgets/default_text_input.dart';
 import 'package:petadoption/custom_widgets/stateful_wrapper.dart';
@@ -290,11 +291,21 @@ class PetEditModal extends StatelessWidget {
               : pet.image != null && pet.image!.isNotEmpty
                   ? ClipRRect(
                       borderRadius: BorderRadius.circular(10),
-                      child: Image.network(
-                        pet.image!,
+                      child: CachedNetworkImage(
+                        imageUrl: pet.image!,
                         height: 130,
                         width: 130,
                         fit: BoxFit.cover,
+                        placeholder: (context, url) => SizedBox(
+                          height: 130,
+                          width: 130,
+                          child: Center(child: CircularProgressIndicator()),
+                        ),
+                        errorWidget: (context, url, error) => Image.asset(
+                          'assets/images/signup.png',
+                          height: 120,
+                          fit: BoxFit.contain,
+                        ),
                       ),
                     )
                   : Image.asset(

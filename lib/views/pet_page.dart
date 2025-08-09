@@ -1,11 +1,14 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:petadoption/helpers/image_processor.dart';
 import 'package:petadoption/helpers/locator.dart';
 import 'package:provider/provider.dart';
 import 'package:petadoption/viewModel/pet_view_model.dart';
 import 'package:petadoption/custom_widgets/default_text_input.dart';
 import 'package:petadoption/services/navigation_service.dart';
+
+final ImageProcessor _imageProcessor = ImageProcessor();
 
 class PetPage extends StatefulWidget {
   const PetPage({super.key});
@@ -30,7 +33,7 @@ class _PetPageState extends State<PetPage> {
   void initState() {
     super.initState();
     nameController = TextEditingController();
-
+    _imageProcessor.init();
     breedController = TextEditingController();
     ageController = TextEditingController();
     genderController = TextEditingController();
@@ -81,6 +84,21 @@ class _PetPageState extends State<PetPage> {
                             ),
                             child: Icon(
                               Icons.arrow_back_ios_new_rounded,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        Spacer(),
+                        GestureDetector(
+                          onTap: () => viewModel.loadModel(),
+                          child: Container(
+                            padding: EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Color(0xFF5D1F00),
+                            ),
+                            child: Icon(
+                              Icons.refresh,
                               color: Colors.white,
                             ),
                           ),

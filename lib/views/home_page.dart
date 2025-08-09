@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:petadoption/custom_widgets/stateful_wrapper.dart';
 import 'package:petadoption/viewModel/home_view_model.dart';
@@ -331,12 +332,31 @@ class HomePage extends StatelessWidget {
                                   children: [
                                     Hero(
                                       tag: 'petImage${pet.petId}',
-                                      child: pet.image != null
-                                          ? Image.network(
-                                              pet.image!,
+                                      child: pet.image != null &&
+                                              pet.image!.isNotEmpty
+                                          ? CachedNetworkImage(
+                                              imageUrl: pet.image!,
                                               height: 120,
                                               width: double.infinity,
                                               fit: BoxFit.cover,
+                                              placeholder: (context, url) =>
+                                                  Container(
+                                                height: 120,
+                                                width: double.infinity,
+                                                color: Colors.grey[300],
+                                                child: const Center(
+                                                    child:
+                                                        CircularProgressIndicator()),
+                                              ),
+                                              errorWidget:
+                                                  (context, url, error) =>
+                                                      Container(
+                                                height: 120,
+                                                width: double.infinity,
+                                                color: Colors.grey[300],
+                                                child: const Icon(Icons.pets,
+                                                    size: 50),
+                                              ),
                                             )
                                           : Container(
                                               height: 120,

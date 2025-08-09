@@ -8,16 +8,67 @@ import '../../models/request_models/animal_breed.dart';
 import '../../services/api_service.dart';
 import '../../services/dialog_service.dart';
 
-dynamic formKey = GlobalKey<FormState>();
-
-class AnimalbreedModal extends StatelessWidget {
+class AnimalbreedModal extends StatefulWidget {
   final String petId;
-  AnimalbreedModal({super.key, required this.petId});
+  const AnimalbreedModal({super.key, required this.petId});
+
+  @override
+  State<AnimalbreedModal> createState() => _AnimalbreedModalState();
+}
+
+class _AnimalbreedModalState extends State<AnimalbreedModal> {
+  final formKey = GlobalKey<FormState>();
   final scaffoldKey = GlobalKey<ScaffoldState>();
+  late TextEditingController petController;
+
   IAPIService get _apiService => locator<IAPIService>();
   IDialogService get _dialogService => locator<IDialogService>();
 
-  final TextEditingController petController = TextEditingController();
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    petController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    petController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _handleAddAnimalBreed() async {
+    if (!formKey.currentState!.validate()) return;
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      var addAnimalRes = await _apiService.addAnimalBreed(
+        AddAnimalBreed(name: petController.text.trim(), animalId: widget.petId),
+      );
+
+      if (addAnimalRes.errorCode == "PA0004") {
+        await _dialogService.showSuccess(text: "Animal Added Successfully");
+        petController.clear();
+      } else {
+        await _dialogService.showGlassyErrorDialog(
+            "This Breed Has Already Been Added: ${petController.text}");
+      }
+    } catch (e) {
+      await _dialogService
+          .showGlassyErrorDialog("Something went wrong. Please try again.");
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return StatefulWrapper(
@@ -35,15 +86,15 @@ class AnimalbreedModal extends StatelessWidget {
               'assets/images/bg.png',
               fit: BoxFit.cover,
             ),
-            // Login form content with SafeArea
+            // Form content with SafeArea
             SafeArea(
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 255, 247, 240),
+                    color: const Color.fromARGB(255, 255, 247, 240),
                     borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
+                    boxShadow: const [
                       BoxShadow(
                         color: Colors.black12,
                         blurRadius: 10,
@@ -51,13 +102,64 @@ class AnimalbreedModal extends StatelessWidget {
                       ),
                     ],
                   ),
-                  padding: const EdgeInsets.fromLTRB(20, 20, 20,
-                      20), // top padding gives space for character image
+                  padding: const EdgeInsets.all(20),
                   child: Column(
-                    spacing: 10,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      _buildLoginForm(),
+                      Text(
+                        "Add New Animal Breed",
+                        style: const TextStyle(
+                          color: Color.fromARGB(255, 146, 61, 5),
+                          fontSize: 24,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      const SizedBox(height: 15),
+                      Form(
+                        key: formKey,
+                        child: DefaultTextInput(
+                          controller: petController,
+                          hintText: "Animal Breed",
+                          icon: Icons.pets_rounded,
+                          validator: (value) {
+                            if (value == null || value.trim().isEmpty) {
+                              return 'Add Animal Breed';
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.brown,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                            padding: const EdgeInsets.symmetric(vertical: 15),
+                          ),
+                          onPressed: _isLoading ? null : _handleAddAnimalBreed,
+                          child: _isLoading
+                              ? const SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white,
+                                    strokeWidth: 2,
+                                  ),
+                                )
+                              : const Text(
+                                  "Add Animal Breed",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -65,62 +167,6 @@ class AnimalbreedModal extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildLoginForm() {
-    return Form(
-      key: formKey,
-      child: Column(
-        spacing: 15,
-        children: [
-          Text(
-            "Add New Animal Breed",
-            style: TextStyle(
-                color: const Color.fromARGB(255, 146, 61, 5),
-                fontSize: 24,
-                fontWeight: FontWeight.w700),
-          ),
-          DefaultTextInput(
-            controller: petController,
-            hintText: "Animal Breed",
-            icon: Icons.pets_rounded,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Add Animal Breed';
-              }
-              return null;
-            },
-          ),
-          _buildAnimalBreedButton(petId),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAnimalBreedButton(String petId) {
-    return Container(
-      padding: EdgeInsets.fromLTRB(60, 10, 60, 10),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(50),
-        color: Colors.brown,
-      ),
-      child: GestureDetector(
-        child: Text(
-          "Add Animal Breed",
-          style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
-        ),
-        onTap: () async {
-          if (formKey.currentState!.validate()) {
-            var addAnimalRes = await _apiService.addAnimalBreed(AddAnimalBreed(
-                name: petController.text.toString(), animalId: petId));
-            if (addAnimalRes.errorCode == "PA0004") {
-              await _dialogService.showSuccess(
-                  text: "Animal Added Successfully");
-            }
-          }
-        },
       ),
     );
   }

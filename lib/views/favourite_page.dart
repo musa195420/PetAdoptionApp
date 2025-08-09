@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../viewModel/favourite_viewmodel.dart';
@@ -138,12 +139,20 @@ class FavouritePage extends StatelessWidget {
                                           topLeft: Radius.circular(15),
                                           bottomLeft: Radius.circular(15),
                                         ),
-                                        child: Image.network(
-                                          pet.image ?? '',
+                                        child: CachedNetworkImage(
+                                          imageUrl: pet.image ?? '',
                                           height: 120,
                                           width: 120,
                                           fit: BoxFit.cover,
-                                          errorBuilder: (_, __, ___) =>
+                                          placeholder: (context, url) =>
+                                              SizedBox(
+                                            height: 120,
+                                            width: 120,
+                                            child: Center(
+                                                child:
+                                                    CircularProgressIndicator()),
+                                          ),
+                                          errorWidget: (context, url, error) =>
                                               Image.asset(
                                             'assets/images/icon.png',
                                             height: 120,

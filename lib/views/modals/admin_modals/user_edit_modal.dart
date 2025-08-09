@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:petadoption/custom_widgets/default_text_input.dart';
 import 'package:petadoption/models/hive_models/user.dart';
@@ -169,11 +170,21 @@ class _UserEditModalState extends State<UserEditModal> {
               : user.profileImage != null && user.profileImage!.isNotEmpty
                   ? ClipRRect(
                       borderRadius: BorderRadius.circular(10),
-                      child: Image.network(
-                        user.profileImage!,
+                      child: CachedNetworkImage(
+                        imageUrl: user.profileImage!,
                         height: 130,
                         width: 130,
                         fit: BoxFit.cover,
+                        placeholder: (context, url) => SizedBox(
+                          height: 130,
+                          width: 130,
+                          child: Center(child: CircularProgressIndicator()),
+                        ),
+                        errorWidget: (context, url, error) => Image.asset(
+                          'assets/images/noprofile.png',
+                          height: 120,
+                          fit: BoxFit.contain,
+                        ),
                       ),
                     )
                   : Image.asset(

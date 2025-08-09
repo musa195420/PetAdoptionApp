@@ -1,6 +1,7 @@
 // search_page.dart
 // Futuristic pet cards – overflow-safe
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../custom_widgets/stateful_wrapper.dart';
@@ -72,19 +73,22 @@ class SearchPage extends StatelessWidget {
                             backgroundColor: Colors.white,
                             radius: 35,
                             child: ClipOval(
-                              child: Image.network(
-                                vm.getuser().profileImage ?? "",
+                              child: CachedNetworkImage(
+                                imageUrl: vm.getuser().profileImage ?? '',
                                 fit: BoxFit.contain,
                                 width: 45,
                                 height: 45,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return Image.asset(
-                                    'assets/images/noprofile.png',
-                                    fit: BoxFit.cover,
-                                    width: 36,
-                                    height: 36,
-                                  );
-                                },
+                                placeholder: (context, url) => const Center(
+                                  child:
+                                      CircularProgressIndicator(strokeWidth: 2),
+                                ),
+                                errorWidget: (context, url, error) =>
+                                    Image.asset(
+                                  'assets/images/noprofile.png',
+                                  fit: BoxFit.cover,
+                                  width: 36,
+                                  height: 36,
+                                ),
                               ),
                             ),
                           ),
@@ -446,15 +450,27 @@ class _PetCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // Image section expands to fill remaining height
-              Expanded(
-                child: pet.image != null
-                    ? Image.network(pet.image!, fit: BoxFit.cover)
-                    : Container(
-                        color: Colors.grey.shade200,
-                        child:
-                            const Icon(Icons.pets, size: 48, color: _kPrimary),
-                      ),
-              ),
+             Expanded(
+  child: pet.image != null && pet.image!.isNotEmpty
+      ? CachedNetworkImage(
+          imageUrl: pet.image!,
+          fit: BoxFit.cover,
+          placeholder: (context, url) => Container(
+            color: Colors.grey.shade200,
+            child: const Center(
+              child: CircularProgressIndicator(),
+            ),
+          ),
+          errorWidget: (context, url, error) => Container(
+            color: Colors.grey.shade200,
+            child: const Icon(Icons.pets, size: 48, color: _kPrimary),
+          ),
+        )
+      : Container(
+          color: Colors.grey.shade200,
+          child: const Icon(Icons.pets, size: 48, color: _kPrimary),
+        ),
+),
 
               // Info section – fixed padding, text kept short
               Container(

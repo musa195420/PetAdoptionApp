@@ -10,7 +10,10 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:petadoption/firebase_options.dart';
 import 'package:petadoption/helpers/constants.dart';
+import 'package:petadoption/helpers/error_handler.dart';
+import 'package:petadoption/helpers/image_processor.dart';
 import 'package:petadoption/services/db_service.dart';
+import 'package:petadoption/services/dialog_service.dart';
 import 'package:petadoption/services/error_reporting_service.dart';
 import 'package:petadoption/services/global_service.dart';
 import 'package:petadoption/services/logging_service.dart';
@@ -26,6 +29,7 @@ import 'helpers/provider.dart';
 import 'models/hive_models/user.dart';
 import 'services/navigation_service.dart';
 
+String tag = "main";
 void main() async {
   runZonedGuarded(
     () async {
@@ -36,10 +40,11 @@ void main() async {
 
       await configSettings();
       HttpOverrides.global = CustomHttpOverrides();
+
       await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform,
       );
-      SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
+      //  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
       WidgetsFlutterBinding.ensureInitialized();
       runApp(const MyApp());
     },
@@ -73,13 +78,17 @@ Future configSettings() async {
     await locator<LoggingService>().init();
     await locator<NetworkService>().init();
     await locator<IErrorReportingService>().initErrors();
+
     // Init Repos
     final appDocumentDirectory =
         await path_provider.getApplicationDocumentsDirectory();
     Hive.init("${appDocumentDirectory.path}/pet_adoption");
     await locator<IHiveService<User>>().init();
-  } catch (e) {
-    debugPrint("Error => $e");
+    await locator<ImageProcessor>().init();
+  } catch (e, s) {
+    //locator<IDialogService>().showBeautifulToast(
+    // "Error occured ${e.toString()} Stack ${s.toString()} ");
+    printError(error: e.toString(), stack: s.toString(), tag: tag);
   }
 }
 

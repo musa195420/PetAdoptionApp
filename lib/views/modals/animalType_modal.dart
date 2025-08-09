@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:petadoption/custom_widgets/default_text_input.dart';
 import 'package:petadoption/custom_widgets/stateful_wrapper.dart';
+import 'package:petadoption/extenshions/string_ext.dart';
 import '../../helpers/locator.dart';
 import '../../models/request_models/animalType_request.dart';
 import '../../services/api_service.dart';
@@ -10,19 +11,36 @@ import '../../services/dialog_service.dart';
 
 dynamic formKey = GlobalKey<FormState>();
 
-class AnimaltypeModal extends StatelessWidget {
-  AnimaltypeModal({super.key});
-  final scaffoldKey = GlobalKey<ScaffoldState>();
-  IAPIService get _apiService => locator<IAPIService>();
-    IDialogService get _dialogService => locator< IDialogService>();
-  final TextEditingController petController = TextEditingController();
+late TextEditingController petController;
+IAPIService get _apiService => locator<IAPIService>();
+IDialogService get _dialogService => locator<IDialogService>();
+final scaffoldKey = GlobalKey<ScaffoldState>();
+
+class AnimaltypeModal extends StatefulWidget {
+  const AnimaltypeModal({super.key});
+
+  @override
+  State<AnimaltypeModal> createState() => _AnimaltypeModalState();
+}
+
+class _AnimaltypeModalState extends State<AnimaltypeModal> {
+  @override
+  void initState() {
+    petController = TextEditingController();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    petController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return StatefulWrapper(
       onInit: () {},
-      onDispose: () {
-        petController.dispose();
-      },
+      onDispose: () {},
       child: Scaffold(
         key: scaffoldKey,
         body: Stack(
@@ -111,14 +129,16 @@ class AnimaltypeModal extends StatelessWidget {
         ),
         onTap: () async {
           if (formKey.currentState!.validate()) {
-            var addAnimalRes = await _apiService.addAnimalType(
-                AddAnimalType(name: petController.text.toString()));
+            var addAnimalRes = await _apiService.addAnimalType(AddAnimalType(
+                name: petController.text.toString().toTitleCase()));
 
-                if(addAnimalRes.errorCode=="PA0004")
-                {
-           await   _dialogService.showSuccess(text: "Animal Added Successfully");
-                }
-                
+            if (addAnimalRes.errorCode == "PA0004") {
+              await _dialogService.showSuccess(
+                  text: "Animal Added Successfully");
+            } else {
+              await _dialogService.showGlassyErrorDialog(
+                  "This Type Has Been Already Added ${petController.text.toString()}");
+            }
           }
         },
       ),

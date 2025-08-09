@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:petadoption/helpers/image_processor.dart';
 import 'package:petadoption/services/error_reporting_service.dart';
 import 'package:petadoption/services/logging_service.dart';
 import 'package:petadoption/models/hive_models/user.dart';
@@ -70,6 +71,7 @@ class LocatorInjector {
       locator.registerLazySingleton(() => FavouriteViewmodel());
       locator.registerLazySingleton(() => PaymentViewModel());
       locator.registerLazySingleton(() => SearchViewModel());
+      locator.registerLazySingleton<ImageProcessor>(() => ImageProcessor());
 
       // Repos
 

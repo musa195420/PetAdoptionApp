@@ -10,7 +10,6 @@ import '../custom_widgets/default_text_input.dart';
 import '../models/health_info.dart';
 
 class HealthInfo extends StatelessWidget {
-  dynamic formKey = GlobalKey<FormState>();
   TextEditingController vaccinationController = TextEditingController();
   TextEditingController diseaseController = TextEditingController();
   TextEditingController disabilityController = TextEditingController();
@@ -98,9 +97,7 @@ class HealthInfo extends StatelessWidget {
                             const SizedBox(height: 10),
                             InkWell(
                                 onTap: () {
-                                  if (formKey.currentState!.validate()) {
-                                    viewModel.saveHealthInfo(info.petId);
-                                  }
+                                  viewModel.saveHealthInfo(info.petId);
                                 },
                                 child: _buildAddPetButton(viewModel)),
                           ],
@@ -119,7 +116,6 @@ class HealthInfo extends StatelessWidget {
 
   Widget _buildAddHealthtForm(PetViewModel viewModel) {
     return Form(
-      key: formKey,
       child: Column(
         spacing: 10,
         children: [
@@ -256,7 +252,7 @@ class HealthInfo extends StatelessWidget {
       padding: EdgeInsets.fromLTRB(60, 10, 60, 10),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(50),
-        color: Colors.deepOrange,
+        color: const Color.fromARGB(255, 146, 61, 5),
       ),
       child: Text(
         "Confirm Health",

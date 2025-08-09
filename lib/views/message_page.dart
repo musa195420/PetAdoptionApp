@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:petadoption/models/request_models/message_model.dart';
@@ -199,16 +200,21 @@ class MessagePage extends StatelessWidget {
             radius: 24,
             backgroundColor: Colors.white,
             child: viewModel.currentInfo != null &&
-                    viewModel.currentInfo!.profileImage != null
+                    viewModel.currentInfo!.profileImage != null &&
+                    viewModel.currentInfo!.profileImage!.isNotEmpty
                 ? ClipOval(
-                    child: Image.network(
-                      viewModel.currentInfo!.profileImage!,
+                    child: CachedNetworkImage(
+                      imageUrl: viewModel.currentInfo!.profileImage!,
                       width: 48,
                       height: 48,
                       fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return const Icon(Icons.person, color: Colors.black);
-                      },
+                      placeholder: (context, url) => const Center(
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
+                      errorWidget: (context, url, error) => const Icon(
+                        Icons.person,
+                        color: Colors.black,
+                      ),
                     ),
                   )
                 : const Icon(Icons.person, color: Colors.black),

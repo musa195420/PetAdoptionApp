@@ -4,6 +4,7 @@ class UserProfile {
   final String name;
   final String location;
   final bool isActive;
+  String? phonenumber;
 
   UserProfile({
     this.adopterId,
@@ -11,6 +12,7 @@ class UserProfile {
     required this.name,
     required this.location,
     required this.isActive,
+    this.phonenumber,
   });
 
   factory UserProfile.fromJson(Map<String, dynamic> json) {

@@ -1,5 +1,6 @@
 // ignore_for_file: must_be_immutable, deprecated_member_use
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:petadoption/custom_widgets/stateful_wrapper.dart';
 import '../../../models/hive_models/user.dart';
@@ -44,7 +45,10 @@ class UserLinkModal extends StatelessWidget {
                     color: const Color.fromARGB(255, 255, 247, 240),
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: const [
-                      BoxShadow(color: Colors.black12, blurRadius: 10, offset: Offset(0, 4)),
+                      BoxShadow(
+                          color: Colors.black12,
+                          blurRadius: 10,
+                          offset: Offset(0, 4)),
                     ],
                   ),
                   child: Column(
@@ -112,7 +116,8 @@ class UserLinkModal extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _profileImage(pet.image, defaultAsset: "assets/images/signup.png"),
+                  _profileImage(pet.image,
+                      defaultAsset: "assets/images/signup.png"),
                   _infoRow("Name", pet.name),
                   _infoRow("Animal Type", pet.animal),
                   _infoRow("Breed", pet.breed),
@@ -132,20 +137,35 @@ class UserLinkModal extends StatelessWidget {
     );
   }
 
-  Widget _profileImage(String? imageUrl, {String defaultAsset = "assets/images/noprofile.png"}) {
+  Widget _profileImage(String? imageUrl,
+      {String defaultAsset = "assets/images/noprofile.png"}) {
     return ClipRRect(
-  borderRadius: BorderRadius.circular(40),
-  child: imageUrl != null
-      ? Image.network(
-          imageUrl,
-          width: 80,
-          height: 80,
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) =>
-              Image.asset(defaultAsset, width: 60, height: 60, fit: BoxFit.cover),
-        )
-      : Image.asset(defaultAsset, width: 60, height: 60, fit: BoxFit.cover),
-);
+      borderRadius: BorderRadius.circular(40),
+      child: imageUrl != null && imageUrl.isNotEmpty
+          ? CachedNetworkImage(
+              imageUrl: imageUrl,
+              width: 80,
+              height: 80,
+              fit: BoxFit.cover,
+              placeholder: (context, url) => SizedBox(
+                width: 80,
+                height: 80,
+                child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+              ),
+              errorWidget: (context, url, error) => Image.asset(
+                defaultAsset,
+                width: 60,
+                height: 60,
+                fit: BoxFit.cover,
+              ),
+            )
+          : Image.asset(
+              defaultAsset,
+              width: 60,
+              height: 60,
+              fit: BoxFit.cover,
+            ),
+    );
   }
 
   Widget _infoRow(String label, String? value) {
@@ -154,8 +174,13 @@ class UserLinkModal extends StatelessWidget {
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(child: Text(label, style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.w600))),
-            Expanded(child: Text(value ?? "", style: const TextStyle(color: Colors.black))),
+            Expanded(
+                child: Text(label,
+                    style: const TextStyle(
+                        color: Colors.grey, fontWeight: FontWeight.w600))),
+            Expanded(
+                child: Text(value ?? "",
+                    style: const TextStyle(color: Colors.black))),
           ],
         ),
         const Divider(),
@@ -171,15 +196,17 @@ class UserLinkModal extends StatelessWidget {
     switch (label) {
       case "Approval Status":
         displayText = {
-          "approved": "Approved",
-          "pending": "Pending",
-          "rejected": "Disapproved"
-        }[status] ?? "Unknown";
+              "approved": "Approved",
+              "pending": "Pending",
+              "rejected": "Disapproved"
+            }[status] ??
+            "Unknown";
         color = {
-          "approved": Colors.green,
-          "pending": Colors.orange,
-          "rejected": Colors.red
-        }[status] ?? Colors.grey;
+              "approved": Colors.green,
+              "pending": Colors.orange,
+              "rejected": Colors.red
+            }[status] ??
+            Colors.grey;
         break;
       case "Live Status":
       case "Is Active":
@@ -195,17 +222,23 @@ class UserLinkModal extends StatelessWidget {
       children: [
         Row(
           children: [
-            Expanded(child: Text(label, style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.w600))),
+            Expanded(
+                child: Text(label,
+                    style: const TextStyle(
+                        color: Colors.grey, fontWeight: FontWeight.w600))),
             Expanded(
               child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                 decoration: BoxDecoration(
                   color: color.withOpacity(0.1),
                   border: Border.all(color: color),
                   borderRadius: boxRadius,
                 ),
                 child: Center(
-                  child: Text(displayText, style: TextStyle(color: color, fontWeight: FontWeight.bold)),
+                  child: Text(displayText,
+                      style:
+                          TextStyle(color: color, fontWeight: FontWeight.bold)),
                 ),
               ),
             ),
