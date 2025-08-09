@@ -1,6 +1,7 @@
 // ignore_for_file: must_be_immutable
 
 import 'package:flutter/material.dart';
+import 'package:petadoption/custom_widgets/loading_indicators.dart';
 import 'package:petadoption/custom_widgets/stateful_wrapper.dart';
 import 'package:petadoption/models/response_models/health_info.dart';
 import 'package:petadoption/viewModel/pet_view_model.dart';
@@ -86,7 +87,17 @@ class HealthInfoModal extends StatelessWidget {
                           children: [
                             viewModel.isHealthInfoReady
                                 ? _buildAddHealthtForm(viewModel)
-                                : const CircularProgressIndicator(), // or a shimmer/loading UI
+                                : const SizedBox(
+                                    width: 80,
+                                    height: 80,
+                                    child: Center(
+                                        child: FadingCircularDots(
+                                      count: 10,
+                                      radius: 20,
+                                      dotRadius: 4,
+                                      duration: Duration(milliseconds: 1200),
+                                    )),
+                                  ), // or a shimmer/loading UI
                             const SizedBox(height: 10),
                             viewModel.isHealthInfoReady
                                 ? InkWell(

@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:petadoption/custom_widgets/loading_indicators.dart';
 import 'package:provider/provider.dart';
 import '../../viewModel/payment_view_model.dart';
 import 'package:petadoption/models/hive_models/user.dart';
@@ -218,11 +219,20 @@ class _PaymentModalState extends State<PaymentModal> {
                                   const Padding(
                                     padding: EdgeInsets.only(right: 12.0),
                                     child: SizedBox(
-                                      height: 18,
-                                      width: 18,
-                                      child: CircularProgressIndicator(
-                                          strokeWidth: 2, color: kCream),
-                                    ),
+                                        height: 18,
+                                        width: 18,
+                                        child: SizedBox(
+                                          width: 80,
+                                          height: 80,
+                                          child: Center(
+                                              child: FadingCircularDots(
+                                            count: 10,
+                                            radius: 20,
+                                            dotRadius: 4,
+                                            duration:
+                                                Duration(milliseconds: 1200),
+                                          )),
+                                        )),
                                   ),
                                 const Text(
                                   'Pay Now',

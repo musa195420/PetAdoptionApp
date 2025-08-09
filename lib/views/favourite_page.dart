@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:petadoption/custom_widgets/loading_indicators.dart';
 import 'package:provider/provider.dart';
 import '../viewModel/favourite_viewmodel.dart';
 import '../custom_widgets/stateful_wrapper.dart';
@@ -93,7 +94,17 @@ class FavouritePage extends StatelessWidget {
             // 🐾 Pet List
             Expanded(
               child: viewModel.filteredFavourite == null
-                  ? const Center(child: CircularProgressIndicator())
+                  ? const Center(child: SizedBox(
+                      width: 80,
+                      height: 80,
+                      child: Center(
+                          child: FadingCircularDots(
+                        count: 10,
+                        radius: 20,
+                        dotRadius: 4,
+                        duration: Duration(milliseconds: 1200),
+                      )),
+                    ))
                   : viewModel.filteredFavourite!.isEmpty
                       ? const Center(child: Text("No favourites found."))
                       : ListView.builder(
@@ -149,8 +160,18 @@ class FavouritePage extends StatelessWidget {
                                             height: 120,
                                             width: 120,
                                             child: Center(
-                                                child:
-                                                    CircularProgressIndicator()),
+                                                child: SizedBox(
+                                              width: 80,
+                                              height: 80,
+                                              child: Center(
+                                                  child: FadingCircularDots(
+                                                count: 10,
+                                                radius: 20,
+                                                dotRadius: 4,
+                                                duration: Duration(
+                                                    milliseconds: 1200),
+                                              )),
+                                            )),
                                           ),
                                           errorWidget: (context, url, error) =>
                                               Image.asset(

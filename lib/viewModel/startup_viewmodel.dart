@@ -84,7 +84,6 @@ class StartupViewModel extends BaseViewModel {
               _gotoNextPage();
             }
           } else {
-            await _dialogService.showApiError(refreshRes.data);
             await logout();
             await _navigationService.pushNamedAndRemoveUntil(
               Routes.login,
@@ -176,6 +175,7 @@ class StartupViewModel extends BaseViewModel {
     } catch (e, s) {
       debugPrint(
           "Error Occured Startup ViewModel ${e.toString()} Stack ${s.toString()}");
+      await loading(false);
     }
   }
 }

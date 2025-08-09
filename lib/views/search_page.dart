@@ -3,6 +3,7 @@
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:petadoption/custom_widgets/loading_indicators.dart';
 import 'package:provider/provider.dart';
 import '../custom_widgets/stateful_wrapper.dart';
 import '../viewModel/search_view_model.dart';
@@ -34,7 +35,18 @@ class SearchPage extends StatelessWidget {
                 fit: BoxFit.cover, image: AssetImage('assets/images/bg.png'))),
         child: Scaffold(
           body: vm.isBusy
-              ? const Center(child: CircularProgressIndicator())
+              ? const Center(
+                  child: SizedBox(
+                  width: 80,
+                  height: 80,
+                  child: Center(
+                      child: FadingCircularDots(
+                    count: 10,
+                    radius: 20,
+                    dotRadius: 4,
+                    duration: Duration(milliseconds: 1200),
+                  )),
+                ))
               : SingleChildScrollView(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Column(
@@ -75,12 +87,21 @@ class SearchPage extends StatelessWidget {
                             child: ClipOval(
                               child: CachedNetworkImage(
                                 imageUrl: vm.getuser().profileImage ?? '',
-                                fit: BoxFit.contain,
+                                fit: BoxFit.cover,
                                 width: 45,
                                 height: 45,
                                 placeholder: (context, url) => const Center(
-                                  child:
-                                      CircularProgressIndicator(strokeWidth: 2),
+                                  child: SizedBox(
+                                    width: 80,
+                                    height: 80,
+                                    child: Center(
+                                        child: FadingCircularDots(
+                                      count: 10,
+                                      radius: 20,
+                                      dotRadius: 4,
+                                      duration: Duration(milliseconds: 1200),
+                                    )),
+                                  ),
                                 ),
                                 errorWidget: (context, url, error) =>
                                     Image.asset(
@@ -450,27 +471,39 @@ class _PetCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // Image section expands to fill remaining height
-             Expanded(
-  child: pet.image != null && pet.image!.isNotEmpty
-      ? CachedNetworkImage(
-          imageUrl: pet.image!,
-          fit: BoxFit.cover,
-          placeholder: (context, url) => Container(
-            color: Colors.grey.shade200,
-            child: const Center(
-              child: CircularProgressIndicator(),
-            ),
-          ),
-          errorWidget: (context, url, error) => Container(
-            color: Colors.grey.shade200,
-            child: const Icon(Icons.pets, size: 48, color: _kPrimary),
-          ),
-        )
-      : Container(
-          color: Colors.grey.shade200,
-          child: const Icon(Icons.pets, size: 48, color: _kPrimary),
-        ),
-),
+              Expanded(
+                child: pet.image != null && pet.image!.isNotEmpty
+                    ? CachedNetworkImage(
+                        imageUrl: pet.image!,
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) => Container(
+                          color: Colors.grey.shade200,
+                          child: const Center(
+                            child: SizedBox(
+                              width: 80,
+                              height: 80,
+                              child: Center(
+                                  child: FadingCircularDots(
+                                count: 10,
+                                radius: 20,
+                                dotRadius: 4,
+                                duration: Duration(milliseconds: 1200),
+                              )),
+                            ),
+                          ),
+                        ),
+                        errorWidget: (context, url, error) => Container(
+                          color: Colors.grey.shade200,
+                          child: const Icon(Icons.pets,
+                              size: 48, color: _kPrimary),
+                        ),
+                      )
+                    : Container(
+                        color: Colors.grey.shade200,
+                        child:
+                            const Icon(Icons.pets, size: 48, color: _kPrimary),
+                      ),
+              ),
 
               // Info section – fixed padding, text kept short
               Container(

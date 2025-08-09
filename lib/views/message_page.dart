@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:petadoption/custom_widgets/loading_indicators.dart';
 import 'package:petadoption/models/request_models/message_model.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
@@ -209,7 +210,17 @@ class MessagePage extends StatelessWidget {
                       height: 48,
                       fit: BoxFit.cover,
                       placeholder: (context, url) => const Center(
-                        child: CircularProgressIndicator(strokeWidth: 2),
+                        child: SizedBox(
+                          width: 80,
+                          height: 80,
+                          child: Center(
+                              child: FadingCircularDots(
+                            count: 10,
+                            radius: 20,
+                            dotRadius: 4,
+                            duration: Duration(milliseconds: 1200),
+                          )),
+                        ),
                       ),
                       errorWidget: (context, url, error) => const Icon(
                         Icons.person,

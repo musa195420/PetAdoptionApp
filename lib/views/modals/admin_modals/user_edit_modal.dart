@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:petadoption/custom_widgets/default_text_input.dart';
+import 'package:petadoption/custom_widgets/loading_indicators.dart';
 import 'package:petadoption/models/hive_models/user.dart';
 import 'package:petadoption/viewModel/admin_view_models/user_admin_view_model.dart';
 import 'package:provider/provider.dart';
@@ -178,7 +179,17 @@ class _UserEditModalState extends State<UserEditModal> {
                         placeholder: (context, url) => SizedBox(
                           height: 130,
                           width: 130,
-                          child: Center(child: CircularProgressIndicator()),
+                          child: SizedBox(
+                            width: 80,
+                            height: 80,
+                            child: Center(
+                                child: FadingCircularDots(
+                              count: 10,
+                              radius: 20,
+                              dotRadius: 4,
+                              duration: Duration(milliseconds: 1200),
+                            )),
+                          ),
                         ),
                         errorWidget: (context, url, error) => Image.asset(
                           'assets/images/noprofile.png',

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:petadoption/custom_widgets/default_text_input.dart';
+import 'package:petadoption/custom_widgets/loading_indicators.dart';
 import 'package:petadoption/custom_widgets/stateful_wrapper.dart';
 import 'package:petadoption/viewModel/admin_view_models/secureMeetup_admin_view_model.dart';
 import 'package:provider/provider.dart';
@@ -42,8 +43,16 @@ class MeetupModal extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: viewModel.initailizing
-                      ? CircularProgressIndicator(
-                          color: Colors.brown,
+                      ? SizedBox(
+                          width: 80,
+                          height: 80,
+                          child: Center(
+                              child: FadingCircularDots(
+                            count: 10,
+                            radius: 20,
+                            dotRadius: 4,
+                            duration: Duration(milliseconds: 1200),
+                          )),
                         )
                       : Column(
                           spacing: 5,

@@ -16,7 +16,7 @@ class FadingCircularDots extends StatefulWidget {
     this.radius = 30,
     this.dotRadius = 5,
     this.duration = const Duration(milliseconds: 1200),
-    this.color = Colors.white,
+    this.color = const Color.fromARGB(255, 61, 33, 24),
   });
 
   @override

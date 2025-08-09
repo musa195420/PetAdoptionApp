@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:petadoption/custom_widgets/default_text_input.dart';
+import 'package:petadoption/custom_widgets/loading_indicators.dart';
 import 'package:petadoption/custom_widgets/stateful_wrapper.dart';
 import 'package:petadoption/models/request_models/add_bulk.dart';
 import 'package:petadoption/services/dialog_service.dart';
@@ -144,10 +145,17 @@ class _AnimalDiseaseModalState extends State<AnimalDiseaseModal> {
                               ? const SizedBox(
                                   height: 20,
                                   width: 20,
-                                  child: CircularProgressIndicator(
-                                    color: Colors.white,
-                                    strokeWidth: 2,
-                                  ),
+                                  child:SizedBox(
+                      width: 80,
+                      height: 80,
+                      child: Center(
+                          child: FadingCircularDots(
+                        count: 10,
+                        radius: 20,
+                        dotRadius: 4,
+                        duration: Duration(milliseconds: 1200),
+                      )),
+                    )
                                 )
                               : const Text(
                                   "Add Animal Disease",

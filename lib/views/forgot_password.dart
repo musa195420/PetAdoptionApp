@@ -3,31 +3,34 @@ import 'package:petadoption/custom_widgets/default_text_input.dart';
 import 'package:provider/provider.dart';
 import '../viewModel/authentication_view_model.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class ForgotPasswordPage extends StatefulWidget {
+  const ForgotPasswordPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<ForgotPasswordPage> createState() => _ForgotPasswordPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   late TextEditingController _emailController;
-  late TextEditingController _passwordController;
+  late TextEditingController _newPasswordController;
+  late TextEditingController _confirmPasswordController;
 
   @override
   void initState() {
     super.initState();
     _emailController = TextEditingController();
-    _passwordController = TextEditingController();
+    _newPasswordController = TextEditingController();
+    _confirmPasswordController = TextEditingController();
   }
 
   @override
   void dispose() {
     _emailController.dispose();
-    _passwordController.dispose();
+    _newPasswordController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
   }
 
@@ -40,7 +43,6 @@ class _LoginPageState extends State<LoginPage> {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          // Background image
           Image.asset(
             'assets/images/bg.png',
             fit: BoxFit.cover,
@@ -54,13 +56,12 @@ class _LoginPageState extends State<LoginPage> {
                     clipBehavior: Clip.none,
                     alignment: Alignment.topCenter,
                     children: [
-                      // Login form container
                       Container(
                         margin: const EdgeInsets.only(top: 130),
                         decoration: BoxDecoration(
                           color: const Color.fromARGB(255, 255, 247, 240),
                           borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
+                          boxShadow: const [
                             BoxShadow(
                               color: Colors.black12,
                               blurRadius: 12,
@@ -72,21 +73,14 @@ class _LoginPageState extends State<LoginPage> {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            _buildLoginForm(viewModel),
-                            const SizedBox(height: 6),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                _buildForgotPasswordText(viewModel),
-                              ],
-                            ),
-                            _buildLoginButton(viewModel),
-                            _buildSignup(viewModel),
+                            _buildForgotPasswordForm(viewModel),
+                            const SizedBox(height: 20),
+                            _buildResetPasswordButton(viewModel),
+                            const SizedBox(height: 10),
+                            _buildBackToLogin(viewModel),
                           ],
                         ),
                       ),
-
-                      // Character image stacked above box
                       Positioned(
                         top: 0,
                         child: _buildCharacterImage(),
@@ -104,19 +98,19 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _buildCharacterImage() {
     return Image.asset(
-      'assets/images/login.png',
+      'assets/images/admin.png', // Replace or reuse your image
       height: 150,
       fit: BoxFit.contain,
     );
   }
 
-  Widget _buildLoginForm(AuthenticationViewModel viewModel) {
+  Widget _buildForgotPasswordForm(AuthenticationViewModel viewModel) {
     return Form(
       key: _formKey,
       child: Column(
         children: [
           Text(
-            "LOGIN",
+            "RESET PASSWORD",
             style: TextStyle(
               color: Colors.brown.shade700,
               fontSize: 28,
@@ -124,7 +118,7 @@ class _LoginPageState extends State<LoginPage> {
               letterSpacing: 1,
             ),
           ),
-          const SizedBox(height: 5),
+          const SizedBox(height: 10),
           DefaultTextInput(
             controller: _emailController,
             hintText: "Email",
@@ -133,24 +127,42 @@ class _LoginPageState extends State<LoginPage> {
               if (value == null || value.isEmpty) {
                 return 'Enter your email';
               }
+              if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                return 'Enter a valid email';
+              }
               return null;
             },
           ),
           const SizedBox(height: 12),
           DefaultTextInput(
-            controller: _passwordController,
-            hintText: "Password",
+            controller: _newPasswordController,
+            hintText: "New Password",
             icon: Icons.lock_outline,
             isPassword: true,
-            showPassword: viewModel.showPassword,
-            secureText: viewModel.showPassword,
-            suffixicon: true,
-            onEyePressed: () {
-              viewModel.setShowPassword();
-            },
+            secureText: true,
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Enter your password';
+                return 'Enter your new password';
+              }
+              if (value.length < 6) {
+                return 'Password must be at least 6 characters';
+              }
+              return null;
+            },
+          ),
+          const SizedBox(height: 12),
+          DefaultTextInput(
+            controller: _confirmPasswordController,
+            hintText: "Confirm Password",
+            icon: Icons.lock_outline,
+            isPassword: true,
+            secureText: true,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Confirm your new password';
+              }
+              if (value != _newPasswordController.text) {
+                return 'Passwords do not match';
               }
               return null;
             },
@@ -160,14 +172,14 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _buildLoginButton(AuthenticationViewModel viewModel) {
+  Widget _buildResetPasswordButton(AuthenticationViewModel viewModel) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 12),
       padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 12),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(30),
         color: const Color.fromARGB(255, 148, 40, 7),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
             color: Colors.black26,
             blurRadius: 6,
@@ -177,7 +189,7 @@ class _LoginPageState extends State<LoginPage> {
       ),
       child: GestureDetector(
         child: const Text(
-          "Log in",
+          "Reset Password",
           style: TextStyle(
             fontWeight: FontWeight.w600,
             color: Colors.white,
@@ -187,9 +199,9 @@ class _LoginPageState extends State<LoginPage> {
         ),
         onTap: () {
           if (_formKey.currentState!.validate()) {
-            viewModel.Login(
+            viewModel.ForgotPassword(
               _emailController.text,
-              _passwordController.text,
+              _newPasswordController.text,
             );
           }
         },
@@ -197,45 +209,18 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _buildForgotPasswordText(AuthenticationViewModel viewModel) {
+  Widget _buildBackToLogin(AuthenticationViewModel viewModel) {
     return TextButton(
       onPressed: () {
-        viewModel.gotoForgotPassword();
+        viewModel.gotoLogin();
       },
       child: const Text(
-        "Forgot password?",
+        "Back to Login",
         style: TextStyle(
           color: Colors.black54,
-          fontSize: 13,
+          fontSize: 14,
+          decoration: TextDecoration.underline,
         ),
-      ),
-    );
-  }
-
-  Widget _buildSignup(AuthenticationViewModel viewModel) {
-    return TextButton(
-      onPressed: () {
-        viewModel.gotoSignup();
-      },
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: const [
-          Text(
-            "Don't have an account?",
-            style: TextStyle(
-              color: Colors.black45,
-              fontSize: 13,
-            ),
-          ),
-          Text(
-            "  Signup",
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-              color: Color.fromARGB(255, 194, 55, 13),
-              fontSize: 13.5,
-            ),
-          )
-        ],
       ),
     );
   }

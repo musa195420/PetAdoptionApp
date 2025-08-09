@@ -29,7 +29,9 @@ class ImageProcessor {
 
   Future<void> init() async {
     WidgetsFlutterBinding.ensureInitialized();
-    await _loadModelWithRetry();
+    if (!Platform.isWindows) {
+      await _loadModelWithRetry();
+    }
   }
 
   Future<void> _loadModelWithRetry() async {

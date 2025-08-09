@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:petadoption/custom_widgets/loading_indicators.dart';
 import 'package:provider/provider.dart';
 import 'package:petadoption/viewModel/message_view_model.dart';
 import '../custom_widgets/stateful_wrapper.dart';
@@ -104,7 +105,17 @@ class MessageInfo extends StatelessWidget {
                   ],
                 )
               : const Center(
-                  child: CircularProgressIndicator(color: Colors.brown)),
+                  child: SizedBox(
+                  width: 80,
+                  height: 80,
+                  child: Center(
+                      child: FadingCircularDots(
+                    count: 10,
+                    radius: 20,
+                    dotRadius: 4,
+                    duration: Duration(milliseconds: 1200),
+                  )),
+                )),
         ),
       ),
     );
@@ -171,7 +182,17 @@ class MessageCard extends StatelessWidget {
                             child: Icon(Icons.person, color: darkBrown),
                           ),
                           placeholder: (context, url) => const Center(
-                            child: CircularProgressIndicator(),
+                            child: SizedBox(
+                              width: 80,
+                              height: 80,
+                              child: Center(
+                                  child: FadingCircularDots(
+                                count: 10,
+                                radius: 20,
+                                dotRadius: 4,
+                                duration: Duration(milliseconds: 1200),
+                              )),
+                            ),
                           ),
                         ),
                       )

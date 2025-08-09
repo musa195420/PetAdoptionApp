@@ -2,6 +2,7 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:petadoption/helpers/error_handler.dart';
 import 'package:petadoption/helpers/locator.dart';
 import 'package:petadoption/models/request_models/userinforequest.dart';
 import 'package:petadoption/services/api_service.dart';
@@ -50,6 +51,38 @@ class AuthenticationViewModel extends BaseViewModel {
     });
 
     FocusManager.instance.primaryFocus?.unfocus();
+  }
+
+  void ForgotPassword(String email, String password) async {
+    try {
+      await loading(true, loadingText: "Updating Password");
+      _globalService.init();
+      setEmail(email);
+      setPassword(password);
+      debugPrint(_apiService.runtimeType.toString());
+      var forgRes = await _apiService.resetPassword(LoginRequest(
+        email: email,
+        password: password,
+      ));
+      if (forgRes.errorCode == "PA0004") {
+        await _dialogService
+            .showGlassyErrorDialog("Password updated Successfully");
+      } else {
+        await _showErrorAndUnfocus(forgRes.data);
+      }
+    } catch (e, s) {
+      printError(error: e.toString(), stack: s.toString(), tag: tag);
+    } finally {
+      await loading(false);
+      notifyListeners();
+    }
+  }
+
+  String tag = "Authentication view Model";
+
+  gotoLogin() {
+    _navigationService.pushReplacementNamed(Routes.login,
+        args: TransitionType.slideLeft);
   }
 
   void Login(String email, String password) async {
@@ -136,6 +169,13 @@ class AuthenticationViewModel extends BaseViewModel {
     _navigationService.pushNamedAndRemoveUntil(
       Routes.signup,
       args: TransitionType.fade,
+    );
+  }
+
+  void gotoForgotPassword() {
+    _navigationService.pushNamedAndRemoveUntil(
+      Routes.forgotpassword,
+      args: TransitionType.slideRight,
     );
   }
 

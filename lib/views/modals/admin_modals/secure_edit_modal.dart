@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:petadoption/custom_widgets/default_text_input.dart';
+import 'package:petadoption/custom_widgets/loading_indicators.dart';
 import 'package:petadoption/custom_widgets/stateful_wrapper.dart';
 import 'package:petadoption/models/response_models/secure_meetup.dart';
 import 'package:provider/provider.dart';
@@ -280,7 +281,17 @@ class SecureEdit extends StatelessWidget {
                         placeholder: (context, url) => SizedBox(
                           height: 150,
                           width: 530,
-                          child: Center(child: CircularProgressIndicator()),
+                          child:SizedBox(
+                      width: 80,
+                      height: 80,
+                      child: Center(
+                          child: FadingCircularDots(
+                        count: 10,
+                        radius: 20,
+                        dotRadius: 4,
+                        duration: Duration(milliseconds: 1200),
+                      )),
+                    ),
                         ),
                         errorWidget: (context, url, error) => Image.asset(
                           'assets/images/signup.png',

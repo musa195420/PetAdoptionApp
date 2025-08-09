@@ -144,6 +144,9 @@ class PetAdminViewModel extends BaseViewModel {
     }
   }
 
+  String? approvalFilter; // "pending", "approved", "rejected", or null for all
+  String? liveStatusFilter; // "live", "not_live", or null for all
+
   void filterPets(String pattern) {
     if (pattern.trim().isEmpty) {
       filteredPets = List.from(pets ?? []);
@@ -156,7 +159,38 @@ class PetAdminViewModel extends BaseViewModel {
     notifyListeners();
   }
 
-  void resetFilter() {
+  void setApprovalFilter(String? filter) {
+    approvalFilter = filter;
+    applyFilters();
+  }
+
+  void setLiveStatusFilter(String? filter) {
+    liveStatusFilter = filter;
+    applyFilters();
+  }
+
+  void applyFilters() {
+    filteredPets = pets?.where((pet) {
+      final petApproval = (pet.isApproved ?? "").toLowerCase();
+      final petLive = pet.isLive == true ? "live" : "not_live";
+
+      final approvalMatch = approvalFilter == null || approvalFilter == ""
+          ? true
+          : petApproval == approvalFilter;
+
+      final liveMatch = liveStatusFilter == null || liveStatusFilter == ""
+          ? true
+          : petLive == liveStatusFilter;
+
+      return approvalMatch && liveMatch;
+    }).toList();
+
+    notifyListeners();
+  }
+
+  void resetFilters() {
+    approvalFilter = null;
+    liveStatusFilter = null;
     filteredPets = List.from(pets ?? []);
     notifyListeners();
   }

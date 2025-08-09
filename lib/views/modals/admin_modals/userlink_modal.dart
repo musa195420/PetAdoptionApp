@@ -2,6 +2,7 @@
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:petadoption/custom_widgets/loading_indicators.dart';
 import 'package:petadoption/custom_widgets/stateful_wrapper.dart';
 import '../../../models/hive_models/user.dart';
 import '../../../models/response_models/pet_response.dart';
@@ -150,7 +151,17 @@ class UserLinkModal extends StatelessWidget {
               placeholder: (context, url) => SizedBox(
                 width: 80,
                 height: 80,
-                child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+                child: Center(child:SizedBox(
+                      width: 80,
+                      height: 80,
+                      child: Center(
+                          child: FadingCircularDots(
+                        count: 10,
+                        radius: 20,
+                        dotRadius: 4,
+                        duration: Duration(milliseconds: 1200),
+                      )),
+                    )),
               ),
               errorWidget: (context, url, error) => Image.asset(
                 defaultAsset,

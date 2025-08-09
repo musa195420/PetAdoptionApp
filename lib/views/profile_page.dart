@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:petadoption/custom_widgets/default_text_input.dart';
+import 'package:petadoption/custom_widgets/loading_indicators.dart';
 import 'package:petadoption/helpers/locator.dart';
 import 'package:petadoption/models/hive_models/user.dart';
 import 'package:petadoption/models/response_models/pet_response.dart';
@@ -51,7 +52,6 @@ class _ProfilePageState extends State<ProfilePage> {
   Future<void> _loadUserData() async {
     final loadedUser = await viewModel.getUser();
     if (loadedUser != null) {
-      debugPrint("User Loaded Successfully And not Null");
       setState(() {
         user = loadedUser;
         nameController.text = user?.name ?? "";
@@ -74,7 +74,14 @@ class _ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       backgroundColor: backgroundColor,
       body: user == null
-          ? const Center(child: CircularProgressIndicator())
+          ? const Center(
+              child: FadingCircularDots(
+                count: 8,
+                radius: 20,
+                dotRadius: 3,
+                duration: Duration(milliseconds: 1200),
+              ),
+            )
           : SafeArea(
               child: SingleChildScrollView(
                 child: Column(
@@ -378,36 +385,38 @@ class _ProfilePageState extends State<ProfilePage> {
                               .map((pet) => _buildPetCard(pet))
                               .toList(),
                         )
-                      : Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Center(
-                            child: ElevatedButton.icon(
-                              onPressed: () {
-                                _navigationService.pushNamed(
-                                  Routes.petpage,
-                                  args: TransitionType.fade,
-                                  data: null,
-                                );
-                              },
-                              icon: const Icon(Icons.pets, size: 24),
-                              label: const Text(
-                                'Add Pet',
-                                style: TextStyle(fontSize: 18),
-                              ),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFF8B4513),
-                                foregroundColor: Colors.white,
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 32, vertical: 14),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                elevation: 6,
-                                shadowColor: Colors.brown.shade200,
-                              ),
-                            ),
-                          ),
+                      : SizedBox(),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Center(
+                      child: ElevatedButton.icon(
+                        onPressed: () {
+                          _navigationService.pushNamed(
+                            Routes.petpage,
+                            args: TransitionType.fade,
+                            data: null,
+                          );
+                        },
+                        icon: const Icon(Icons.pets, size: 24),
+                        label: const Text(
+                          'Add Pet',
+                          style: TextStyle(fontSize: 18),
                         ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              const Color.fromARGB(255, 53, 30, 14),
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 32, vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          elevation: 6,
+                          shadowColor: Colors.brown.shade200,
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
           ],
@@ -449,7 +458,12 @@ class _ProfilePageState extends State<ProfilePage> {
                       width: 80,
                       height: 80,
                       child: Center(
-                          child: CircularProgressIndicator(strokeWidth: 2)),
+                          child: FadingCircularDots(
+                        count: 10,
+                        radius: 20,
+                        dotRadius: 4,
+                        duration: Duration(milliseconds: 1200),
+                      )),
                     ),
                     errorWidget: (context, url, error) => Image.asset(
                       'assets/images/nopet.png',

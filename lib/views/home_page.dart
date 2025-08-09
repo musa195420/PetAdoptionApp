@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:petadoption/custom_widgets/loading_indicators.dart';
 import 'package:petadoption/custom_widgets/stateful_wrapper.dart';
 import 'package:petadoption/viewModel/home_view_model.dart';
 import 'package:provider/provider.dart';
@@ -302,7 +303,17 @@ class HomePage extends StatelessWidget {
                 margin: const EdgeInsets.fromLTRB(0, 0, 0, 50),
                 height: MediaQuery.of(context).size.height * 0.37,
                 child: viewModel.filteredPets == null
-                    ? const Center(child: CircularProgressIndicator())
+                    ? const Center(child:SizedBox(
+                      width: 80,
+                      height: 80,
+                      child: Center(
+                          child: FadingCircularDots(
+                        count: 10,
+                        radius: 20,
+                        dotRadius: 4,
+                        duration: Duration(milliseconds: 1200),
+                      )),
+                    ))
                     : ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount: viewModel.filteredPets!.length,
@@ -345,8 +356,18 @@ class HomePage extends StatelessWidget {
                                                 width: double.infinity,
                                                 color: Colors.grey[300],
                                                 child: const Center(
-                                                    child:
-                                                        CircularProgressIndicator()),
+                                                    child: SizedBox(
+                                                  width: 80,
+                                                  height: 80,
+                                                  child: Center(
+                                                      child: FadingCircularDots(
+                                                    count: 10,
+                                                    radius: 20,
+                                                    dotRadius: 4,
+                                                    duration: Duration(
+                                                        milliseconds: 1200),
+                                                  )),
+                                                )),
                                               ),
                                               errorWidget:
                                                   (context, url, error) =>

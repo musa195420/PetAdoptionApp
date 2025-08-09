@@ -8,6 +8,7 @@ import 'package:petadoption/views/admin_views/donor_admin.dart';
 import 'package:petadoption/views/admin_views/pet_admin.dart';
 import 'package:petadoption/views/admin_views/secure_admin_view.dart';
 import 'package:petadoption/views/admin_views/user_admin.dart';
+import 'package:petadoption/views/forgot_password.dart';
 import 'package:petadoption/views/health_info.dart';
 import 'package:petadoption/views/home.dart';
 import 'package:petadoption/views/login.dart';
@@ -49,6 +50,7 @@ class Routes {
   static const String startup = "/";
   static const String home = "home";
   static const String login = "login";
+  static const String forgotpassword = "forgotpassword";
   static const String dashboard = "dashboard";
   static const String message = "message";
   static const String message_info = "message_info";
@@ -528,6 +530,21 @@ class RouteManager {
             pageBuilder: (BuildContext context, Animation<double> animation,
                 Animation<double> secondaryAnimation) {
               return LoginPage();
+            },
+            transitionsBuilder: (BuildContext context,
+                Animation<double> animation,
+                Animation<double> secondaryAnimation,
+                Widget child) {
+              return _transitionsBuilder(transition, animation, child);
+            },
+          );
+        }
+      case Routes.forgotpassword:
+        {
+          return PageRouteBuilder(
+            pageBuilder: (BuildContext context, Animation<double> animation,
+                Animation<double> secondaryAnimation) {
+              return ForgotPasswordPage();
             },
             transitionsBuilder: (BuildContext context,
                 Animation<double> animation,

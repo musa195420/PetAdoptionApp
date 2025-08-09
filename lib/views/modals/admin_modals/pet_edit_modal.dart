@@ -1,150 +1,171 @@
-// ignore_for_file: deprecated_member_use
-
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:petadoption/custom_widgets/colors.dart';
 import 'package:petadoption/custom_widgets/default_text_input.dart';
+import 'package:petadoption/custom_widgets/loading_indicators.dart';
 import 'package:petadoption/custom_widgets/stateful_wrapper.dart';
 import 'package:petadoption/models/response_models/pet_response.dart';
 import 'package:petadoption/viewModel/admin_view_models/pet_admin_view_model.dart';
 import 'package:petadoption/views/pet_page.dart';
 import 'package:provider/provider.dart';
 
-TextEditingController nameController = TextEditingController();
-TextEditingController ageController = TextEditingController();
-TextEditingController breedController = TextEditingController();
-TextEditingController genderController = TextEditingController();
-TextEditingController descriptionController = TextEditingController();
-TextEditingController animalTypeController = TextEditingController();
-TextEditingController rejectionReason = TextEditingController();
-final formKey2 = GlobalKey<FormState>();
-final formKey = GlobalKey<FormState>();
-
-class PetEditModal extends StatelessWidget {
+class PetEditModal extends StatefulWidget {
   final PetResponse pet;
-  PetEditModal({
+
+  const PetEditModal({
     super.key,
     required this.pet,
   });
 
+  @override
+  State<PetEditModal> createState() => _PetEditModalState();
+}
+
+class _PetEditModalState extends State<PetEditModal> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+  late TextEditingController nameController;
+  late TextEditingController ageController;
+  late TextEditingController breedController;
+  late TextEditingController genderController;
+  late TextEditingController descriptionController;
+  late TextEditingController animalTypeController;
+  late TextEditingController rejectionReason;
+
+  @override
+  void initState() {
+    super.initState();
+
+    final viewModel = context.read<PetAdminViewModel>();
+
+    // Set initial data to ViewModel
+    viewModel.isApproved = widget.pet.isApproved ?? "Pending";
+    viewModel.setPet(widget.pet);
+
+    // Initialize controllers with pet data or ViewModel data
+    nameController = TextEditingController(text: widget.pet.name ?? '');
+    ageController =
+        TextEditingController(text: widget.pet.age?.toString() ?? '');
+    breedController = TextEditingController(text: viewModel.pet?.breed ?? '');
+    animalTypeController =
+        TextEditingController(text: viewModel.pet?.animal ?? '');
+    genderController = TextEditingController(text: widget.pet.gender ?? '');
+    descriptionController =
+        TextEditingController(text: widget.pet.description ?? '');
+    rejectionReason =
+        TextEditingController(text: widget.pet.rejectionReason ?? '');
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    ageController.dispose();
+    breedController.dispose();
+    genderController.dispose();
+    descriptionController.dispose();
+    animalTypeController.dispose();
+    rejectionReason.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     PetAdminViewModel viewModel = context.watch<PetAdminViewModel>();
 
-    return StatefulWrapper(
-      onInit: () {
-        viewModel.isApproved = pet.isApproved ?? "Pending";
-        viewModel.setPet(pet);
-        breedController = TextEditingController(text: viewModel.pet!.breed);
-        animalTypeController =
-            TextEditingController(text: viewModel.pet!.animal);
-        genderController = TextEditingController(text: pet.gender);
-
-        nameController = TextEditingController(text: pet.name);
-        ageController = TextEditingController(text: pet.age.toString());
-        descriptionController = TextEditingController(text: pet.description);
-        rejectionReason = TextEditingController(text: pet.rejectionReason);
-      },
-      onDispose: () {},
-      child: Scaffold(
-        key: scaffoldKey,
-        body: Stack(
-          fit: StackFit.expand,
-          children: [
-            Image.asset(
-              'assets/images/bg.png',
-              fit: BoxFit.cover,
-            ),
-            SafeArea(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                    spacing: 5,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        padding: EdgeInsets.all(3),
-                        decoration: BoxDecoration(
-                          color: const Color.fromARGB(255, 255, 247, 240),
-                          borderRadius: BorderRadius.circular(16),
-                          boxShadow: const [
-                            BoxShadow(
-                              color: Colors.black12,
-                              blurRadius: 10,
-                              offset: Offset(0, 4),
-                            ),
-                          ],
+    return Scaffold(
+      key: scaffoldKey,
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          Image.asset(
+            'assets/images/bg.png',
+            fit: BoxFit.cover,
+          ),
+          SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(3),
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 255, 247, 240),
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Colors.black12,
+                          blurRadius: 10,
+                          offset: Offset(0, 4),
                         ),
-                        child: Column(
-                          children: [
-                            Container(
-                                padding: EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(
-                                      width: 3,
+                      ],
+                    ),
+                    child: Column(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                              width: 3,
+                              color: viewModel.isEdit ? darkbrown : Colors.grey,
+                            ),
+                          ),
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  GestureDetector(
+                                    onTap: viewModel.setEdit,
+                                    child: Icon(
+                                      Icons.edit_document,
+                                      size: 30,
                                       color: viewModel.isEdit
-                                          ? Colors.redAccent
-                                          : Colors.grey),
-                                ),
-                                child: Column(
-                                  spacing: 10,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        GestureDetector(
-                                            onTap: () {
-                                              viewModel.setEdit();
-                                            },
-                                            child: Icon(
-                                              Icons.edit_document,
-                                              size: 30,
-                                              color: viewModel.isEdit
-                                                  ? Colors.deepOrange
-                                                  : Colors.grey,
-                                            )),
-                                      ],
+                                          ? darkbrown
+                                          : Colors.grey,
                                     ),
-                                    _buildCharacterImage(viewModel),
-                                    _buildUpdatePet(viewModel),
-                                  ],
-                                )),
-                            if ((viewModel
-                                    .getUser()!
-                                    .role
-                                    .toString()
-                                    .toLowerCase()) ==
-                                "admin")
-                              _buildAdminEdit(viewModel),
-                            const SizedBox(height: 10),
-                            const SizedBox(height: 20),
-                            InkWell(
-                              onTap: () {
-                                if (formKey.currentState!.validate()) {
-                                  viewModel.updatePet(
-                                      nameController.text,
-                                      int.parse(ageController.text),
-                                      descriptionController.text,
-                                      rejectionReason.text);
-                                }
-                              },
-                              child: _buildUpdateStatusButton(),
-                            ),
-                          ],
+                                  ),
+                                ],
+                              ),
+                              _buildCharacterImage(viewModel),
+                              _buildUpdatePet(viewModel),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                        if ((viewModel
+                                    .getUser()
+                                    ?.role
+                                    .toString()
+                                    .toLowerCase() ??
+                                '') ==
+                            'admin')
+                          _buildAdminEdit(viewModel),
+                        const SizedBox(height: 10),
+                        const SizedBox(height: 20),
+                        InkWell(
+                          onTap: () {
+                            if (formKey.currentState?.validate() ?? false) {
+                              viewModel.updatePet(
+                                nameController.text,
+                                int.tryParse(ageController.text) ?? 0,
+                                descriptionController.text,
+                                rejectionReason.text,
+                              );
+                            }
+                          },
+                          child: _buildUpdateStatusButton(),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -175,9 +196,7 @@ class PetEditModal extends StatelessWidget {
             labelText: "Animal Type",
             readOnly: true,
             enabled: viewModel.isEdit,
-            onTap: () {
-              viewModel.getAnimalType();
-            },
+            onTap: viewModel.getAnimalType,
             icon: Icons.animation_outlined,
             validator: (value) {
               if (value == null || value.isEmpty) {
@@ -192,22 +211,19 @@ class PetEditModal extends StatelessWidget {
             hintText: "Breed",
             labelText: "Breed",
             enabled: viewModel.isEdit,
-            onTap: () {
-              viewModel.getBreeds();
-            },
+            onTap: viewModel.getBreeds,
             icon: Icons.type_specimen,
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return 'Enter Your Pets Breed Please';
               }
-
               return null;
             },
           ),
           DefaultTextInput(
             controller: ageController,
-            labelText: "Age ",
-            hintText: "Age ",
+            labelText: "Age",
+            hintText: "Age",
             enabled: viewModel.isEdit,
             keyboardType: TextInputType.number,
             icon: Icons.line_weight_sharp,
@@ -224,14 +240,11 @@ class PetEditModal extends StatelessWidget {
             hintText: "Gender",
             enabled: viewModel.isEdit,
             readOnly: true,
-            keyboardType: TextInputType.number,
+            onTap: viewModel.getGender,
             icon: Icons.g_mobiledata,
-            onTap: () {
-              viewModel.getGender();
-            },
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Enter Your Pets Age Please';
+                return 'Enter Your Pets Gender Please';
               }
               return null;
             },
@@ -253,9 +266,7 @@ class PetEditModal extends StatelessWidget {
             enabled: viewModel.isEdit,
             hintText: "Health Information",
             labelText: "Health Information",
-            onTap: () {
-              viewModel.gotoEdithealth(pet);
-            },
+            onTap: () => viewModel.gotoEdithealth(widget.pet),
             readOnly: true,
             suffixicon: true,
             icon: Icons.health_and_safety,
@@ -288,18 +299,29 @@ class PetEditModal extends StatelessWidget {
                     fit: BoxFit.cover,
                   ),
                 )
-              : pet.image != null && pet.image!.isNotEmpty
+              : (widget.pet.image != null && widget.pet.image!.isNotEmpty)
                   ? ClipRRect(
                       borderRadius: BorderRadius.circular(10),
                       child: CachedNetworkImage(
-                        imageUrl: pet.image!,
+                        imageUrl: widget.pet.image!,
                         height: 130,
                         width: 130,
                         fit: BoxFit.cover,
                         placeholder: (context, url) => SizedBox(
                           height: 130,
                           width: 130,
-                          child: Center(child: CircularProgressIndicator()),
+                          child: Center(
+                            child: SizedBox(
+                              width: 80,
+                              height: 80,
+                              child: FadingCircularDots(
+                                count: 10,
+                                radius: 20,
+                                dotRadius: 4,
+                                duration: const Duration(milliseconds: 1200),
+                              ),
+                            ),
+                          ),
                         ),
                         errorWidget: (context, url, error) => Image.asset(
                           'assets/images/signup.png',
@@ -320,9 +342,7 @@ class PetEditModal extends StatelessWidget {
             Container(
               decoration: BoxDecoration(
                 color: viewModel.isEdit
-                    ? (viewModel.path != null
-                        ? Colors.brown
-                        : Colors.deepOrange)
+                    ? (viewModel.path != null ? Colors.brown : darkbrown)
                     : Colors.grey,
                 borderRadius: BorderRadius.circular(30),
               ),
@@ -334,7 +354,7 @@ class PetEditModal extends StatelessWidget {
                   }
                 },
                 child: Text(
-                  viewModel.path != null || pet.image != null
+                  (viewModel.path != null || widget.pet.image != null)
                       ? "Change Image"
                       : "Add Image",
                   style: const TextStyle(
@@ -354,7 +374,7 @@ class PetEditModal extends StatelessWidget {
                 },
                 child: Icon(
                   Icons.delete,
-                  color: viewModel.isEdit ? Colors.deepOrange : Colors.grey,
+                  color: viewModel.isEdit ? darkbrown : Colors.grey,
                 ),
               )
           ],
@@ -368,7 +388,7 @@ class PetEditModal extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(60, 10, 60, 10),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(50),
-        color: Colors.deepOrange,
+        color: darkbrown,
       ),
       child: const Text(
         "Update Status",
@@ -378,9 +398,10 @@ class PetEditModal extends StatelessWidget {
   }
 
   Widget _buildAdminEdit(PetAdminViewModel viewModel) {
-    String displayText = pet.isLive.toString() == 'true' ? "Live" : "Not Live";
+    String displayText =
+        widget.pet.isLive.toString() == 'true' ? "Live" : "Not Live";
     Color liveColor =
-        pet.isLive.toString() == 'true' ? Colors.green : Colors.red;
+        widget.pet.isLive.toString() == 'true' ? Colors.green : Colors.red;
 
     return Padding(
       padding: const EdgeInsets.all(12.0),
@@ -416,7 +437,7 @@ class PetEditModal extends StatelessWidget {
               children: [
                 Expanded(
                   child: InkWell(
-                    onTap: () => viewModel.isLive(),
+                    onTap: viewModel.isLive,
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       decoration: BoxDecoration(
@@ -440,7 +461,7 @@ class PetEditModal extends StatelessWidget {
                 const SizedBox(width: 12),
                 Expanded(
                   child: InkWell(
-                    onTap: () => viewModel.getisApproved(),
+                    onTap: viewModel.getisApproved,
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       decoration: BoxDecoration(
@@ -469,7 +490,7 @@ class PetEditModal extends StatelessWidget {
               alignment: Alignment.centerRight,
               child: TextButton(
                 onPressed: () {
-                  viewModel.userInfo(pet.donorId ?? "");
+                  viewModel.userInfo(widget.pet.donorId ?? "");
                 },
                 child: Text(
                   "User  Information",
