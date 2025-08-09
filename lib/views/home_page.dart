@@ -201,64 +201,60 @@ class HomePage extends StatelessWidget {
     return Container(
       height: MediaQuery.sizeOf(context).height * 0.25,
       margin: EdgeInsets.fromLTRB(
-          0, MediaQuery.sizeOf(context).height * 0.32, 0, 0),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 5),
-        child: Container(
-          padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(
-                // ignore: deprecated_member_use
-                color: Colors.grey.withOpacity(0.2),
-                spreadRadius: 2,
-                blurRadius: 8,
-              ),
-            ],
-          ),
-          child: GridView.count(
-            childAspectRatio: 1.2,
-            shrinkWrap: true,
-            crossAxisCount: 4,
-            mainAxisSpacing: 0,
-            crossAxisSpacing: 0,
-            physics: NeverScrollableScrollPhysics(),
-            children: viewModel.petSelection.map((pet) {
-              bool isSelected = pet == viewModel.selectedAnimal;
-              return InkWell(
-                onTap: () {
-                  viewModel.filteredSelection(pet);
-                },
-                child: SizedBox(
-                  height: 80, // Try adjusting this value
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      CircleAvatar(
-                        radius: 22,
-                        backgroundColor: isSelected
-                            ? Color(0xfff8c561)
-                            : Colors.grey.shade100,
-                        child: Image.asset(
-                          viewModel.getSvgs(pet),
-                          width: 28,
-                          height: 28,
-                        ),
+          0, MediaQuery.sizeOf(context).height * 0.33, 0, 0),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              // ignore: deprecated_member_use
+              color: Colors.grey.withOpacity(0.2),
+              spreadRadius: 2,
+              blurRadius: 8,
+            ),
+          ],
+        ),
+        child: GridView.count(
+          childAspectRatio: 1.1,
+          shrinkWrap: true,
+          crossAxisCount: 4,
+          mainAxisSpacing: 0,
+          crossAxisSpacing: 0,
+          physics: NeverScrollableScrollPhysics(),
+          children: viewModel.petSelection.map((pet) {
+            bool isSelected = pet == viewModel.selectedAnimal;
+            return InkWell(
+              onTap: () {
+                viewModel.filteredSelection(pet);
+              },
+              child: SizedBox(
+                height: 80, // Try adjusting this value
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CircleAvatar(
+                      radius: 22,
+                      backgroundColor:
+                          isSelected ? Color(0xfff8c561) : Colors.grey.shade100,
+                      child: Image.asset(
+                        viewModel.getSvgs(pet),
+                        width: 28,
+                        height: 28,
                       ),
-                      const SizedBox(height: 3),
-                      Text(
-                        pet[0].toUpperCase() + pet.substring(1),
-                        style: TextStyle(fontSize: 11),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                      pet[0].toUpperCase() + pet.substring(1),
+                      style: TextStyle(fontSize: 11),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
                 ),
-              );
-            }).toList(),
-          ),
+              ),
+            );
+          }).toList(),
         ),
       ),
     );
@@ -279,17 +275,31 @@ class HomePage extends StatelessWidget {
                     fontWeight: FontWeight.w700),
               ),
               Spacer(),
-              Row(
-                children: [
-                  Text(
-                    "View All",
-                    style: TextStyle(
-                      color: Color.fromARGB(255, 213, 101, 25),
+              ChoiceChip(
+                label: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      "View All",
+                      style: TextStyle(
+                        color: viewModel.boolValue
+                            ? Colors.white
+                            : Color.fromARGB(255, 61, 28, 6),
+                      ),
                     ),
-                  ),
-                  Icon(Icons.navigate_next,
-                      color: Color.fromARGB(255, 213, 101, 25))
-                ],
+                  ],
+                ),
+                selected: viewModel.boolValue,
+                onSelected: (bool selected) {
+                  viewModel.viewAll(selected);
+                },
+                selectedColor: Color.fromARGB(255, 61, 28, 6),
+                backgroundColor: Colors.transparent,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5),
+                  side: BorderSide(color: Color.fromARGB(255, 61, 28, 6)),
+                ),
+                checkmarkColor: Colors.white, // <-- here
               )
             ],
           ),
@@ -303,17 +313,18 @@ class HomePage extends StatelessWidget {
                 margin: const EdgeInsets.fromLTRB(0, 0, 0, 50),
                 height: MediaQuery.of(context).size.height * 0.37,
                 child: viewModel.filteredPets == null
-                    ? const Center(child:SizedBox(
-                      width: 80,
-                      height: 80,
-                      child: Center(
-                          child: FadingCircularDots(
-                        count: 10,
-                        radius: 20,
-                        dotRadius: 4,
-                        duration: Duration(milliseconds: 1200),
-                      )),
-                    ))
+                    ? const Center(
+                        child: SizedBox(
+                        width: 80,
+                        height: 80,
+                        child: Center(
+                            child: FadingCircularDots(
+                          count: 10,
+                          radius: 20,
+                          dotRadius: 4,
+                          duration: Duration(milliseconds: 1200),
+                        )),
+                      ))
                     : ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount: viewModel.filteredPets!.length,

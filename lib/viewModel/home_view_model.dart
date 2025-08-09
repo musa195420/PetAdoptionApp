@@ -64,6 +64,15 @@ class HomeViewModel extends BaseViewModel {
     filteredPets = List.from(pets ?? []);
   }
 
+  void viewAll(value) {
+    boolValue = value;
+    if (value) {
+      selectedAnimal = "";
+      unfilterAnimals();
+      notifyListeners();
+    }
+  }
+
   String selectedAnimal = "";
 
   void filteredSelection(String name) {
@@ -73,6 +82,7 @@ class HomeViewModel extends BaseViewModel {
       notifyListeners();
       return;
     }
+    boolValue = false;
     selectedAnimal = name;
     if (name.trim().isEmpty) {
       unfilterAnimals();
@@ -104,6 +114,8 @@ class HomeViewModel extends BaseViewModel {
   }
 
   int _tabIndex = 2;
+
+  bool boolValue = false;
   int get tabIndex => _tabIndex;
   set tabIndex(int v) {
     _tabIndex = v;
