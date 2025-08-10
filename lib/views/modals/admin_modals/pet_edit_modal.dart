@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:petadoption/custom_widgets/colors.dart';
+import 'package:petadoption/helpers/colors.dart';
 import 'package:petadoption/custom_widgets/default_text_input.dart';
 import 'package:petadoption/custom_widgets/loading_indicators.dart';
 import 'package:petadoption/custom_widgets/stateful_wrapper.dart';

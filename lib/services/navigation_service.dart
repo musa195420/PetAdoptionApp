@@ -6,6 +6,7 @@ import 'package:petadoption/models/response_models/meetup.dart';
 import 'package:petadoption/models/response_models/user_verification.dart';
 import 'package:petadoption/views/admin_views/admin.dart';
 import 'package:petadoption/views/admin_views/adopter_admin.dart';
+import 'package:petadoption/views/admin_views/application_view_admin.dart';
 import 'package:petadoption/views/admin_views/donor_admin.dart';
 import 'package:petadoption/views/admin_views/pet_admin.dart';
 import 'package:petadoption/views/admin_views/secure_admin_view.dart';
@@ -62,6 +63,7 @@ class Routes {
   static const String signup = "signup";
   static const String userverification = 'userverification';
   static const String application = "application";
+  static const String applicationadmin = "applicationadmin";
   static const String admin = "admin";
   static const String petpage = "petpage";
   static const String healthinfo = "healthinfo";
@@ -509,6 +511,21 @@ class RouteManager {
             pageBuilder: (BuildContext context, Animation<double> animation,
                 Animation<double> secondaryAnimation) {
               return NotSupportedPage();
+            },
+            transitionsBuilder: (BuildContext context,
+                Animation<double> animation,
+                Animation<double> secondaryAnimation,
+                Widget child) {
+              return _transitionsBuilder(transition, animation, child);
+            },
+          );
+        }
+      case Routes.applicationadmin:
+        {
+          return PageRouteBuilder(
+            pageBuilder: (BuildContext context, Animation<double> animation,
+                Animation<double> secondaryAnimation) {
+              return ApplicationAdmin();
             },
             transitionsBuilder: (BuildContext context,
                 Animation<double> animation,

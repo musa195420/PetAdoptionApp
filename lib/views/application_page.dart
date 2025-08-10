@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 
 class ApplicationPage extends StatefulWidget {
   final Meetup meet;
+
   const ApplicationPage({super.key, required this.meet});
 
   @override
@@ -94,7 +95,10 @@ class _ApplicationPageState extends State<ApplicationPage> {
                             children: [
                               _buildApplicationForm(viewModel),
                               const SizedBox(height: 20),
-                              _buildSubmitButton(viewModel),
+                              _buildSubmitButton(
+                                  viewModel, "Submit Application"),
+                              if (viewModel.isAdmin())
+                                _buildAdminEdit(viewModel),
                             ],
                           ),
                           if (isRejected) ...[
@@ -248,16 +252,20 @@ class _ApplicationPageState extends State<ApplicationPage> {
     );
   }
 
-  Widget _buildSubmitButton(ApplicationViewModel viewModel) {
+  Widget _buildSubmitButton(ApplicationViewModel viewModel, String text) {
     return Container(
       padding: const EdgeInsets.fromLTRB(60, 10, 60, 10),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(50),
-        color: submitted ? Colors.grey : const Color.fromARGB(255, 148, 40, 7),
+        color: viewModel.isAdmin()
+            ? const Color.fromARGB(255, 148, 40, 7)
+            : submitted
+                ? Colors.grey
+                : const Color.fromARGB(255, 148, 40, 7),
       ),
       child: GestureDetector(
-        child: const Text(
-          "Submit Application",
+        child: Text(
+          text,
           style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
         ),
         onTap: () {
@@ -270,8 +278,112 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 reason: reasonController.text,
               ));
             }
+            if (viewModel.isAdmin()) {
+              viewModel.updateApplication(ApplicationModel(
+                userId: widget.meet.adopterId,
+                meetupId: widget.meet.meetupId,
+                profession: professionController.text,
+                reason: reasonController.text,
+                verificationStatus:
+                    widget.meet.application?.verificationStatus ?? "Pending",
+                applicationId: widget.meet.application?.applicationId ?? "",
+              ));
+            }
           }
         },
+      ),
+    );
+  }
+
+  Widget _buildAdminEdit(ApplicationViewModel viewModel) {
+    final statuses = ['Pending', 'Rejected', 'Approved'];
+    String? selectedStatus =
+        widget.meet.application?.verificationStatus ?? 'Pending';
+
+    return Padding(
+      padding: const EdgeInsets.all(12.0),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.2),
+              blurRadius: 10,
+              spreadRadius: 2,
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Admin Section",
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Colors.blueGrey.shade700,
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            // ChoiceChip group inside StatefulBuilder
+            StatefulBuilder(
+              builder: (context, setState) {
+                return Wrap(
+                  spacing: 40,
+                  runSpacing: 20,
+                  children: statuses.map((status) {
+                    final isSelected = selectedStatus == status;
+                    return ChoiceChip(
+                      label: Text(status),
+                      selected: isSelected,
+                      onSelected: (selected) {
+                        if (selected) {
+                          setState(() {
+                            selectedStatus = status;
+                            if (widget.meet.application != null) {
+                              widget.meet.application!.verificationStatus =
+                                  status;
+                            }
+                            viewModel.notifyListeners();
+                          });
+                        }
+                      },
+                      selectedColor: Colors.blue,
+                      labelStyle: TextStyle(
+                        color: isSelected ? Colors.white : Colors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    );
+                  }).toList(),
+                );
+              },
+            ),
+
+            const SizedBox(height: 12), // spacing between chips and button
+
+            // More Info Button
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton(
+                onPressed: () {
+                  viewModel.userInfo(widget.meet.application?.userId ?? "");
+                },
+                child: Text(
+                  "User Information",
+                  style: TextStyle(
+                    color: Colors.blue,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    decoration: TextDecoration.underline,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

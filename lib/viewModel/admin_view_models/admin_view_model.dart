@@ -14,17 +14,24 @@ class AdminViewModel extends ChangeNotifier {
     2: ['Secure Meetup'],
     3: ['HealthInfo Config'],
     4: ['Animal Type', 'Breeds', 'Vaccination', 'Disease', 'Disability'],
+    5: [
+      'Application',
+    ],
   };
 
   final List<SelectionBox> boxes = [
     SelectionBox(id: 0, name: "User Config", image: "assets/images/user.png"),
     SelectionBox(id: 1, name: "Pets Config", image: "assets/images/login.png"),
     SelectionBox(
-        id: 4, name: "General Config", image: "assets/images/settings.png"),
-    SelectionBox(
         id: 2, name: "Meetup Config", image: "assets/images/meetup.png"),
     SelectionBox(
         id: 3, name: "HealthInfo Config", image: "assets/images/health.png"),
+    SelectionBox(
+        id: 4, name: "General Config", image: "assets/images/settings.png"),
+    SelectionBox(
+        id: 5,
+        name: "Application Config",
+        image: "assets/images/application.png"),
   ];
 
   void toggleBox(int id) {
@@ -36,6 +43,7 @@ class AdminViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  gotoApplicationPage() {}
   void onSubItemTapped(String title) async {
     switch (title.toLowerCase()) {
       case 'config user':
@@ -53,6 +61,12 @@ class AdminViewModel extends ChangeNotifier {
       case 'config donor':
         {
           await _navigationService.pushNamed(Routes.donorAdmin,
+              data: null, args: TransitionType.slideRight);
+        }
+        break;
+      case 'application':
+        {
+          await _navigationService.pushNamed(Routes.applicationadmin,
               data: null, args: TransitionType.slideRight);
         }
         break;

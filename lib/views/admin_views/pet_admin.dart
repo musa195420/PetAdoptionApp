@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:petadoption/custom_widgets/colors.dart';
+import 'package:petadoption/helpers/colors.dart';
 import 'package:petadoption/custom_widgets/stateful_wrapper.dart';
 import 'package:petadoption/models/response_models/pet_response.dart';
 import 'package:petadoption/viewModel/admin_view_models/pet_admin_view_model.dart';
