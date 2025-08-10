@@ -1,6 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:petadoption/helpers/locator.dart';
-import 'package:petadoption/models/request_models/application_model.dart';
 import 'package:petadoption/models/response_models/meetup_verification.dart';
+import 'package:petadoption/models/response_models/user_verification.dart';
 import 'package:petadoption/services/api_service.dart';
 import 'package:petadoption/services/global_service.dart';
 import 'package:petadoption/viewModel/base_view_model.dart';
@@ -11,23 +12,24 @@ import '../services/navigation_service.dart';
 
 NavigationService get navigationService => locator<NavigationService>();
 
-class ApplicationViewModel extends BaseViewModel {
+class UserVerificationViewModel extends BaseViewModel {
   IAPIService get _apiService => locator<IAPIService>();
   IDialogService get _dialogService => locator<IDialogService>();
   GlobalService get _globalService => locator<GlobalService>();
   StartupViewModel get _startupViewModel => locator<StartupViewModel>();
 
-  List<ApplicationModel>? applications;
-
-  Future<void> getuserVerification() async {
+  List<UserVerification>? verifications;
+  String? cnicpath;
+  String? billImage;
+  Future<void> getApplications() async {
     try {
       loading(true);
-      var applicationRes = await _apiService.getUserVerifications();
+      var userRes = await _apiService.getApplications();
 
-      if (applicationRes.errorCode == "PA0004") {
-        applications = (applicationRes.data as List)
+      if (userRes.errorCode == "PA0004") {
+        verifications = (userRes.data as List)
             .map((json) =>
-                ApplicationModel.fromJson(json as Map<String, dynamic>))
+                UserVerification.fromJson(json as Map<String, dynamic>))
             .toList();
         // filteredDisability = List.from(disabilities!);
 
@@ -38,7 +40,7 @@ class ApplicationViewModel extends BaseViewModel {
         //   }
         // }
       } else {
-        await _dialogService.showApiError(applicationRes.data);
+        await _dialogService.showApiError(userRes.data);
       }
     } catch (e, s) {
       _globalService.logError(
@@ -49,18 +51,24 @@ class ApplicationViewModel extends BaseViewModel {
     }
   }
 
-  Future<void> addApplication(ApplicationModel application) async {
+  void resetCnicPath() {
+    cnicpath = null;
+    notifyListeners();
+  }
+
+  void resetBillImagePath() {
+    billImage = null;
+    notifyListeners();
+  }
+
+  Future<void> addUserVerification(UserVerification verification) async {
     try {
       loading(true, loadingText: "Submitting Application");
-      var addApp = await _apiService.addApplication(application);
+      var addApp = await _apiService.addUserVerification(verification);
       if (addApp.errorCode == "PA0004") {
-        application =
-            application.copyWithModel(addApp.data as ApplicationModel);
-
-        await _apiService.updateMeetupVerification(MeetupVerification(
-            meetupId: application.meetupId,
-            applicationId: application.applicationId));
-        _dialogService.showGlassyErrorDialog("Application Sent Successfully");
+        verification =
+            verification.copyWithModel(addApp.data as UserVerification);
+        _uploadImages(verification);
       } else {
         await _dialogService.showApiError(addApp.data);
       }
@@ -69,5 +77,13 @@ class ApplicationViewModel extends BaseViewModel {
     } finally {
       loading(false);
     }
+  }
+
+  void _uploadImages(UserVerification verification) async {
+    if (cnicpath == null || billImage == null) {
+      return;
+    }
+    _apiService.uploadBillImage(billImage ?? "", verification.userId ?? "");
+    _apiService.uploadCnicImage(cnicpath ?? "", verification.userId ?? "");
   }
 }

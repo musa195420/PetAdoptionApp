@@ -1336,7 +1336,7 @@ class APIService implements IAPIService {
       if (response.statusCode == 200) {
         if (res.success ?? true) {
           return ApiStatus(
-            data: MeetupVerification.fromJson(res.data),
+            data: UserVerification.fromJson(res.data),
             errorCode: "PA0004",
           );
         } else {
@@ -4057,6 +4057,44 @@ class APIService implements IAPIService {
   }
 
   @override
+  Future<ApiStatus> uploadCnicImage(String filePath, String userId) async {
+    try {
+      final response = await _httpService.uploadImage(
+          'api/verification-users/upload-cnic', {'user_id': userId}, filePath);
+
+      if (response.statusCode == 200) {
+        final body = await response.stream.bytesToString();
+        return ApiStatus(data: jsonDecode(body), errorCode: "PA0000");
+      } else {
+        return ApiStatus(
+            data: null, errorCode: "PA_UPLOAD_FAIL_${response.statusCode}");
+      }
+    } catch (e, s) {
+      _globalService.logError("Upload Profile Image Error", e.toString(), s);
+      return ApiStatus(data: e, errorCode: "PA_UPLOAD_EXCEPTION");
+    }
+  }
+
+  @override
+  Future<ApiStatus> uploadBillImage(String filePath, String userId) async {
+    try {
+      final response = await _httpService.uploadImage(
+          'api/verification-users/upload-proof', {'user_id': userId}, filePath);
+
+      if (response.statusCode == 200) {
+        final body = await response.stream.bytesToString();
+        return ApiStatus(data: jsonDecode(body), errorCode: "PA0000");
+      } else {
+        return ApiStatus(
+            data: null, errorCode: "PA_UPLOAD_FAIL_${response.statusCode}");
+      }
+    } catch (e, s) {
+      _globalService.logError("Upload Profile Image Error", e.toString(), s);
+      return ApiStatus(data: e, errorCode: "PA_UPLOAD_EXCEPTION");
+    }
+  }
+
+  @override
   Future<ApiStatus> uploadPetImage(String filePath, String petId) async {
     try {
       final response = await _httpService.uploadImage(
@@ -4858,6 +4896,8 @@ abstract class IAPIService {
 //<=========================== Image Upload Requests =======================>
   Future<ApiStatus> uploadSecureMeetupImages(ProofImages image);
   Future<ApiStatus> uploadProfileImage(String filePath, String userId);
+  Future<ApiStatus> uploadCnicImage(String filePath, String userId);
+  Future<ApiStatus> uploadBillImage(String filePath, String userId);
   Future<ApiStatus> uploadPetImage(String filePath, String petId);
 
 //<=========================== Vaccine Requests =======================>

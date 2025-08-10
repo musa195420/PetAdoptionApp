@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:petadoption/models/health_info.dart';
 import 'package:petadoption/models/response_models/meetup.dart';
+import 'package:petadoption/models/response_models/user_verification.dart';
 import 'package:petadoption/views/admin_views/admin.dart';
 import 'package:petadoption/views/admin_views/adopter_admin.dart';
 import 'package:petadoption/views/admin_views/donor_admin.dart';
@@ -35,6 +36,7 @@ import 'package:petadoption/views/signup.dart';
 import 'package:petadoption/views/startup.dart';
 
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:petadoption/views/user_verification_page.dart';
 import '../helpers/locator.dart';
 import '../views/admin_views/health_admin.dart';
 import '../views/message_page.dart';
@@ -58,6 +60,7 @@ class Routes {
   static const String message_info = "message_info";
   static const String notSupported = "notSupported";
   static const String signup = "signup";
+  static const String userverification = 'userverification';
   static const String application = "application";
   static const String admin = "admin";
   static const String petpage = "petpage";
@@ -466,6 +469,23 @@ class RouteManager {
     }
 
     switch (settings.name) {
+      case Routes.userverification:
+        {
+          return PageRouteBuilder(
+            pageBuilder: (BuildContext context, Animation<double> animation,
+                Animation<double> secondaryAnimation) {
+              return UserVerificationPage(
+                userVerification: data as UserVerification?,
+              );
+            },
+            transitionsBuilder: (BuildContext context,
+                Animation<double> animation,
+                Animation<double> secondaryAnimation,
+                Widget child) {
+              return _transitionsBuilder(transition, animation, child);
+            },
+          );
+        }
       case Routes.application:
         {
           return PageRouteBuilder(

@@ -1,6 +1,7 @@
 import 'package:petadoption/models/request_models/application_model.dart';
 import 'package:petadoption/models/response_models/meetup_verification.dart';
 import 'package:petadoption/models/response_models/payment.dart';
+import 'package:petadoption/models/response_models/user_verification.dart';
 
 class Meetup {
   String? userId;
@@ -25,6 +26,7 @@ class Meetup {
   String? adopterEmail; // new
   String? donorEmail; // new
   MeetupVerification? verificationmeetup;
+  UserVerification? userVerification;
 
   ApplicationModel? application;
   Payment? paymentInfo;

@@ -71,6 +71,7 @@ class DefaultTextInput extends StatelessWidget {
         decoration: InputDecoration(
           hintText: hintText,
           labelText: labelText,
+          hintStyle: TextStyle(fontSize: 12),
           prefixIcon: icon != null ? Icon(icon, size: 20) : null,
           suffixIcon: suffixicon
               ? IconButton(

@@ -575,7 +575,7 @@ class MeetupModal extends StatelessWidget {
                 GestureDetector(
                   onTap: () {
                     if (!viewModel.verificationLock) {
-                      // Navigate to verification page
+                      viewModel.gotoVerificationPage();
                     } else {
                       _showGatewayDialog(context,
                           "Please complete the payment to unlock verification.");

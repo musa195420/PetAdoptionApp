@@ -754,6 +754,11 @@ class SecureMeetupAdminViewModel extends BaseViewModel {
     }
   }
 
+  gotoVerificationPage() {
+    _navigationService.pushNamed(Routes.userverification,
+        data: null, args: TransitionType.slideTop);
+  }
+
   bool verificationLock = true;
   void isLock() {
     if (isAdopter && meets!.addVerification == "Applied") {

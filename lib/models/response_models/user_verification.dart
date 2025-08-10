@@ -1,9 +1,9 @@
 class UserVerification {
+  final String? cnicPic;
+  final String? proofOfResidence;
   final String? verificationId;
   final String? userId;
-  final String? cnicPic;
   final String? address;
-  final String? proofOfResidence;
 
   UserVerification({
     this.verificationId,
@@ -34,5 +34,15 @@ class UserVerification {
     }
 
     return data;
+  }
+
+  UserVerification copyWithModel(UserVerification other) {
+    return UserVerification(
+      verificationId: other.verificationId ?? verificationId,
+      userId: other.userId ?? userId,
+      cnicPic: other.cnicPic ?? cnicPic,
+      proofOfResidence: other.proofOfResidence ?? proofOfResidence,
+      address: other.address ?? address,
+    );
   }
 }

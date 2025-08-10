@@ -7,6 +7,7 @@ import 'package:petadoption/models/response_models/meetup.dart';
 import 'package:petadoption/models/response_models/meetup_verification.dart';
 import 'package:petadoption/models/response_models/payment.dart';
 import 'package:petadoption/models/response_models/pet_response.dart';
+import 'package:petadoption/models/response_models/user_verification.dart';
 import 'package:petadoption/services/api_service.dart';
 import 'package:petadoption/services/global_service.dart';
 import 'package:petadoption/viewModel/admin_view_models/secureMeetup_admin_view_model.dart';
@@ -70,6 +71,11 @@ class ProfileViewModel extends BaseViewModel {
     }
   }
 
+  void gotoVerifyPage(UserVerification? userVerification) {
+    _navigationService.pushNamed(Routes.userverification,
+        data: userVerification, args: TransitionType.slideBottom);
+  }
+
   void gotoPaymentPage(Meetup meetup) async {
     _navigationService.pushModalBottom(Routes.payment_modal,
         data: PaymentModal(
@@ -84,6 +90,20 @@ class ProfileViewModel extends BaseViewModel {
           .getUserApplicationBYUserId(ApplicationModel(userId: adopterId));
       if (res.errorCode == "PA0004") {
         return res.data as ApplicationModel;
+      }
+      return null;
+    } catch (e, s) {
+      debugPrint("Error ${e.toString()} Stack ${s.toString()}");
+      return null;
+    }
+  }
+
+  Future<UserVerification?> getuserVerification(String adopterId) async {
+    try {
+      var res = await _apiService
+          .getUserVerificationByUserId(UserVerification(userId: adopterId));
+      if (res.errorCode == "PA0004") {
+        return res.data as UserVerification;
       }
       return null;
     } catch (e, s) {
@@ -324,6 +344,10 @@ class ProfileViewModel extends BaseViewModel {
                       m.application =
                           await getApplicationInfo(m.adopterId ?? "");
                     }(),
+                  () async {
+                    m.userVerification =
+                        await getuserVerification(m.adopterId ?? "");
+                  }(),
                   if (m.verificationmeetup?.paymentId?.isNotEmpty ?? false)
                     () async {
                       m.paymentInfo = await getPaymentInfo(m.adopterId ?? "");

@@ -14,6 +14,7 @@ import 'package:petadoption/models/response_models/meetup.dart';
 import 'package:petadoption/models/response_models/payment.dart';
 import 'package:petadoption/models/response_models/pet_response.dart';
 import 'package:petadoption/models/response_models/user_profile.dart';
+import 'package:petadoption/models/response_models/user_verification.dart';
 import 'package:petadoption/services/navigation_service.dart';
 import 'package:petadoption/viewModel/profile_view_model.dart';
 import 'package:provider/provider.dart';
@@ -450,7 +451,7 @@ class _ProfilePageState extends State<ProfilePage> {
       margin: const EdgeInsets.symmetric(vertical: 10),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: const Color.fromARGB(255, 255, 244, 236),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -547,6 +548,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    _buildAdminVerification(meet),
                     if (meet.application != null)
                       _buildApplicationStatus(meet)
                     else
@@ -563,6 +565,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         icon: Icons.payment,
                         color: Colors.red,
                       ),
+                    const SizedBox(height: 10),
+                    _buildVerificationStatus(meet.userVerification)
                   ],
                 )
               ],
@@ -675,12 +679,33 @@ class _ProfilePageState extends State<ProfilePage> {
     return const SizedBox.shrink();
   }
 
+  Widget _buildVerificationStatus(UserVerification? userVerification) {
+    if (userVerification != null) {
+      return _buildStatusChip(
+        onTap: () {
+          viewModel.gotoVerifyPage(userVerification);
+        },
+        label: "Verified",
+        icon: Icons.security,
+        color: Colors.green,
+      );
+    }
+    return _buildStatusChip(
+      onTap: () {
+        viewModel.gotoVerifyPage(userVerification);
+      },
+      label: "Not Verified",
+      icon: Icons.security_update_warning_sharp,
+      color: Colors.red,
+    );
+  }
+
   Widget _buildPaymentStatus(Meetup meetup) {
     if (meetup.paymentInfo?.paymentId != null &&
         meetup.paymentInfo!.paymentId!.isNotEmpty) {
       return _buildStatusChip(
         label: "Paid",
-        icon: Icons.security,
+        icon: Icons.payment_rounded,
         color: Colors.green,
       );
     }
@@ -692,6 +717,40 @@ class _ProfilePageState extends State<ProfilePage> {
       icon: Icons.payment,
       color: Colors.red,
     );
+  }
+
+  Widget _buildAdminVerification(Meetup meetup) {
+    if (meetup.verificationmeetup?.adopterVerificationStatus != null) {
+      switch (meetup.verificationmeetup?.adopterVerificationStatus
+          .toString()
+          .toLowerCase()) {
+        case "pending":
+          return _buildStatusChip(
+            label:
+                "Admin ${meetup.verificationmeetup?.adopterVerificationStatus.toString()}",
+            description: "Secure Meetup Will Start After Approved",
+            icon: Icons.admin_panel_settings_outlined,
+            color: Colors.grey,
+          );
+        case "rejected":
+          return _buildStatusChip(
+            label:
+                "Admin ${meetup.verificationmeetup?.adopterVerificationStatus.toString()}",
+            description: "If it is true than Secure Meetup Will start",
+            icon: Icons.add_moderator_outlined,
+            color: Colors.red,
+          );
+        case "approved":
+          return _buildStatusChip(
+            label:
+                "Admin ${meetup.verificationmeetup?.adopterVerificationStatus.toString()}",
+            description: "If it is true than Secure Meetup Will start",
+            icon: Icons.admin_panel_settings_rounded,
+            color: Colors.green,
+          );
+      }
+    }
+    return SizedBox();
   }
 
   Widget _buildPetCard(PetResponse pet) {

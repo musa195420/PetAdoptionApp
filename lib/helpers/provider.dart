@@ -7,6 +7,7 @@ import 'package:petadoption/viewModel/authentication_view_model.dart';
 import 'package:petadoption/viewModel/favourite_viewmodel.dart';
 import 'package:petadoption/viewModel/signup_view_model.dart';
 import 'package:petadoption/viewModel/startup_viewmodel.dart';
+import 'package:petadoption/viewModel/user_verification_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
@@ -52,7 +53,8 @@ class ProviderInjector {
     ChangeNotifierProvider(create: (_) => locator<PaymentViewModel>()),
     ChangeNotifierProvider(create: (_) => locator<FavouriteViewmodel>()),
     ChangeNotifierProvider(create: (_) => locator<SearchViewModel>()),
-     ChangeNotifierProvider(create: (_) => locator<ApplicationViewModel>()),
+    ChangeNotifierProvider(create: (_) => locator<ApplicationViewModel>()),
+    ChangeNotifierProvider(create: (_) => locator<UserVerificationViewModel>()),
   ];
 
   static final List<SingleChildWidget> _dependentServices = [];
