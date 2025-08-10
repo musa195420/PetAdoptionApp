@@ -2,6 +2,29 @@ import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 class CurrentLocation{
+ Future<String?> getAddressFromLatLngString(
+      String latitudeStr, String longitudeStr) async {
+    try {
+      double latitude = double.parse(latitudeStr);
+      double longitude = double.parse(longitudeStr);
+
+      List<Placemark> placemarks =
+          await placemarkFromCoordinates(latitude, longitude);
+
+      if (placemarks.isNotEmpty) {
+        final placemark = placemarks.first;
+        String city = placemark.locality ?? '';
+        String state = placemark.administrativeArea ?? '';
+        String country = placemark.country ?? '';
+
+        debugPrint('City: $city, State: $state, Country: $country');
+        return 'City: $city, State: $state, Country: $country';
+      }
+    } catch (e) {
+      debugPrint('Error in reverse geocoding: $e');
+    }
+    return null;
+  }
 
   Future<String?> getAddressFromLatLng(Position position) async {
   try {

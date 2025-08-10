@@ -2,12 +2,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:petadoption/models/health_info.dart';
+import 'package:petadoption/models/response_models/meetup.dart';
 import 'package:petadoption/views/admin_views/admin.dart';
 import 'package:petadoption/views/admin_views/adopter_admin.dart';
 import 'package:petadoption/views/admin_views/donor_admin.dart';
 import 'package:petadoption/views/admin_views/pet_admin.dart';
 import 'package:petadoption/views/admin_views/secure_admin_view.dart';
 import 'package:petadoption/views/admin_views/user_admin.dart';
+import 'package:petadoption/views/application_page.dart';
 import 'package:petadoption/views/forgot_password.dart';
 import 'package:petadoption/views/health_info.dart';
 import 'package:petadoption/views/home.dart';
@@ -56,6 +58,7 @@ class Routes {
   static const String message_info = "message_info";
   static const String notSupported = "notSupported";
   static const String signup = "signup";
+  static const String application = "application";
   static const String admin = "admin";
   static const String petpage = "petpage";
   static const String healthinfo = "healthinfo";
@@ -463,6 +466,23 @@ class RouteManager {
     }
 
     switch (settings.name) {
+      case Routes.application:
+        {
+          return PageRouteBuilder(
+            pageBuilder: (BuildContext context, Animation<double> animation,
+                Animation<double> secondaryAnimation) {
+              return ApplicationPage(
+                meet: data as Meetup,
+              );
+            },
+            transitionsBuilder: (BuildContext context,
+                Animation<double> animation,
+                Animation<double> secondaryAnimation,
+                Widget child) {
+              return _transitionsBuilder(transition, animation, child);
+            },
+          );
+        }
       case Routes.notSupported:
         {
           return PageRouteBuilder(

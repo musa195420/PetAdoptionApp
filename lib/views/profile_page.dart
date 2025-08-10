@@ -6,8 +6,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:petadoption/custom_widgets/default_text_input.dart';
 import 'package:petadoption/custom_widgets/loading_indicators.dart';
+import 'package:petadoption/helpers/current_location.dart';
 import 'package:petadoption/helpers/locator.dart';
 import 'package:petadoption/models/hive_models/user.dart';
+import 'package:petadoption/models/request_models/application_model.dart';
+import 'package:petadoption/models/response_models/meetup.dart';
+import 'package:petadoption/models/response_models/payment.dart';
 import 'package:petadoption/models/response_models/pet_response.dart';
 import 'package:petadoption/models/response_models/user_profile.dart';
 import 'package:petadoption/services/navigation_service.dart';
@@ -116,7 +120,8 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.all(16.0),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 5, horizontal: 16),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
@@ -148,7 +153,7 @@ class _ProfilePageState extends State<ProfilePage> {
           return const Center(child: Text("User data is unavailable"));
         }
 
-        return Column(
+        return Row(
           children: [
             Stack(
               alignment: Alignment.bottomRight,
@@ -165,7 +170,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     ],
                   ),
                   child: CircleAvatar(
-                    radius: 54,
+                    radius: 38,
                     backgroundColor: accentColor.withOpacity(0.1),
                     backgroundImage: viewModel.path != null
                         ? FileImage(File(viewModel.path ?? ""))
@@ -205,28 +210,32 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
               ],
             ),
-            const SizedBox(height: 16),
-            Text(
-              profile?.name ?? "Name not set",
-              style: TextStyle(
-                fontSize: 26,
-                fontWeight: FontWeight.bold,
-                color: primaryColor,
-                letterSpacing: 0.4,
-              ),
-            ),
-            if (user.email != null)
-              Padding(
-                padding: const EdgeInsets.only(top: 4),
-                child: Text(
-                  "@${(user.email ?? "N/A").split("@")[0]}",
-                  style: const TextStyle(
-                    color: Colors.grey,
-                    fontSize: 14,
-                    fontStyle: FontStyle.italic,
+            const SizedBox(width: 16),
+            Column(
+              children: [
+                Text(
+                  profile?.name ?? "Name not set",
+                  style: TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold,
+                    color: primaryColor,
+                    letterSpacing: 0.4,
                   ),
                 ),
-              ),
+                if (user.email != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: Text(
+                      "@${(user.email ?? "N/A").split("@")[0]}",
+                      style: const TextStyle(
+                        color: Colors.grey,
+                        fontSize: 13,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                  ),
+              ],
+            )
           ],
         );
       },
@@ -419,9 +428,269 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 ],
               ),
+            if (viewModel.meets != null && viewModel.meets!.isNotEmpty)
+              _buildExpandableCard(
+                icon: Icons.handshake,
+                title: "Meetups",
+                children: viewModel.meets!
+                    .map((meet) => _buildMeetupCard(meet))
+                    .toList(),
+              ),
           ],
         );
       },
+    );
+  }
+
+  Widget _buildMeetupCard(Meetup meet) {
+    final bool isThreeStepProtected =
+        (meet.addVerification ?? "").toLowerCase() == "applied";
+
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 10),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.15),
+            blurRadius: 6,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Icon for Meetup
+          InkWell(
+            onTap: () {
+              viewModel.gotoMeetupModal(meet);
+            },
+            child: CircleAvatar(
+              radius: 30,
+              backgroundColor: Colors.blue.shade100,
+              child: Icon(Icons.handshake, size: 40, color: Colors.blueAccent),
+            ),
+          ),
+          const SizedBox(width: 16),
+
+          // Meetup Info
+          Expanded(
+            child: Column(
+              spacing: 5,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Pet Name + Lock Icon if protected
+                Row(
+                  children: [
+                    Expanded(
+                      child: Row(
+                        children: [
+                          Container(
+                            padding: EdgeInsets.all(2),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(100),
+                              color: const Color.fromARGB(255, 254, 170, 3),
+                            ),
+                            child: const Icon(Icons.pets_sharp),
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            meet.petName ?? "Unknown Pet",
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF3E2723),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    if (isThreeStepProtected)
+                      const Tooltip(
+                        message: "3 Step Protected",
+                        child: Icon(
+                          Icons.lock,
+                          color: Colors.orange,
+                          size: 20,
+                        ),
+                      ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+
+                _infoLine("Location", meet.location),
+                _infoLine("Time", meet.time),
+                _infoLine("Adopter", meet.adopterEmail),
+                _infoLine("Donor", meet.donorEmail),
+
+                if (meet.rejectionReason != null &&
+                    meet.rejectionReason!.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: Text(
+                      "Rejected: ${meet.rejectionReason}",
+                      style: const TextStyle(
+                        color: Colors.redAccent,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+
+                const SizedBox(height: 10),
+
+                // ---------- Application & Payment Status ----------
+
+// Usage in your column
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (meet.application != null)
+                      _buildApplicationStatus(meet)
+                    else
+                      const SizedBox.shrink(),
+                    const SizedBox(height: 10),
+                    if (meet.paymentInfo != null)
+                      _buildPaymentStatus(meet)
+                    else
+                      _buildStatusChip(
+                        onTap: () {
+                          viewModel.gotoPaymentPage(meet);
+                        },
+                        label: "Not Paid",
+                        icon: Icons.payment,
+                        color: Colors.red,
+                      ),
+                  ],
+                )
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+// ----------------- Widgets for Status -----------------
+  Widget _buildStatusChip({
+    Function()? onTap,
+    required String label,
+    required IconData icon,
+    required Color color,
+    String? description,
+    IconData? descriptionIcon,
+    Color? descriptionIconColor,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ChoiceChip(
+          label: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, color: Colors.white, size: 18),
+              const SizedBox(width: 6),
+              Text(
+                label,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+          selected: true,
+          onSelected: (_) => onTap?.call(), // ✅ Actually call the function
+          selectedColor: color,
+          backgroundColor: color.withOpacity(0.6),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(5),
+          ),
+        ),
+        if (description != null && description.isNotEmpty) ...[
+          const SizedBox(height: 4),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(
+                descriptionIcon ?? Icons.info_outline,
+                color: descriptionIconColor ?? Colors.orange,
+                size: 16,
+              ),
+              const SizedBox(width: 4),
+              Expanded(
+                child: Text(
+                  description,
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: descriptionIconColor,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildApplicationStatus(Meetup meetup) {
+    final status =
+        (meetup!.application?.verificationStatus ?? "").toLowerCase();
+
+    if (status == "rejected") {
+      return _buildStatusChip(
+        onTap: () {
+          viewModel.gotoApplication(meetup);
+        },
+        label: "Rejected",
+        description: "You Application is Rejected Pay to Continue",
+        descriptionIcon: Icons.warning,
+        descriptionIconColor: Colors.red,
+        icon: Icons.warning,
+        color: Colors.red,
+      );
+    } else if (status == "pending") {
+      return _buildStatusChip(
+        onTap: () {
+          viewModel.gotoApplication(meetup);
+        },
+        label: "Pending",
+        icon: Icons.hourglass_empty,
+        color: Colors.grey,
+      );
+    } else if (status == "approved") {
+      return _buildStatusChip(
+        onTap: () {
+          viewModel.gotoApplication(meetup);
+        },
+        label: "Approved",
+        icon: Icons.note_alt_sharp,
+        color: Colors.amber,
+      );
+    }
+
+    return const SizedBox.shrink();
+  }
+
+  Widget _buildPaymentStatus(Meetup meetup) {
+    if (meetup.paymentInfo?.paymentId != null &&
+        meetup.paymentInfo!.paymentId!.isNotEmpty) {
+      return _buildStatusChip(
+        label: "Paid",
+        icon: Icons.security,
+        color: Colors.green,
+      );
+    }
+    return _buildStatusChip(
+      onTap: () {
+        viewModel.gotoPaymentPage(meetup);
+      },
+      label: "Not Paid",
+      icon: Icons.payment,
+      color: Colors.red,
     );
   }
 

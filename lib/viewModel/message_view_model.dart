@@ -420,6 +420,7 @@ class MessageViewModel extends BaseViewModel {
           userId: _globalService.getuser()!.userId, receiverId: receiverId));
       if (res.errorCode == "PA0004") {
         meets = res.data;
+
         _meetupModel.setData(meets!);
         _meetupModel.setisUpdate(true);
         _meetupModel.isLock();

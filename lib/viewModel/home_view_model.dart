@@ -69,8 +69,8 @@ class HomeViewModel extends BaseViewModel {
     if (value) {
       selectedAnimal = "";
       unfilterAnimals();
-      notifyListeners();
     }
+    notifyListeners();
   }
 
   String selectedAnimal = "";

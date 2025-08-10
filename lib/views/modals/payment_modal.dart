@@ -1,6 +1,9 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:petadoption/custom_widgets/loading_indicators.dart';
+import 'package:petadoption/helpers/locator.dart';
+import 'package:petadoption/services/navigation_service.dart';
+import 'package:petadoption/views/application_page.dart';
 import 'package:provider/provider.dart';
 import '../../viewModel/payment_view_model.dart';
 import 'package:petadoption/models/hive_models/user.dart';
@@ -23,6 +26,7 @@ class PaymentModal extends StatefulWidget {
 
 class _PaymentModalState extends State<PaymentModal> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+  NavigationService get _navigationService => locator<NavigationService>();
   int? _selectedAmount;
   final _customController = TextEditingController();
 
@@ -67,7 +71,7 @@ class _PaymentModalState extends State<PaymentModal> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: GestureDetector(
-                      onTap: () => _showHelpDialog(context),
+                      onTap: () => _showHelpDialog(context, widget.meetup),
                       child: Icon(
                         Icons.info_outline,
                         color: Colors.red,
@@ -257,7 +261,7 @@ class _PaymentModalState extends State<PaymentModal> {
     );
   }
 
-  void _showHelpDialog(BuildContext context) {
+  void _showHelpDialog(BuildContext context, Meetup meetup) {
     showGeneralDialog(
       context: context,
       barrierDismissible: true,
@@ -334,8 +338,8 @@ class _PaymentModalState extends State<PaymentModal> {
                               elevation: 10,
                             ),
                             onPressed: () {
-                              Navigator.of(ctx).pop();
-                              Navigator.of(context).pushNamed('/application');
+                              _navigationService.pushNamed(Routes.application,
+                                  data: meetup, args: TransitionType.slideTop);
                               // 🔁 Replace this with your actual route
                             },
                             child: const Text(

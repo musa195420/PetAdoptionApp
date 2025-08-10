@@ -8,10 +8,10 @@ import 'package:petadoption/helpers/locator.dart';
 // ignore: unused_import
 import 'package:petadoption/models/hive_models/user.dart';
 import 'package:petadoption/models/message.dart';
+import 'package:petadoption/models/request_models/application_model.dart';
 import 'package:petadoption/models/request_models/proof_image.dart';
 import 'package:petadoption/models/request_models/receiver_model.dart';
 import 'package:petadoption/models/request_models/single_pet.dart';
-import 'package:petadoption/models/response_models/application.dart';
 import 'package:petadoption/models/response_models/meetup.dart';
 import 'package:petadoption/models/response_models/payment.dart';
 import 'package:petadoption/services/api_service.dart';
@@ -741,13 +741,13 @@ class SecureMeetupAdminViewModel extends BaseViewModel {
     }
   }
 
-  Application? application;
+  ApplicationModel? application;
   Future<void> getApplicationInfo(String adopterId) async {
     try {
       var res = await _apiService
-          .getUserApplicationBYUserId(Application(userId: adopterId));
+          .getUserApplicationBYUserId(ApplicationModel(userId: adopterId));
       if (res.errorCode == "PA0004") {
-        application = res.data as Application;
+        application = res.data as ApplicationModel;
       }
     } catch (e, s) {
       debugPrint("Error ${e.toString()} Stack ${s.toString()}");

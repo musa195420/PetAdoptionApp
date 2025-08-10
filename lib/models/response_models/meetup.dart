@@ -1,13 +1,18 @@
+import 'package:petadoption/models/request_models/application_model.dart';
+import 'package:petadoption/models/response_models/meetup_verification.dart';
+import 'package:petadoption/models/response_models/payment.dart';
+
 class Meetup {
   String? userId;
+
+  String? location;
+  String? latitude;
+  String? longitude;
   String? receiverId;
   String? meetupId;
   String? petId;
   String? donorId;
   String? adopterId;
-  String? location;
-  String? latitude;
-  String? longitude;
   String? time;
   bool? isAcceptedByDonor;
   bool? isAcceptedByAdopter;
@@ -17,6 +22,13 @@ class Meetup {
   String? petName;
   String? addVerification;
   String? rejectionReason;
+  String? adopterEmail; // new
+  String? donorEmail; // new
+  MeetupVerification? verificationmeetup;
+
+  ApplicationModel? application;
+  Payment? paymentInfo;
+
   Meetup({
     this.userId,
     this.meetupId,
@@ -36,6 +48,8 @@ class Meetup {
     this.addVerification,
     this.rejectionReason,
     this.receiverId,
+    this.adopterEmail, // new
+    this.donorEmail, // new
   });
 
   factory Meetup.fromJson(Map<String, dynamic> json) {
@@ -46,9 +60,8 @@ class Meetup {
       donorId: json['donor_id'] as String?,
       adopterId: json['adopter_id'] as String?,
       location: json['location'] as String?,
-      latitude: json['latitude'] != null ? (json['latitude']).toString() : null,
-      longitude:
-          json['longitude'] != null ? (json['longitude']).toString() : null,
+      latitude: json['latitude']?.toString(),
+      longitude: json['longitude']?.toString(),
       time: json['time'] as String?,
       isAcceptedByDonor: json['is_accepted_by_donor'] as bool?,
       isAcceptedByAdopter: json['is_accepted_by_adopter'] as bool?,
@@ -59,6 +72,8 @@ class Meetup {
       addVerification: json['add_verification'] as String?,
       rejectionReason: json['rejection_reason'] as String?,
       receiverId: json['receiver_id'] as String?,
+      adopterEmail: json['adopter_email'] as String?, // new
+      donorEmail: json['donor_email'] as String?, // new
     );
   }
 
@@ -86,6 +101,8 @@ class Meetup {
     if (addVerification != null) data['add_verification'] = addVerification;
     if (rejectionReason != null) data['rejection_reason'] = rejectionReason;
     if (receiverId != null) data['receiver_id'] = receiverId;
+    if (adopterEmail != null) data['adopter_email'] = adopterEmail; // new
+    if (donorEmail != null) data['donor_email'] = donorEmail; // new
     return data;
   }
 }

@@ -12,6 +12,7 @@ import "package:petadoption/models/request_models/add_donor.dart";
 import "package:petadoption/models/request_models/animalType_request.dart";
 import "package:petadoption/models/request_models/animal_breed.dart";
 import "package:petadoption/models/request_models/animal_breed_request.dart";
+import "package:petadoption/models/request_models/application_model.dart";
 import "package:petadoption/models/request_models/delete_user.dart";
 import "package:petadoption/models/request_models/favourite.dart";
 import "package:petadoption/models/request_models/pet_request.dart";
@@ -22,7 +23,6 @@ import "package:petadoption/models/request_models/single_disease.dart";
 import "package:petadoption/models/request_models/single_pet.dart";
 import "package:petadoption/models/request_models/update_animal.dart";
 import "package:petadoption/models/request_models/userinforequest.dart";
-import "package:petadoption/models/response_models/application.dart";
 import "package:petadoption/models/response_models/breed_type.dart";
 import "package:petadoption/models/response_models/health_info.dart";
 import "package:petadoption/models/response_models/meetup_verification.dart";
@@ -991,7 +991,7 @@ class APIService implements IAPIService {
   }
 
   @override
-  Future<ApiStatus> geApplications() async {
+  Future<ApiStatus> getApplications() async {
     try {
       var response = await _httpService.getData("api/application");
       if (response.statusCode == 404) {
@@ -1417,7 +1417,8 @@ class APIService implements IAPIService {
   }
 
   @override
-  Future<ApiStatus> getUserApplicationBYUserId(Application application) async {
+  Future<ApiStatus> getUserApplicationBYUserId(
+      ApplicationModel application) async {
     try {
       // "user_id": "2a517e5e-4106-4c15-94c9-5123012e5a9f"
       var response = await _httpService.postData(
@@ -1432,7 +1433,7 @@ class APIService implements IAPIService {
       if (response.statusCode == 200) {
         if (res.success ?? true) {
           return ApiStatus(
-            data: Application.fromJson(res.data),
+            data: ApplicationModel.fromJson(res.data),
             errorCode: "PA0004",
           );
         } else {
@@ -2770,7 +2771,7 @@ class APIService implements IAPIService {
   }
 
   @override
-  Future<ApiStatus> updateApplication(Application application) async {
+  Future<ApiStatus> updateApplication(ApplicationModel application) async {
     try {
       var response = await _httpService.patchData(
           "api/application/update", application.toJson());
@@ -3895,7 +3896,7 @@ class APIService implements IAPIService {
   }
 
   @override
-  Future<ApiStatus> deleteApplication(Application application) async {
+  Future<ApiStatus> deleteApplication(ApplicationModel application) async {
     try {
       var response = await _httpService.deleteData(
           "api/application", application.toJson());
@@ -4637,7 +4638,7 @@ class APIService implements IAPIService {
   }
 
   @override
-  Future<ApiStatus> addApplication(Application application) async {
+  Future<ApiStatus> addApplication(ApplicationModel application) async {
     try {
       var response =
           await _httpService.postData("api/application", application.toJson());
@@ -4651,7 +4652,7 @@ class APIService implements IAPIService {
       if (response.statusCode == 201) {
         if (res.success ?? true) {
           return ApiStatus(
-            data: Application.fromJson(res.data),
+            data: ApplicationModel.fromJson(res.data),
             errorCode: "PA0004",
           );
         } else {
@@ -4911,11 +4912,11 @@ abstract class IAPIService {
   Future<ApiStatus> getPayments();
 
   //<=========================== Applications Requests =======================>
-  Future<ApiStatus> addApplication(Application application);
-  Future<ApiStatus> deleteApplication(Application application);
-  Future<ApiStatus> getUserApplicationBYUserId(Application application);
-  Future<ApiStatus> updateApplication(Application application);
-  Future<ApiStatus> geApplications();
+  Future<ApiStatus> addApplication(ApplicationModel application);
+  Future<ApiStatus> deleteApplication(ApplicationModel application);
+  Future<ApiStatus> getUserApplicationBYUserId(ApplicationModel application);
+  Future<ApiStatus> updateApplication(ApplicationModel application);
+  Future<ApiStatus> getApplications();
 
 //<=========================== Favourite Requests =======================>
   Future<ApiStatus> addFavourite(Favourite favourite);

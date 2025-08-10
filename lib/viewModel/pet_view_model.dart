@@ -13,6 +13,7 @@ import 'package:petadoption/models/request_models/pet_request.dart';
 import 'package:petadoption/models/response_models/animal_Type.dart';
 import 'package:petadoption/models/response_models/get_disability.dart';
 import 'package:petadoption/models/response_models/health_info.dart';
+import 'package:petadoption/models/response_models/meetup.dart';
 import 'package:petadoption/services/api_service.dart';
 import 'package:petadoption/services/dialog_service.dart';
 import 'package:petadoption/services/global_service.dart';

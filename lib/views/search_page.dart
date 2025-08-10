@@ -51,6 +51,7 @@ class SearchPage extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: 8,
                     children: [
                       const SizedBox(height: 12),
                       Row(
@@ -115,21 +116,16 @@ class SearchPage extends StatelessWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 5),
                       _SearchBar(),
-                      const SizedBox(height: 12),
                       _CategoryHeader(vm: vm),
-                      const SizedBox(height: 12),
                       if (vm.animals != null) _CategoryGrid(vm: vm),
-                      const SizedBox(height: 12),
                       _BreedsHeader(vm: vm),
-                      const SizedBox(height: 12),
                       if (vm.breeds != null) _BreedsGrid(vm: vm),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 6),
                       const _SectionTitle(title: 'Newest Pet'),
-                      const SizedBox(height: 12),
                       _PetGrid(vm: vm),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 6),
                     ],
                   ),
                 ),
@@ -191,13 +187,14 @@ class _CategoryGrid extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         GridView.builder(
+          padding: EdgeInsets.all(0),
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemCount: items.length,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
-            crossAxisSpacing: 12,
-            mainAxisSpacing: 12,
+            crossAxisSpacing: 4,
+            mainAxisSpacing: 6,
             childAspectRatio: 3.5,
           ),
           itemBuilder: (ctx, i) {
@@ -317,6 +314,7 @@ class _BreedsGrid extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         GridView.builder(
+          padding: EdgeInsets.all(0),
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemCount: displayItems.length,
