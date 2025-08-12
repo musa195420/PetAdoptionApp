@@ -68,7 +68,7 @@ class AdminPage extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
             Divider(
               color: Color(0xFF5D1F00),
               thickness: 2,

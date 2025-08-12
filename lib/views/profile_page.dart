@@ -6,6 +6,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:petadoption/custom_widgets/default_text_input.dart';
 import 'package:petadoption/custom_widgets/loading_indicators.dart';
+import 'package:petadoption/helpers/colors.dart';
 import 'package:petadoption/helpers/current_location.dart';
 import 'package:petadoption/helpers/locator.dart';
 import 'package:petadoption/models/hive_models/user.dart';
@@ -133,7 +134,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           const SizedBox(height: 24),
                           _infoSectionWidget(),
                           const SizedBox(height: 24),
-                          _logoutButton(),
+                          // _logoutButton(),
                           const SizedBox(height: 16),
                         ],
                       ),
@@ -156,88 +157,109 @@ class _ProfilePageState extends State<ProfilePage> {
         }
 
         return Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Stack(
-              alignment: Alignment.bottomRight,
+            // Profile image & name
+            Row(
               children: [
-                Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        blurRadius: 15,
-                        offset: const Offset(0, 8),
-                      ),
-                    ],
-                  ),
-                  child: CircleAvatar(
-                    radius: 38,
-                    backgroundColor: accentColor.withOpacity(0.1),
-                    backgroundImage: viewModel.path != null
-                        ? FileImage(File(viewModel.path ?? ""))
-                        : (user.profileImage != null &&
-                                user.profileImage!.isNotEmpty)
-                            ? NetworkImage(user.profileImage!) as ImageProvider
-                            : const AssetImage('assets/images/noprofile.png'),
-                  ),
-                ),
-                if (viewModel.editMode)
-                  InkWell(
-                    onTap: () {
-                      if (viewModel.path != null) {
-                        viewModel.removeImagePath();
-                      } else {
-                        viewModel.saveImagePath();
-                      }
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.all(8),
+                Stack(
+                  alignment: Alignment.bottomRight,
+                  children: [
+                    Container(
                       decoration: BoxDecoration(
-                        color: Colors.white,
                         shape: BoxShape.circle,
-                        border: Border.all(color: Colors.grey.shade300),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.15),
-                            blurRadius: 6,
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 15,
+                            offset: const Offset(0, 8),
                           ),
                         ],
                       ),
-                      child: viewModel.path != null
-                          ? Icon(Icons.delete, size: 22, color: primaryColor)
-                          : Icon(Icons.camera_alt,
-                              size: 22, color: primaryColor),
-                    ),
-                  ),
-              ],
-            ),
-            const SizedBox(width: 16),
-            Column(
-              children: [
-                Text(
-                  profile?.name ?? "Name not set",
-                  style: TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.bold,
-                    color: primaryColor,
-                    letterSpacing: 0.4,
-                  ),
-                ),
-                if (user.email != null)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 4),
-                    child: Text(
-                      "@${(user.email ?? "N/A").split("@")[0]}",
-                      style: const TextStyle(
-                        color: Colors.grey,
-                        fontSize: 13,
-                        fontStyle: FontStyle.italic,
+                      child: CircleAvatar(
+                        radius: 38,
+                        backgroundColor: accentColor.withOpacity(0.1),
+                        backgroundImage: viewModel.path != null
+                            ? FileImage(File(viewModel.path ?? ""))
+                            : (user.profileImage != null &&
+                                    user.profileImage!.isNotEmpty)
+                                ? NetworkImage(user.profileImage!)
+                                    as ImageProvider
+                                : const AssetImage(
+                                    'assets/images/noprofile.png'),
                       ),
                     ),
-                  ),
+                    if (viewModel.editMode)
+                      InkWell(
+                        onTap: () {
+                          if (viewModel.path != null) {
+                            viewModel.removeImagePath();
+                          } else {
+                            viewModel.saveImagePath();
+                          }
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Colors.grey.shade300),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.15),
+                                blurRadius: 6,
+                              ),
+                            ],
+                          ),
+                          child: viewModel.path != null
+                              ? Icon(Icons.delete,
+                                  size: 22, color: primaryColor)
+                              : Icon(Icons.camera_alt,
+                                  size: 22, color: primaryColor),
+                        ),
+                      ),
+                  ],
+                ),
+                const SizedBox(width: 16),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      profile?.name ?? "Name not set",
+                      style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.bold,
+                        color: primaryColor,
+                        letterSpacing: 0.4,
+                      ),
+                    ),
+                    if (user.email != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 4),
+                        child: Text(
+                          "@${(user.email ?? "N/A").split("@")[0]}",
+                          style: const TextStyle(
+                            color: Colors.grey,
+                            fontSize: 13,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
               ],
-            )
+            ),
+
+            const Spacer(),
+
+            // Logout button on the right
+            IconButton(
+              icon: Icon(Icons.login_outlined, color: darkbrown),
+              onPressed: () {
+                viewModel.logout();
+              },
+              tooltip: "Logout",
+            ),
           ],
         );
       },
