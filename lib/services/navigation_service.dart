@@ -3,11 +3,14 @@
 import 'package:flutter/material.dart';
 import 'package:petadoption/models/health_info.dart';
 import 'package:petadoption/models/response_models/meetup.dart';
+import 'package:petadoption/models/response_models/meetup_verification.dart';
 import 'package:petadoption/models/response_models/user_verification.dart';
 import 'package:petadoption/views/admin_views/admin.dart';
+import 'package:petadoption/views/admin_views/admin_meetup_ver_details.dart';
 import 'package:petadoption/views/admin_views/adopter_admin.dart';
 import 'package:petadoption/views/admin_views/application_view_admin.dart';
 import 'package:petadoption/views/admin_views/donor_admin.dart';
+import 'package:petadoption/views/admin_views/meetup_verification_admin.dart';
 import 'package:petadoption/views/admin_views/pet_admin.dart';
 import 'package:petadoption/views/admin_views/secure_admin_view.dart';
 import 'package:petadoption/views/admin_views/user_admin.dart';
@@ -59,7 +62,9 @@ class Routes {
   static const String dashboard = "dashboard";
   static const String message = "message";
   static const String message_info = "message_info";
+  static const String meetupverify = 'meetupverify';
   static const String notSupported = "notSupported";
+  static const String adminmeetupverification = 'adminmeetupverification';
   static const String signup = "signup";
   static const String userverification = 'userverification';
   static const String application = "application";
@@ -477,7 +482,24 @@ class RouteManager {
             pageBuilder: (BuildContext context, Animation<double> animation,
                 Animation<double> secondaryAnimation) {
               return UserVerificationPage(
-                userVerification: data as UserVerification?,
+                meetup: data as Meetup,
+              );
+            },
+            transitionsBuilder: (BuildContext context,
+                Animation<double> animation,
+                Animation<double> secondaryAnimation,
+                Widget child) {
+              return _transitionsBuilder(transition, animation, child);
+            },
+          );
+        }
+      case Routes.adminmeetupverification:
+        {
+          return PageRouteBuilder(
+            pageBuilder: (BuildContext context, Animation<double> animation,
+                Animation<double> secondaryAnimation) {
+              return MeetupVerificationDetailPage(
+                meetupVerification: data as MeetupVerification,
               );
             },
             transitionsBuilder: (BuildContext context,
@@ -505,6 +527,22 @@ class RouteManager {
             },
           );
         }
+      case Routes.meetupverify:
+        {
+          return PageRouteBuilder(
+            pageBuilder: (BuildContext context, Animation<double> animation,
+                Animation<double> secondaryAnimation) {
+              return MeetupVerificationAdmin();
+            },
+            transitionsBuilder: (BuildContext context,
+                Animation<double> animation,
+                Animation<double> secondaryAnimation,
+                Widget child) {
+              return _transitionsBuilder(transition, animation, child);
+            },
+          );
+        }
+
       case Routes.notSupported:
         {
           return PageRouteBuilder(

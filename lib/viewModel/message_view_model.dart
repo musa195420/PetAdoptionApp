@@ -130,6 +130,7 @@ class MessageViewModel extends BaseViewModel {
   String? senderId;
   Future<void> gotoMessagePage(MessageInfo messageInfo) async {
     try {
+      loading(true);
       receiverId = messageInfo.userId;
       user ??= _globalService.getuser();
       if (user == null) return;
@@ -137,13 +138,17 @@ class MessageViewModel extends BaseViewModel {
       currentInfo = messageInfo;
       await getReceiverInfo(receiverId!);
       bool mes = await getMessages(messageInfo.userId);
+      loading(false);
       if (!mes) {
         return;
       }
       await _navigationService.pushNamedAndRemoveUntil(
           args: TransitionType.slideRight, Routes.message);
     } catch (e, s) {
+      loading(false);
       debugPrint("Error ${e.toString()} Stack ${s.toString()}");
+    } finally {
+      loading(false);
     }
   }
 

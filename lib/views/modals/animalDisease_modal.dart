@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:petadoption/custom_widgets/default_text_input.dart';
 import 'package:petadoption/custom_widgets/loading_indicators.dart';
 import 'package:petadoption/custom_widgets/stateful_wrapper.dart';
+import 'package:petadoption/extenshions/string_ext.dart';
 import 'package:petadoption/models/request_models/add_bulk.dart';
 import 'package:petadoption/services/dialog_service.dart';
 import '../../helpers/locator.dart';
@@ -47,7 +48,7 @@ class _AnimalDiseaseModalState extends State<AnimalDiseaseModal> {
 
     try {
       var addAnimalRes = await _apiService.addDisease(
-        AddInBulk(name: petController.text.trim(), animalId: widget.animalId),
+        AddInBulk(name: petController.text.trim().toTitleCase(), animalId: widget.animalId),
       );
 
       if (addAnimalRes.errorCode == "PA0004") {

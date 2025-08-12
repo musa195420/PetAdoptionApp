@@ -566,7 +566,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         color: Colors.red,
                       ),
                     const SizedBox(height: 10),
-                    _buildVerificationStatus(meet.userVerification)
+                    _buildVerificationStatus(meet)
                   ],
                 )
               ],
@@ -679,11 +679,12 @@ class _ProfilePageState extends State<ProfilePage> {
     return const SizedBox.shrink();
   }
 
-  Widget _buildVerificationStatus(UserVerification? userVerification) {
+  Widget _buildVerificationStatus(Meetup meet) {
+    UserVerification? userVerification = meet.userVerification;
     if (userVerification != null) {
       return _buildStatusChip(
         onTap: () {
-          viewModel.gotoVerifyPage(userVerification);
+          viewModel.gotoVerifyPage(meet);
         },
         label: "Verified",
         icon: Icons.security,
@@ -692,7 +693,14 @@ class _ProfilePageState extends State<ProfilePage> {
     }
     return _buildStatusChip(
       onTap: () {
-        viewModel.gotoVerifyPage(userVerification);
+        if (meet.paymentInfo != null ||
+            (meet.application != null &&
+                meet.application?.verificationStatus.toString().toLowerCase() ==
+                    "approved")) {
+          viewModel.gotoVerifyPage(meet);
+        } else {
+          dialogService.showBeautifulToast("Please Pay Payment To Verify");
+        }
       },
       label: "Not Verified",
       icon: Icons.security_update_warning_sharp,

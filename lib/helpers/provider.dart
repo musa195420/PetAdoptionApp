@@ -1,6 +1,7 @@
 import 'package:petadoption/helpers/locator.dart';
 import 'package:petadoption/viewModel/admin_view_models/donor_admin_view_model.dart';
 import 'package:petadoption/viewModel/admin_view_models/general_config_view_model.dart';
+import 'package:petadoption/viewModel/admin_view_models/meetup_verification_model.dart';
 import 'package:petadoption/viewModel/admin_view_models/secureMeetup_admin_view_model.dart';
 import 'package:petadoption/viewModel/application_view_model.dart';
 import 'package:petadoption/viewModel/authentication_view_model.dart';
@@ -54,6 +55,8 @@ class ProviderInjector {
     ChangeNotifierProvider(create: (_) => locator<FavouriteViewmodel>()),
     ChangeNotifierProvider(create: (_) => locator<SearchViewModel>()),
     ChangeNotifierProvider(create: (_) => locator<ApplicationViewModel>()),
+    ChangeNotifierProvider(
+        create: (_) => locator<MeetupVerificationViewModel>()),
     ChangeNotifierProvider(create: (_) => locator<UserVerificationViewModel>()),
   ];
 

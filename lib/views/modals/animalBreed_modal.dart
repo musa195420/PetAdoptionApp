@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:petadoption/custom_widgets/default_text_input.dart';
 import 'package:petadoption/custom_widgets/loading_indicators.dart';
 import 'package:petadoption/custom_widgets/stateful_wrapper.dart';
+import 'package:petadoption/extenshions/string_ext.dart';
 import '../../helpers/locator.dart';
 import '../../models/request_models/animal_breed.dart';
 import '../../services/api_service.dart';
@@ -48,7 +49,9 @@ class _AnimalbreedModalState extends State<AnimalbreedModal> {
 
     try {
       var addAnimalRes = await _apiService.addAnimalBreed(
-        AddAnimalBreed(name: petController.text.trim(), animalId: widget.petId),
+        AddAnimalBreed(
+            name: petController.text.trim().toTitleCase(),
+            animalId: widget.petId),
       );
 
       if (addAnimalRes.errorCode == "PA0004") {

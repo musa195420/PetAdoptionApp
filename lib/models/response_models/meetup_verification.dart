@@ -1,10 +1,19 @@
+import 'package:petadoption/models/request_models/application_model.dart';
+import 'package:petadoption/models/response_models/payment.dart';
+import 'package:petadoption/models/response_models/user_verification.dart';
+
 class MeetupVerification {
   final String? meetupId;
-  final String? adopterVerificationStatus;
+  String? adopterVerificationStatus;
   final String? paymentStatus;
   final String? applicationId;
   final String? paymentId;
   final String? verificationId;
+
+  UserVerification? userVerification;
+
+  ApplicationModel? application;
+  Payment? paymentInfo;
 
   MeetupVerification({
     this.meetupId,

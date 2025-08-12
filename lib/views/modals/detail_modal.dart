@@ -23,17 +23,18 @@ class DetailModal extends StatelessWidget {
         key: scaffoldKey,
         extendBody: true,
         body: viewModel.user == null
-            ? const Center(child:SizedBox(
-                      width: 80,
-                      height: 80,
-                      child: Center(
-                          child: FadingCircularDots(
-                        count: 10,
-                        radius: 20,
-                        dotRadius: 4,
-                        duration: Duration(milliseconds: 1200),
-                      )),
-                    ))
+            ? const Center(
+                child: SizedBox(
+                width: 80,
+                height: 80,
+                child: Center(
+                    child: FadingCircularDots(
+                  count: 10,
+                  radius: 20,
+                  dotRadius: 4,
+                  duration: Duration(milliseconds: 1200),
+                )),
+              ))
             : LayoutBuilder(
                 builder: (context, constraints) {
                   final screenHeight = constraints.maxHeight;
@@ -55,17 +56,17 @@ class DetailModal extends StatelessWidget {
                               width: screenWidth,
                               fit: BoxFit.cover,
                               placeholder: (context, url) => Center(
-                                child:SizedBox(
-                      width: 80,
-                      height: 80,
-                      child: Center(
-                          child: FadingCircularDots(
-                        count: 10,
-                        radius: 20,
-                        dotRadius: 4,
-                        duration: Duration(milliseconds: 1200),
-                      )),
-                    ),
+                                child: SizedBox(
+                                  width: 80,
+                                  height: 80,
+                                  child: Center(
+                                      child: FadingCircularDots(
+                                    count: 10,
+                                    radius: 20,
+                                    dotRadius: 4,
+                                    duration: Duration(milliseconds: 1200),
+                                  )),
+                                ),
                               ),
                               errorWidget: (context, url, error) =>
                                   AppWidget.imageLoad(),
@@ -239,17 +240,17 @@ class DetailModal extends StatelessWidget {
                           width: screenWidth * 0.16,
                           height: screenWidth * 0.16,
                           placeholder: (context, url) => Center(
-                            child:SizedBox(
-                      width: 80,
-                      height: 80,
-                      child: Center(
-                          child: FadingCircularDots(
-                        count: 10,
-                        radius: 20,
-                        dotRadius: 4,
-                        duration: Duration(milliseconds: 1200),
-                      )),
-                    ),
+                            child: SizedBox(
+                              width: 80,
+                              height: 80,
+                              child: Center(
+                                  child: FadingCircularDots(
+                                count: 10,
+                                radius: 20,
+                                dotRadius: 4,
+                                duration: Duration(milliseconds: 1200),
+                              )),
+                            ),
                           ),
                           errorWidget: (context, url, error) => Image.asset(
                             "assets/images/noprofile.png",
@@ -290,19 +291,12 @@ class DetailModal extends StatelessWidget {
                 ),
                 SizedBox(height: screenHeight * 0.02),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    InkWell(
-                      onTap: () async {
-                        viewModel.gotoMessage();
-                      },
-                      child: Icon(Icons.message_outlined,
-                          color: const Color(0xFFF7992C),
-                          size: screenWidth * 0.09),
-                    ),
                     ElevatedButton(
                       onPressed: () {
-                        // Future enhancement: Trigger adoption process
+                        viewModel.gotoMessage();
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFFF7992C),

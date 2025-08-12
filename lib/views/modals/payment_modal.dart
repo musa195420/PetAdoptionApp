@@ -49,7 +49,7 @@ class _PaymentModalState extends State<PaymentModal> {
   @override
   Widget build(BuildContext context) {
     final viewModel = context.watch<PaymentViewModel>();
-    const fixedAmounts = [500, 1000, 1500];
+    const fixedAmounts = [500, 1000];
 
     return Scaffold(
       key: _scaffoldKey,

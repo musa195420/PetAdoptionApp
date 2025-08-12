@@ -15,6 +15,7 @@ import 'package:petadoption/services/network_service.dart';
 import 'package:petadoption/services/pref_service.dart';
 import 'package:petadoption/viewModel/admin_view_models/admin_view_model.dart';
 import 'package:petadoption/viewModel/admin_view_models/general_config_view_model.dart';
+import 'package:petadoption/viewModel/admin_view_models/meetup_verification_model.dart';
 import 'package:petadoption/viewModel/admin_view_models/pet_admin_view_model.dart';
 import 'package:petadoption/viewModel/admin_view_models/secureMeetup_admin_view_model.dart';
 import 'package:petadoption/viewModel/application_view_model.dart';
@@ -75,6 +76,7 @@ class LocatorInjector {
       locator.registerLazySingleton(() => SearchViewModel());
       locator.registerLazySingleton(() => ApplicationViewModel());
       locator.registerLazySingleton(() => UserVerificationViewModel());
+      locator.registerLazySingleton(() => MeetupVerificationViewModel());
       locator.registerLazySingleton<ImageProcessor>(() => ImageProcessor());
 
       // Repos

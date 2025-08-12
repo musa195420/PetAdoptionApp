@@ -4,14 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:petadoption/custom_widgets/default_text_input.dart';
 import 'package:petadoption/helpers/locator.dart';
+import 'package:petadoption/models/response_models/meetup.dart';
 import 'package:petadoption/models/response_models/user_verification.dart';
 import 'package:petadoption/services/global_service.dart';
 import 'package:petadoption/viewModel/user_verification_view_model.dart';
 import 'package:provider/provider.dart';
 
 class UserVerificationPage extends StatefulWidget {
-  final UserVerification? userVerification;
-  const UserVerificationPage({super.key, required this.userVerification});
+  final Meetup? meetup;
+
+  const UserVerificationPage({super.key, required this.meetup});
 
   @override
   State<UserVerificationPage> createState() => _UserVerificationPageState();
@@ -32,8 +34,8 @@ class _UserVerificationPageState extends State<UserVerificationPage> {
 
   @override
   void initState() {
-    addressController =
-        TextEditingController(text: widget.userVerification?.address ?? "");
+    addressController = TextEditingController(
+        text: widget.meetup?.userVerification?.address ?? "");
     super.initState();
   }
 
@@ -56,7 +58,8 @@ class _UserVerificationPageState extends State<UserVerificationPage> {
                     _buildVerificationImage(
                       title: "Proof of Residence",
                       localPath: viewModel.billImage,
-                      networkUrl: widget.userVerification?.proofOfResidence,
+                      networkUrl:
+                          widget.meetup?.userVerification?.proofOfResidence,
                       placeholderText:
                           "Please provide any bill (electricity, water, gas) so we can verify your proof of residence",
                       onPickImage: () async {
@@ -77,7 +80,7 @@ class _UserVerificationPageState extends State<UserVerificationPage> {
                     _buildVerificationImage(
                       title: "CNIC",
                       localPath: viewModel.cnicpath,
-                      networkUrl: widget.userVerification?.cnicPic,
+                      networkUrl: widget.meetup?.userVerification?.cnicPic,
                       placeholderText:
                           "Please upload CNIC image. You can hide other parts except CNIC number and your image",
                       onPickImage: () async {
@@ -286,16 +289,21 @@ class _UserVerificationPageState extends State<UserVerificationPage> {
           onPressed: () {
             setState(() {
               _billImageError = viewModel.billImage == null &&
-                  (widget.userVerification?.proofOfResidence?.isEmpty ?? true);
+                  (widget.meetup?.userVerification?.proofOfResidence?.isEmpty ??
+                      true);
               _cnicImageError = viewModel.cnicpath == null &&
-                  (widget.userVerification?.cnicPic?.isEmpty ?? true);
+                  (widget.meetup?.userVerification?.cnicPic?.isEmpty ?? true);
             });
 
             if (!_billImageError && !_cnicImageError) {
-              viewModel.addUserVerification(UserVerification(
-                userId: _globalService.getuser()?.userId,
-                address: addressController.text,
-              ));
+              viewModel.addUserVerification(
+                  widget.meetup,
+                  UserVerification(
+                    userId: _globalService.getuser()?.userId,
+                    address: addressController.text,
+                  ));
+            } else {
+              dialogService.showBeautifulToast("Please Add Pic Urls");
             }
           },
           icon: const Icon(Icons.pets, size: 24),

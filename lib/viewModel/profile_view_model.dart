@@ -23,10 +23,12 @@ import '../models/response_models/user_profile.dart';
 import '../services/dialog_service.dart';
 import '../services/navigation_service.dart';
 
+IDialogService get dialogService => locator<IDialogService>();
+
 class ProfileViewModel extends BaseViewModel {
   NavigationService get _navigationService => locator<NavigationService>();
   IAPIService get _apiService => locator<IAPIService>();
-  IDialogService get _dialogService => locator<IDialogService>();
+
   GlobalService get _globalService => locator<GlobalService>();
   StartupViewModel get _startupViewModel => locator<StartupViewModel>();
   SecureMeetupAdminViewModel get _meetupModel =>
@@ -71,9 +73,9 @@ class ProfileViewModel extends BaseViewModel {
     }
   }
 
-  void gotoVerifyPage(UserVerification? userVerification) {
+  void gotoVerifyPage(Meetup? meetup) {
     _navigationService.pushNamed(Routes.userverification,
-        data: userVerification, args: TransitionType.slideBottom);
+        data: meetup, args: TransitionType.slideBottom);
   }
 
   void gotoPaymentPage(Meetup meetup) async {
@@ -211,7 +213,7 @@ class ProfileViewModel extends BaseViewModel {
         debugPrint("User Updated SuccessFully");
         loading(false);
       } else {
-        await _dialogService.showGlassyErrorDialog(updateUserRes.data);
+        await dialogService.showGlassyErrorDialog(updateUserRes.data);
       }
 
       // ignore: empty_catches
@@ -237,7 +239,7 @@ class ProfileViewModel extends BaseViewModel {
             debugPrint("Adopter Updated Success Fully");
             loading(false);
           } else {
-            await _dialogService.showGlassyErrorDialog(res.data);
+            await dialogService.showGlassyErrorDialog(res.data);
           }
         }
       case "donor":
@@ -251,7 +253,7 @@ class ProfileViewModel extends BaseViewModel {
             debugPrint("Donor Updated Success Fully");
             loading(false);
           } else {
-            await _dialogService.showGlassyErrorDialog(res.data);
+            await dialogService.showGlassyErrorDialog(res.data);
           }
         }
     }

@@ -1369,11 +1369,107 @@ class APIService implements IAPIService {
   }
 
   @override
+  Future<ApiStatus> getUserVerificationById(UserVerification user) async {
+    try {
+      // "user_id": "2a517e5e-4106-4c15-94c9-5123012e5a9f"
+      var response = await _httpService.postData(
+          "api/verification-users/verif-id", user.toJson());
+      if (response.statusCode == 404) {
+        return ApiStatus(data: null, errorCode: "PA0002");
+      }
+      if (response.statusCode == 401) {
+        return ApiStatus(data: null, errorCode: "PA0001");
+      }
+      ApiResponse res = ApiResponse.fromJson(json.decode(response.body));
+      if (response.statusCode == 200) {
+        if (res.success ?? true) {
+          return ApiStatus(
+            data: UserVerification.fromJson(res.data),
+            errorCode: "PA0004",
+          );
+        } else {
+          return ApiStatus(
+              data: ErrorResponse.fromJson(res.toJson()),
+              errorCode: res.status.toString());
+        }
+      } else {
+        return ApiStatus(
+            data: ErrorResponse.fromJson(res.toJson()),
+            errorCode: res.status.toString());
+      }
+    } on HttpException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0013");
+    } on FormatException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0007");
+    } on TimeoutException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0003");
+    } catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0006");
+    }
+  }
+
+  @override
   Future<ApiStatus> getUserPaymentByUserId(Payment payment) async {
     try {
       // "user_id": "2a517e5e-4106-4c15-94c9-5123012e5a9f"
       var response =
           await _httpService.postData("api/payment/user", payment.toJson());
+      if (response.statusCode == 404) {
+        return ApiStatus(data: null, errorCode: "PA0002");
+      }
+      if (response.statusCode == 401) {
+        return ApiStatus(data: null, errorCode: "PA0001");
+      }
+      ApiResponse res = ApiResponse.fromJson(json.decode(response.body));
+      if (response.statusCode == 200) {
+        if (res.success ?? true) {
+          return ApiStatus(
+            data: Payment.fromJson(res.data),
+            errorCode: "PA0004",
+          );
+        } else {
+          return ApiStatus(
+              data: ErrorResponse.fromJson(res.toJson()),
+              errorCode: res.status.toString());
+        }
+      } else {
+        return ApiStatus(
+            data: ErrorResponse.fromJson(res.toJson()),
+            errorCode: res.status.toString());
+      }
+    } on HttpException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0013");
+    } on FormatException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0007");
+    } on TimeoutException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0003");
+    } catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0006");
+    }
+  }
+
+  @override
+  Future<ApiStatus> getUserPaymentByPaymentId(Payment payment) async {
+    try {
+      // "user_id": "2a517e5e-4106-4c15-94c9-5123012e5a9f"
+      var response =
+          await _httpService.postData("api/payment/id", payment.toJson());
       if (response.statusCode == 404) {
         return ApiStatus(data: null, errorCode: "PA0002");
       }
@@ -1423,6 +1519,54 @@ class APIService implements IAPIService {
       // "user_id": "2a517e5e-4106-4c15-94c9-5123012e5a9f"
       var response = await _httpService.postData(
           "api/application/user", application.toJson());
+      if (response.statusCode == 404) {
+        return ApiStatus(data: null, errorCode: "PA0002");
+      }
+      if (response.statusCode == 401) {
+        return ApiStatus(data: null, errorCode: "PA0001");
+      }
+      ApiResponse res = ApiResponse.fromJson(json.decode(response.body));
+      if (response.statusCode == 200) {
+        if (res.success ?? true) {
+          return ApiStatus(
+            data: ApplicationModel.fromJson(res.data),
+            errorCode: "PA0004",
+          );
+        } else {
+          return ApiStatus(
+              data: ErrorResponse.fromJson(res.toJson()),
+              errorCode: res.status.toString());
+        }
+      } else {
+        return ApiStatus(
+            data: ErrorResponse.fromJson(res.toJson()),
+            errorCode: res.status.toString());
+      }
+    } on HttpException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0013");
+    } on FormatException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0007");
+    } on TimeoutException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0003");
+    } catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0006");
+    }
+  }
+
+  @override
+  Future<ApiStatus> getUserApplicationBYId(ApplicationModel application) async {
+    try {
+      // "user_id": "2a517e5e-4106-4c15-94c9-5123012e5a9f"
+      var response = await _httpService.postData(
+          "api/application/id", application.toJson());
       if (response.statusCode == 404) {
         return ApiStatus(data: null, errorCode: "PA0002");
       }
@@ -1590,6 +1734,10 @@ class APIService implements IAPIService {
       _globalService.logError("Error Occured!", e.toString(), s);
       debugPrint(e.toString());
       return ApiStatus(data: e, errorCode: "PA0013");
+    } on SocketException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0007");
     } on FormatException catch (e, s) {
       _globalService.logError("Error Occured!", e.toString(), s);
       debugPrint(e.toString());
@@ -4943,18 +5091,21 @@ abstract class IAPIService {
   Future<ApiStatus> addUserVerification(UserVerification user);
   Future<ApiStatus> updateUserVerification(UserVerification user);
   Future<ApiStatus> deleteUserVerification(UserVerification user);
+  Future<ApiStatus> getUserVerificationById(UserVerification user);
   Future<ApiStatus> getUserVerificationByUserId(UserVerification user);
   Future<ApiStatus> getUserVerifications();
   //<=========================== Payment Requests =======================>
   Future<ApiStatus> addPayment(Payment payment);
   Future<ApiStatus> deletePayment(Payment payment);
   Future<ApiStatus> getUserPaymentByUserId(Payment payment);
+  Future<ApiStatus> getUserPaymentByPaymentId(Payment payment);
   Future<ApiStatus> getPayments();
 
   //<=========================== Applications Requests =======================>
   Future<ApiStatus> addApplication(ApplicationModel application);
   Future<ApiStatus> deleteApplication(ApplicationModel application);
   Future<ApiStatus> getUserApplicationBYUserId(ApplicationModel application);
+  Future<ApiStatus> getUserApplicationBYId(ApplicationModel application);
   Future<ApiStatus> updateApplication(ApplicationModel application);
   Future<ApiStatus> getApplications();
 

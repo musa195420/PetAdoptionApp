@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:petadoption/helpers/locator.dart';
+import 'package:petadoption/models/response_models/meetup.dart';
 import 'package:petadoption/models/response_models/meetup_verification.dart';
 import 'package:petadoption/models/response_models/user_verification.dart';
 import 'package:petadoption/services/api_service.dart';
@@ -11,10 +12,10 @@ import '../services/dialog_service.dart';
 import '../services/navigation_service.dart';
 
 NavigationService get navigationService => locator<NavigationService>();
+IDialogService get dialogService => locator<IDialogService>();
 
 class UserVerificationViewModel extends BaseViewModel {
   IAPIService get _apiService => locator<IAPIService>();
-  IDialogService get _dialogService => locator<IDialogService>();
   GlobalService get _globalService => locator<GlobalService>();
   StartupViewModel get _startupViewModel => locator<StartupViewModel>();
 
@@ -40,7 +41,7 @@ class UserVerificationViewModel extends BaseViewModel {
         //   }
         // }
       } else {
-        await _dialogService.showApiError(userRes.data);
+        await dialogService.showApiError(userRes.data);
       }
     } catch (e, s) {
       _globalService.logError(
@@ -61,16 +62,23 @@ class UserVerificationViewModel extends BaseViewModel {
     notifyListeners();
   }
 
-  Future<void> addUserVerification(UserVerification verification) async {
+  Future<void> addUserVerification(
+      Meetup? meet, UserVerification verification) async {
     try {
       loading(true, loadingText: "Submitting Application");
       var addApp = await _apiService.addUserVerification(verification);
       if (addApp.errorCode == "PA0004") {
         verification =
             verification.copyWithModel(addApp.data as UserVerification);
+        var res = await _apiService.updateMeetupVerification(MeetupVerification(
+            meetupId: meet?.meetupId ?? "",
+            verificationId: verification.verificationId ?? ""));
+        if (res.errorCode == "PA0004") {
+          debugPrint("Fetched");
+        }
         _uploadImages(verification);
       } else {
-        await _dialogService.showApiError(addApp.data);
+        await dialogService.showApiError(addApp.data);
       }
     } catch (e) {
       loading(false);

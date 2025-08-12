@@ -1,11 +1,11 @@
 import 'package:petadoption/models/hive_models/user.dart';
 
 class ApplicationModel {
+  String? verificationStatus;
   String? applicationId;
   String? userId;
   String? profession;
   String? reason;
-  String? verificationStatus;
   String? createdAt;
   String? meetupId; // New field
   User? user;

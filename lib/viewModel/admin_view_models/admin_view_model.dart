@@ -17,6 +17,9 @@ class AdminViewModel extends ChangeNotifier {
     5: [
       'Application',
     ],
+    6: [
+      'Meetup Verification',
+    ],
   };
 
   final List<SelectionBox> boxes = [
@@ -32,6 +35,10 @@ class AdminViewModel extends ChangeNotifier {
         id: 5,
         name: "Application Config",
         image: "assets/images/application.png"),
+    SelectionBox(
+        id: 6,
+        name: "Meetup Verification",
+        image: "assets/images/user_verif.png"),
   ];
 
   void toggleBox(int id) {
@@ -107,13 +114,18 @@ class AdminViewModel extends ChangeNotifier {
 
       case 'secure meetup':
         {
-          await _navigationService.pushNamedAndRemoveUntil(Routes.secureAdmin,
-              args: TransitionType.slideRight);
+          await _navigationService.pushNamed(
+              data: null, Routes.secureAdmin, args: TransitionType.slideRight);
         }
       case 'healthinfo config':
         {
-          await _navigationService.pushNamedAndRemoveUntil(Routes.healthAdmin,
-              args: TransitionType.slideRight);
+          await _navigationService.pushNamed(
+              data: null, Routes.healthAdmin, args: TransitionType.slideRight);
+        }
+      case 'meetup verification':
+        {
+          await _navigationService.pushNamed(
+              data: null, Routes.meetupverify, args: TransitionType.slideRight);
         }
     }
   }
