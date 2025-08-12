@@ -289,6 +289,10 @@ class PetAdminViewModel extends BaseViewModel {
     notifyListeners();
   }
 
+  bool isAdmin() {
+    return _globalService.getuser()?.role.toString().toLowerCase() == "admin";
+  }
+
   List<String> approvalStatus = ["Approved", "Pending", "Rejected"];
   String isApproved = "Approved";
 

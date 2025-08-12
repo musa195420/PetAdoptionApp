@@ -6,362 +6,276 @@ import 'package:flutter/material.dart';
 import 'package:petadoption/custom_widgets/default_text_input.dart';
 import 'package:petadoption/custom_widgets/loading_indicators.dart';
 import 'package:petadoption/custom_widgets/stateful_wrapper.dart';
+import 'package:petadoption/helpers/colors.dart';
 import 'package:petadoption/models/response_models/secure_meetup.dart';
 import 'package:provider/provider.dart';
 
 import '../../../viewModel/admin_view_models/secureMeetup_admin_view_model.dart';
 
-TextEditingController phoneNumberController = TextEditingController();
-TextEditingController currentAddressController = TextEditingController();
-TextEditingController meetupIdController = TextEditingController();
-TextEditingController rejectionReasonController = TextEditingController();
-
-class SecureEdit extends StatelessWidget {
+class SecureEdit extends StatefulWidget {
   final SecureMeetup meetup;
-  SecureEdit({
-    super.key,
-    required this.meetup,
-  });
-  final GlobalKey<FormState> formKey2 = GlobalKey<FormState>();
+  const SecureEdit({super.key, required this.meetup});
+
+  @override
+  State<SecureEdit> createState() => _SecureEditState();
+}
+
+class _SecureEditState extends State<SecureEdit> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
+  late TextEditingController phoneNumberController;
+  late TextEditingController currentAddressController;
+  late TextEditingController meetupIdController;
+  late TextEditingController rejectionReasonController;
+
+  @override
+  void initState() {
+    super.initState();
+    final viewModel = context.read<SecureMeetupAdminViewModel>();
+    viewModel.setSecureMeetup(widget.meetup);
+
+    phoneNumberController =
+        TextEditingController(text: widget.meetup.phoneNumber ?? "");
+    currentAddressController =
+        TextEditingController(text: widget.meetup.currentAddress ?? "");
+    meetupIdController =
+        TextEditingController(text: widget.meetup.meetupId ?? "");
+    rejectionReasonController =
+        TextEditingController(text: widget.meetup.rejectionReason ?? "");
+  }
+
+  @override
+  void dispose() {
+    phoneNumberController.dispose();
+    currentAddressController.dispose();
+    meetupIdController.dispose();
+    rejectionReasonController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    SecureMeetupAdminViewModel viewModel =
-        context.watch<SecureMeetupAdminViewModel>();
-    viewModel.setSecureMeetup(meetup);
-    phoneNumberController =
-        TextEditingController(text: viewModel.meetup!.phoneNumber ?? "");
-    currentAddressController =
-        TextEditingController(text: viewModel.meetup!.currentAddress ?? "");
-    meetupIdController =
-        TextEditingController(text: viewModel.meetup!.meetupId ?? "");
-    rejectionReasonController =
-        TextEditingController(text: viewModel.meetup!.rejectionReason ?? "");
+    final viewModel = context.watch<SecureMeetupAdminViewModel>();
 
-    return StatefulWrapper(
-      onInit: () {
-        // viewModel.isApproved = meetup.isApproved ?? "Pending";
-      },
-      onDispose: () {
-        meetupIdController.dispose();
-        phoneNumberController.dispose();
-        currentAddressController.dispose();
-      },
-      child: Scaffold(
-        key: scaffoldKey,
-        body: Stack(
-          fit: StackFit.expand,
-          children: [
-            Image.asset(
-              'assets/images/bg.png',
-              fit: BoxFit.cover,
-            ),
-            SafeArea(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                    spacing: 5,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        padding: EdgeInsets.all(3),
-                        decoration: BoxDecoration(
-                          color: const Color.fromARGB(255, 255, 247, 240),
-                          borderRadius: BorderRadius.circular(16),
-                          boxShadow: const [
-                            BoxShadow(
-                              color: Colors.black12,
-                              blurRadius: 10,
-                              offset: Offset(0, 4),
-                            ),
-                          ],
-                        ),
-                        child: Column(
-                          children: [
-                            Container(
-                                padding: EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(
-                                      width: 3,
-                                      color: viewModel.isEdit
-                                          ? Colors.redAccent
-                                          : Colors.grey),
-                                ),
-                                child: Column(
-                                  spacing: 10,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        GestureDetector(
-                                            onTap: () {
-                                              viewModel.setEdit();
-                                            },
-                                            child: Icon(
-                                              Icons.edit_document,
-                                              size: 30,
-                                              color: viewModel.isEdit
-                                                  ? Colors.deepOrange
-                                                  : Colors.grey,
-                                            )),
-                                      ],
-                                    ),
-                                    _buildCharacterImage(
-                                        viewModel,
-                                        viewModel.proofPicPath,
-                                        meetup.proofPicUrl,
-                                        "proofPicPath",
-                                        "Proof Picture"),
-                                    _buildCharacterImage(
-                                        viewModel,
-                                        viewModel.adopterIdPath,
-                                        meetup.adopterIdFrontUrl,
-                                        "adopterIdPath",
-                                        "Adopter Front Identity"),
-                                    _buildCharacterImage(
-                                        viewModel,
-                                        viewModel.adopterIdBackPath,
-                                        meetup.adopterIdBackUrl,
-                                        "adopterIdBackPath",
-                                        "Adopter Back Identity"),
-                                    _buildUpdateSecure(viewModel),
-                                  ],
-                                )),
-                            _buildAdminEdit(viewModel),
-                            const SizedBox(height: 10),
-                            const SizedBox(height: 20),
-                            InkWell(
-                              onTap: () {
-                                if (formKey.currentState!.validate()) {
-                                  viewModel.updateSecureMeetup(
-                                      phoneNumberController.text,
-                                      currentAddressController.text,
-                                      rejectionReasonController.text,
-                                      viewModel.meetup!);
-                                }
-                              },
-                              child: _buildUpdateStatusButton(),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+    return Scaffold(
+      backgroundColor: const Color(0xFFFAF4F0),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            spacing: 20,
+            children: [
+              _buildHeader(viewModel),
+              _buildCharacterImage(
+                viewModel,
+                viewModel.proofPicPath,
+                widget.meetup.proofPicUrl,
+                'assets/images/donor.png',
+                "proofPicPath",
+                Icons.verified_user,
+                "Proof Picture — Upload a photo of the pet with the adopter",
               ),
-            ),
-          ],
+              _buildCharacterImage(
+                viewModel,
+                viewModel.adopterIdPath,
+                widget.meetup.adopterIdFrontUrl,
+                'assets/images/user_verif.png',
+                "adopterIdPath",
+                Icons.credit_card,
+                "Adopter Front CNIC Card",
+              ),
+              _buildCharacterImage(
+                viewModel,
+                viewModel.adopterIdBackPath,
+                widget.meetup.adopterIdBackUrl,
+                'assets/images/user_verif.png',
+                "adopterIdBackPath",
+                Icons.credit_card_outlined,
+                "Adopter Back CNIC Card",
+              ),
+              _buildUpdateForm(viewModel),
+              const SizedBox(height: 10),
+              _buildUpdateButton(viewModel),
+              if (viewModel.isAdmin()) _buildAdminEdit(viewModel)
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildUpdateSecure(SecureMeetupAdminViewModel viewModel) {
+  Widget _buildHeader(SecureMeetupAdminViewModel viewModel) {
+    return Row(
+      children: [
+        IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.brown),
+          onPressed: () => Navigator.pop(context),
+        ),
+        const Spacer(),
+        GestureDetector(
+          onTap: viewModel.setEdit,
+          child: Icon(
+            Icons.edit,
+            size: 30,
+            color: viewModel.isEdit ? Colors.brown : Colors.grey,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCharacterImage(
+    SecureMeetupAdminViewModel viewModel,
+    String? path,
+    String? url,
+    String defaultImage,
+    String type,
+    IconData icon,
+    String heading,
+  ) {
+    return Container(
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: const [
+          BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 2)),
+        ],
+      ),
+      child: Column(
+        spacing: 10,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(icon, color: Colors.brown, size: 28),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  heading,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.brown,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Center(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: path != null
+                  ? Image.file(File(path),
+                      height: 150, width: double.infinity, fit: BoxFit.cover)
+                  : (url != null && url.isNotEmpty)
+                      ? CachedNetworkImage(
+                          imageUrl: url,
+                          height: 150,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                          placeholder: (context, _) =>
+                              const Center(child: CircularProgressIndicator()),
+                          errorWidget: (_, __, ___) => Image.asset(
+                            defaultImage,
+                            height: 120,
+                            fit: BoxFit.contain,
+                          ),
+                        )
+                      : Image.asset(
+                          defaultImage,
+                          height: 120,
+                          fit: BoxFit.contain,
+                        ),
+            ),
+          ),
+          Row(
+            children: [
+              ElevatedButton.icon(
+                onPressed: viewModel.isEdit
+                    ? () => viewModel.savePetImagePath(type)
+                    : null,
+                icon: const Icon(Icons.upload_file),
+                label: Text(path != null ? "Change Image" : "Upload Image"),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.brown,
+                  foregroundColor: Colors.white,
+                ),
+              ),
+              if (path != null) ...[
+                const SizedBox(width: 10),
+                IconButton(
+                  onPressed: viewModel.isEdit
+                      ? () => viewModel.removeImagePath(type)
+                      : null,
+                  icon: const Icon(Icons.delete, color: Colors.red),
+                ),
+              ],
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _buildUpdateForm(SecureMeetupAdminViewModel viewModel) {
     return Form(
       key: formKey,
       child: Column(
-        spacing: 10,
+        spacing: 15,
         children: [
-          const SizedBox(height: 15),
           DefaultTextInput(
             controller: meetupIdController,
-            labelText: "MeetupId",
-            hintText: "MeetupId",
-            enabled: viewModel.isEdit,
+            labelText: "Meetup ID",
+            hintText: "Auto-generated ID",
             readOnly: true,
-            icon: Icons.pets_outlined,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Enter YourMeetupId Please';
-              }
-              return null;
-            },
+            icon: Icons.pets,
           ),
           DefaultTextInput(
             controller: currentAddressController,
-            hintText: "Current Address",
             labelText: "Current Address",
+            hintText: "Enter adopter's current address",
             enabled: viewModel.isEdit,
-            icon: Icons.animation_outlined,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Enter Current Address Of Adopter Please';
-              }
-              return null;
-            },
+            icon: Icons.home,
+            validator: (value) =>
+                value!.isEmpty ? "Please enter current address" : null,
           ),
           DefaultTextInput(
             controller: phoneNumberController,
-            readOnly: true,
-            hintText: "Phone",
-            labelText: "Phone",
+            labelText: "Phone Number",
+            hintText: "Enter adopter's phone number",
             enabled: viewModel.isEdit,
+            icon: Icons.phone,
             keyboardType: TextInputType.phone,
-            icon: Icons.mobile_friendly,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Enter Adopter Phone Number Please';
-              }
-
-              return null;
-            },
+            validator: (value) =>
+                value!.isEmpty ? "Please enter phone number" : null,
           ),
         ],
       ),
     );
   }
 
-  Widget _buildCharacterImage(SecureMeetupAdminViewModel viewModel,
-      String? path, String? url, String type, String heading) {
-    return Column(
-      spacing: 5,
-      children: [
-        Container(
-          padding: EdgeInsets.all(5),
-          decoration: BoxDecoration(
-            color: viewModel.isEdit
-                ? const Color.fromARGB(255, 146, 61, 5)
-                : Colors.grey,
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                Icons.person_3_rounded,
-                color: Colors.white,
-                size: 30,
-              ),
-              Text(
-                heading,
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 22,
-                    fontWeight: FontWeight.w500),
-              ),
-            ],
-          ),
-        ),
-
-// ...
-
-        Container(
-          padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-          decoration: BoxDecoration(
-            color: viewModel.isEdit ? Colors.white : Colors.grey,
-            border: Border.all(
-              color: const Color.fromARGB(255, 255, 247, 240),
-              width: 2,
-            ),
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: path != null
-              ? ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: Image.file(
-                    File(path),
-                    height: 150,
-                    width: 530,
-                    fit: BoxFit.cover,
-                  ),
-                )
-              : url != null && url.isNotEmpty
-                  ? ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: CachedNetworkImage(
-                        imageUrl: url,
-                        height: 150,
-                        width: 530,
-                        fit: BoxFit.cover,
-                        placeholder: (context, url) => SizedBox(
-                          height: 150,
-                          width: 530,
-                          child:SizedBox(
-                      width: 80,
-                      height: 80,
-                      child: Center(
-                          child: FadingCircularDots(
-                        count: 10,
-                        radius: 20,
-                        dotRadius: 4,
-                        duration: Duration(milliseconds: 1200),
-                      )),
-                    ),
-                        ),
-                        errorWidget: (context, url, error) => Image.asset(
-                          'assets/images/signup.png',
-                          height: 120,
-                          fit: BoxFit.contain,
-                        ),
-                      ),
-                    )
-                  : Image.asset(
-                      'assets/images/signup.png',
-                      height: 120,
-                      fit: BoxFit.contain,
-                    ),
-        ),
-
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                color: viewModel.isEdit
-                    ? (path != null ? Colors.brown : Colors.deepOrange)
-                    : Colors.grey,
-                borderRadius: BorderRadius.circular(30),
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 5),
-              child: GestureDetector(
-                onTap: () async {
-                  if (viewModel.isEdit) {
-                    await viewModel.savePetImagePath(type);
-                  }
-                },
-                child: Text(
-                  path != null || path != null ? "Change Image" : "Add Image",
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ),
-            if (path != null)
-              GestureDetector(
-                onTap: () {
-                  if (viewModel.isEdit) {
-                    viewModel.removeImagePath(type);
-                  }
-                },
-                child: Icon(
-                  Icons.delete,
-                  color: viewModel.isEdit ? Colors.deepOrange : Colors.grey,
-                ),
-              )
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildUpdateStatusButton() {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(60, 10, 60, 10),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(50),
-        color: Colors.deepOrange,
-      ),
-      child: const Text(
-        "Update Status",
-        style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
+  Widget _buildUpdateButton(SecureMeetupAdminViewModel viewModel) {
+    return ElevatedButton.icon(
+      onPressed: () {
+        if (formKey.currentState!.validate()) {
+          viewModel.updateSecureMeetup(
+            phoneNumberController.text,
+            currentAddressController.text,
+            rejectionReasonController.text,
+            viewModel.meetup!,
+          );
+        }
+      },
+      icon: const Icon(Icons.save),
+      label: const Text("Update Status"),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.brown,
+        foregroundColor: Colors.white,
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
       ),
     );
   }
@@ -399,7 +313,7 @@ class SecureEdit extends StatelessWidget {
                 ),
                 InkWell(
                     onTap: () async {
-                      await viewModel.getMeetup(meetup.meetupId ?? "");
+                      await viewModel.getMeetup(widget.meetup.meetupId ?? "");
                     },
                     child: Icon(
                       Icons.link_rounded,

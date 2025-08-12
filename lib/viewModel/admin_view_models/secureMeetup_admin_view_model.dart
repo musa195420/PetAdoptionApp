@@ -42,6 +42,9 @@ class SecureMeetupAdminViewModel extends BaseViewModel {
   String? adopterIdBackPath;
   List<SecureMeetup>? secureMeetups;
   List<SecureMeetup>? filteredSecure;
+  bool isAdmin() {
+    return _globalService.getuser()?.role.toString().toLowerCase() == "admin";
+  }
 
   bool isActive = false;
 

@@ -8,348 +8,250 @@ import 'package:provider/provider.dart';
 
 import '../../../viewModel/admin_view_models/secureMeetup_admin_view_model.dart';
 
-TextEditingController locationController = TextEditingController();
-TextEditingController adopterController = TextEditingController();
-TextEditingController donorController = TextEditingController();
-TextEditingController petController = TextEditingController();
-
-class MeetupEdit extends StatelessWidget {
+class MeetupEdit extends StatefulWidget {
   final Meetup meetup;
-  MeetupEdit({
-    super.key,
-    required this.meetup,
-  });
-  final GlobalKey<FormState> formKey2 = GlobalKey<FormState>();
+  const MeetupEdit({super.key, required this.meetup});
+
+  @override
+  State<MeetupEdit> createState() => _MeetupEditState();
+}
+
+class _MeetupEditState extends State<MeetupEdit> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
+  late TextEditingController locationController;
+  late TextEditingController adopterController;
+  late TextEditingController donorController;
+  late TextEditingController petController;
+
+  @override
+  void initState() {
+    super.initState();
+    final viewModel = context.read<SecureMeetupAdminViewModel>();
+    viewModel.setMeetup(widget.meetup);
+
+    locationController =
+        TextEditingController(text: viewModel.meets?.location ?? "");
+    adopterController =
+        TextEditingController(text: widget.meetup.adopterEmail ?? "");
+    donorController =
+        TextEditingController(text: widget.meetup.donorEmail ?? "");
+    petController = TextEditingController(text: viewModel.meets?.petName ?? "");
+  }
+
+  @override
+  void dispose() {
+    locationController.dispose();
+    adopterController.dispose();
+    donorController.dispose();
+    petController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    SecureMeetupAdminViewModel viewModel =
-        context.watch<SecureMeetupAdminViewModel>();
-    viewModel.setMeetup(meetup);
-    locationController =
-        TextEditingController(text: viewModel.meets!.location ?? "");
-    adopterController =
-        TextEditingController(text: viewModel.meets!.adopterName ?? "");
-    donorController =
-        TextEditingController(text: viewModel.meets!.donorName ?? "");
-    petController = TextEditingController(text: viewModel.meets!.petName ?? "");
+    final viewModel = context.watch<SecureMeetupAdminViewModel>();
 
-    return StatefulWrapper(
-      onInit: () {
-        // viewModel.isApproved = meetup.isApproved ?? "Pending";
-      },
-      onDispose: () {
-        petController.dispose();
-        locationController.dispose();
-        adopterController.dispose();
-      },
-      child: Scaffold(
-        key: scaffoldKey,
-        body: Stack(
-          fit: StackFit.expand,
-          children: [
-            Image.asset(
-              'assets/images/bg.png',
-              fit: BoxFit.cover,
-            ),
-            SafeArea(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                    spacing: 5,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        "Meetup Information",
-                        style: TextStyle(
-                            color: const Color.fromARGB(255, 146, 61, 5),
-                            fontSize: 30,
-                            fontWeight: FontWeight.w700),
-                      ),
-                      Container(
-                        padding: EdgeInsets.all(3),
-                        decoration: BoxDecoration(
-                          color: const Color.fromARGB(255, 255, 247, 240),
-                          borderRadius: BorderRadius.circular(16),
-                          boxShadow: const [
-                            BoxShadow(
-                              color: Colors.black12,
-                              blurRadius: 10,
-                              offset: Offset(0, 4),
-                            ),
-                          ],
-                        ),
-                        child: Column(
-                          children: [
-                            Container(
-                                padding: EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(
-                                      width: 3,
-                                      color: viewModel.isEdit
-                                          ? Colors.redAccent
-                                          : Colors.grey),
-                                ),
-                                child: Column(
-                                  spacing: 10,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        GestureDetector(
-                                            onTap: () {
-                                              viewModel.setEdit();
-                                            },
-                                            child: Icon(
-                                              Icons.edit_document,
-                                              size: 30,
-                                              color: viewModel.isEdit
-                                                  ? Colors.deepOrange
-                                                  : Colors.grey,
-                                            )),
-                                      ],
-                                    ),
-                                    _buildUpdateSecure(viewModel),
-                                  ],
-                                )),
-                            _buildbox(viewModel),
-                            const SizedBox(height: 10),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
+    return Scaffold(
+      backgroundColor: const Color(0xFFFAF4F0),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            spacing: 20,
+            children: [
+              _buildHeader(viewModel),
+              _buildUpdateForm(viewModel),
+              _buildStatusBoxes(viewModel),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildbox(SecureMeetupAdminViewModel viewModel) {
-    final bool isAdopterAccepted =
-        viewModel.meets!.isAcceptedByAdopter ?? false;
-    final bool isDonorAccepted = viewModel.meets!.isAcceptedByDonor ?? false;
-
-    Widget buildStatusTile({required bool isAccepted, required String title}) {
-      final Color statusColor = isAccepted ? Colors.green : Colors.red;
-      final IconData statusIcon =
-          isAccepted ? Icons.check_circle : Icons.cancel;
-      final String statusText = isAccepted ? "Accepted" : "Rejected";
-
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                title,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
+  Widget _buildHeader(SecureMeetupAdminViewModel viewModel) {
+    return Row(
+      children: [
+        IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.brown),
+          onPressed: () => Navigator.pop(context),
+        ),
+        const Spacer(),
+        const Text(
+          "Meetup Information",
+          style: TextStyle(
+            color: Color(0xFF923D05),
+            fontSize: 22,
+            fontWeight: FontWeight.w700,
           ),
-          const SizedBox(height: 8),
-          Container(
-            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 3),
-            decoration: BoxDecoration(
-              color: statusColor.withOpacity(0.1),
-              border: Border.all(color: statusColor),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(statusIcon, color: statusColor, size: 36),
-                const SizedBox(height: 8),
-                Text(
-                  statusText,
-                  style: TextStyle(
-                    color: statusColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                ),
-              ],
-            ),
+        ),
+        const Spacer(),
+        GestureDetector(
+          onTap: viewModel.setEdit,
+          child: Icon(
+            Icons.edit,
+            size: 26,
+            color: viewModel.isEdit ? Colors.deepOrange : Colors.grey,
           ),
-        ],
-      );
-    }
-
-    return Container(
-      padding: const EdgeInsets.all(16),
-      child: Row(
-        children: [
-          Expanded(
-            child: buildStatusTile(
-              isAccepted: isAdopterAccepted,
-              title: "Adopter",
-            ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: buildStatusTile(
-              isAccepted: isDonorAccepted,
-              title: "Donor",
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
-  Widget _buildUpdateSecure(SecureMeetupAdminViewModel viewModel) {
-    return Form(
-      key: formKey,
-      child: Column(
-        spacing: 10,
-        children: [
-          const SizedBox(height: 15),
-          Row(
+  Widget _buildUpdateForm(SecureMeetupAdminViewModel viewModel) {
+    return Card(
+      color: Colors.white,
+      elevation: 3,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(14),
+        child: Form(
+          key: formKey,
+          child: Column(
+            spacing: 12,
             children: [
-              Expanded(
-                child: DefaultTextInput(
-                  controller: petController,
-                  labelText: "Pet Name",
-                  hintText: "Pet Name",
-                  enabled: viewModel.isEdit,
-                  icon: Icons.pets_outlined,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Enter Your Pet Name Please';
-                    }
-                    return null;
-                  },
-                ),
-              ),
-              const SizedBox(width: 5),
-              GestureDetector(
-                onTap: () async {
+              _buildTextWithLink(
+                controller: petController,
+                label: "Pet Name",
+                icon: Icons.pets_outlined,
+                enabled: viewModel.isEdit,
+                onTap: () {
                   if (viewModel.isEdit) {
                     viewModel.showPetInfo(viewModel.meets!.petId);
                   }
                 },
-                child: Container(
-                  padding: const EdgeInsets.all(15),
-                  decoration: BoxDecoration(
-                    color: viewModel.isEdit ? Colors.brown : Colors.grey,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Icon(
-                    Icons.insert_link,
-                    color: Colors.white,
-                    size: 25,
-                  ),
-                ),
               ),
-            ],
-          ),
-          Row(
-            children: [
-              Expanded(
-                child: DefaultTextInput(
-                  controller: donorController,
-                  labelText: "Donor Name",
-                  hintText: "Donor Name",
-                  enabled: viewModel.isEdit,
-                  icon: Icons.pets_outlined,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Enter Your Donor Name Please';
-                    }
-                    return null;
-                  },
-                ),
-              ),
-              const SizedBox(width: 5),
-              GestureDetector(
-                onTap: () async {
+              _buildTextWithLink(
+                controller: donorController,
+                label: "Donor Name",
+                icon: Icons.volunteer_activism,
+                enabled: viewModel.isEdit,
+                onTap: () {
                   if (viewModel.isEdit) {
                     viewModel.getUserInfo(viewModel.meets!.donorId!);
                   }
                 },
-                child: Container(
-                  padding: const EdgeInsets.all(15),
-                  decoration: BoxDecoration(
-                    color: viewModel.isEdit ? Colors.brown : Colors.grey,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Icon(
-                    Icons.insert_link,
-                    color: Colors.white,
-                    size: 25,
-                  ),
-                ),
               ),
-            ],
-          ),
-          Row(
-            children: [
-              Expanded(
-                child: DefaultTextInput(
-                  controller: adopterController,
-                  hintText: "Adopter Name",
-                  labelText: "Adopter Name",
-                  enabled: viewModel.isEdit,
-                  icon: Icons.animation_outlined,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Enter Adopter Name Please';
-                    }
-                    return null;
-                  },
-                ),
-              ),
-              const SizedBox(width: 5),
-              GestureDetector(
-                onTap: () async {
+              _buildTextWithLink(
+                controller: adopterController,
+                label: "Adopter Name",
+                icon: Icons.person,
+                enabled: viewModel.isEdit,
+                onTap: () {
                   if (viewModel.isEdit) {
                     viewModel.getUserInfo(viewModel.meets!.adopterId!);
                   }
                 },
-                child: Container(
-                  padding: const EdgeInsets.all(15),
-                  decoration: BoxDecoration(
-                    color: viewModel.isEdit ? Colors.brown : Colors.grey,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Icon(
-                    Icons.insert_link,
-                    color: Colors.white,
-                    size: 25,
-                  ),
-                ),
+              ),
+              DefaultTextInput(
+                controller: locationController,
+                labelText: "Meetup Location",
+                hintText: "Enter meetup location",
+                icon: Icons.location_on,
+                enabled: viewModel.isEdit,
+                validator: (value) =>
+                    value!.isEmpty ? "Please enter location" : null,
               ),
             ],
           ),
-          DefaultTextInput(
-            controller: locationController,
-            readOnly: true,
-            hintText: "Meetup Location",
-            labelText: "Meetup Location",
-            enabled: viewModel.isEdit,
-            icon: Icons.mobile_friendly,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Enter Meetup Location Please';
-              }
+        ),
+      ),
+    );
+  }
 
-              return null;
-            },
+  Widget _buildTextWithLink({
+    required TextEditingController controller,
+    required String label,
+    required IconData icon,
+    required bool enabled,
+    required VoidCallback onTap,
+  }) {
+    return Row(
+      children: [
+        Expanded(
+          child: DefaultTextInput(
+            controller: controller,
+            labelText: label,
+            hintText: label,
+            icon: icon,
+            enabled: enabled,
+            validator: (value) => value!.isEmpty ? "Please enter $label" : null,
+          ),
+        ),
+        const SizedBox(width: 6),
+        GestureDetector(
+          onTap: onTap,
+          child: Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: enabled ? Colors.brown : Colors.grey,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: const Icon(Icons.link, color: Colors.white),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStatusBoxes(SecureMeetupAdminViewModel viewModel) {
+    return Row(
+      children: [
+        Expanded(
+          child: _statusTile(
+            title: "Adopter",
+            isAccepted: viewModel.meets?.isAcceptedByAdopter ?? false,
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: _statusTile(
+            title: "Donor",
+            isAccepted: viewModel.meets?.isAcceptedByDonor ?? false,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _statusTile({required String title, required bool isAccepted}) {
+    final Color statusColor = isAccepted ? Colors.green : Colors.red;
+    final IconData statusIcon = isAccepted ? Icons.check_circle : Icons.cancel;
+    final String statusText = isAccepted ? "Accepted" : "Rejected";
+
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 10),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            statusColor.withOpacity(0.15),
+            statusColor.withOpacity(0.05),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        border: Border.all(color: statusColor),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        children: [
+          Text(
+            title,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Icon(statusIcon, color: statusColor, size: 36),
+          const SizedBox(height: 4),
+          Text(
+            statusText,
+            style: TextStyle(
+              color: statusColor,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ],
       ),

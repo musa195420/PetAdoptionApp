@@ -7,6 +7,7 @@ import 'package:petadoption/models/request_models/delete_user.dart';
 import 'package:petadoption/models/response_models/meetup.dart';
 import 'package:petadoption/models/response_models/meetup_verification.dart';
 import 'package:petadoption/models/response_models/payment.dart';
+import 'package:petadoption/models/response_models/secure_meetup.dart';
 import 'package:petadoption/models/response_models/user_verification.dart';
 import 'package:petadoption/services/api_service.dart';
 import 'package:petadoption/services/dialog_service.dart';
@@ -21,6 +22,7 @@ UserAdminViewModel get _userModel => locator<UserAdminViewModel>();
 NavigationService get navigationService => locator<NavigationService>();
 
 class MeetupVerificationViewModel extends BaseViewModel {
+  UserAdminViewModel get _userModel => locator<UserAdminViewModel>();
   IAPIService get _apiService => locator<IAPIService>();
   IDialogService get _dialogService => locator<IDialogService>();
   GlobalService get _globalService => locator<GlobalService>();
@@ -33,6 +35,10 @@ class MeetupVerificationViewModel extends BaseViewModel {
 
   bool isAdmin() {
     return _globalService.getuser()?.role.toString().toLowerCase() == "admin";
+  }
+
+  showLink(String userId) {
+    _userModel.showLink(userId, isAdmin: isAdmin());
   }
 
   Future<ApplicationModel?> getApplicationInfo(String applicationId) async {
@@ -203,7 +209,17 @@ class MeetupVerificationViewModel extends BaseViewModel {
   updateMeetupVerification(MeetupVerification meetup) async {
     var res = await _apiService.updateMeetupVerification(meetup);
     if (res.errorCode == "PA0004") {
-      debugPrint("Update verifictation Status");
+      if (meetup.application?.verificationStatus.toString().toLowerCase() ==
+              "approved" ||
+          meetup.paymentId != null) {
+        var res = await _apiService.addSecureMeetup(SecureMeetup(
+            meetupId: meetup.meetupId,
+            approval: meetup.adopterVerificationStatus));
+        if (res.errorCode == "PA0004") {
+          debugPrint("Secure Meetup Status");
+        }
+        debugPrint("Update verifictation Status");
+      }
     }
   }
 

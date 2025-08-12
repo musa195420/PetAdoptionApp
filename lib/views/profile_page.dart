@@ -13,6 +13,7 @@ import 'package:petadoption/models/request_models/application_model.dart';
 import 'package:petadoption/models/response_models/meetup.dart';
 import 'package:petadoption/models/response_models/payment.dart';
 import 'package:petadoption/models/response_models/pet_response.dart';
+import 'package:petadoption/models/response_models/secure_meetup.dart';
 import 'package:petadoption/models/response_models/user_profile.dart';
 import 'package:petadoption/models/response_models/user_verification.dart';
 import 'package:petadoption/services/navigation_service.dart';
@@ -437,6 +438,14 @@ class _ProfilePageState extends State<ProfilePage> {
                     .map((meet) => _buildMeetupCard(meet))
                     .toList(),
               ),
+            if (viewModel.securemeets.isNotEmpty)
+              _buildExpandableCard(
+                icon: Icons.lock,
+                title: "Secure Meetup",
+                children: viewModel.securemeets
+                    .map((secure) => _buildSecureMeetupCard(secure))
+                    .toList(),
+              ),
           ],
         );
       },
@@ -570,6 +579,146 @@ class _ProfilePageState extends State<ProfilePage> {
                   ],
                 )
               ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSecureMeetupCard(SecureMeetup secureMeetup) {
+    final info = secureMeetup.meetupinfo;
+
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 10),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: const Color.fromARGB(255, 255, 244, 236),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.15),
+            blurRadius: 6,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        spacing: 5,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // ---------- PET NAME ----------
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(2),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(100),
+                  color: const Color.fromARGB(255, 254, 170, 3),
+                ),
+                child: const Icon(Icons.pets_sharp),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  info?.petName ?? "Unknown Pet",
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF3E2723),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+
+          // ---------- TIME ----------
+          _iconText(Icons.timelapse_rounded, info?.time ?? "No Time"),
+
+          // ---------- LOCATION ----------
+          FutureBuilder<String?>(
+            future: CurrentLocation().getAddressFromLatLngString(
+              info?.latitude ?? "",
+              info?.longitude ?? "",
+            ),
+            builder: (context, snapshot) {
+              return _iconText(
+                Icons.location_on,
+                snapshot.data ?? "Loading location...",
+              );
+            },
+          ),
+
+          // ---------- ADOPTER ----------
+          Row(
+            children: [
+              Expanded(
+                  child: _iconText(Icons.person, info?.adopterEmail ?? "")),
+              InkWell(
+                onTap: () {
+                  // Protection link action
+                },
+                child: Tooltip(
+                  message: "Protection Link",
+                  child: Icon(
+                    Icons.security,
+                    color: Colors.green.shade600,
+                    size: 20,
+                  ),
+                ),
+              ),
+            ],
+          ),
+
+          // ---------- DONOR ----------
+          _iconText(Icons.volunteer_activism, info?.donorEmail ?? ""),
+
+          const SizedBox(height: 14),
+
+          // ---------- START MEETUP BUTTON ----------
+          Center(
+            child: ElevatedButton.icon(
+              onPressed: () {
+                viewModel.gotoEditSecure(secureMeetup);
+              },
+              icon: const Icon(Icons.handshake, size: 24),
+              label: const Text(
+                'Start Meetup',
+                style: TextStyle(fontSize: 18),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color.fromARGB(255, 53, 30, 14),
+                foregroundColor: Colors.white,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                elevation: 6,
+                shadowColor: Colors.brown.shade200,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _iconText(IconData icon, String text) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        children: [
+          Icon(icon, color: const Color(0xFF3E2723), size: 20),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              text,
+              style: const TextStyle(
+                fontSize: 15,
+                color: Color(0xFF3E2723),
+              ),
             ),
           ),
         ],

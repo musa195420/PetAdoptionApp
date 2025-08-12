@@ -135,14 +135,9 @@ class _PetEditModalState extends State<PetEditModal> {
                             ],
                           ),
                         ),
-                        if ((viewModel
-                                    .getUser()
-                                    ?.role
-                                    .toString()
-                                    .toLowerCase() ??
-                                '') ==
-                            'admin')
-                          _buildAdminEdit(viewModel),
+                        viewModel.isAdmin()
+                            ? _buildAdminEdit(viewModel)
+                            : SizedBox(),
                         const SizedBox(height: 10),
                         const SizedBox(height: 20),
                         InkWell(

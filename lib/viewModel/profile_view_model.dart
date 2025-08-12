@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:petadoption/helpers/current_location.dart';
+import 'package:petadoption/helpers/error_handler.dart';
 import 'package:petadoption/helpers/locator.dart';
 import 'package:petadoption/models/request_models/application_model.dart';
 import 'package:petadoption/models/response_models/meetup.dart';
 import 'package:petadoption/models/response_models/meetup_verification.dart';
 import 'package:petadoption/models/response_models/payment.dart';
 import 'package:petadoption/models/response_models/pet_response.dart';
+import 'package:petadoption/models/response_models/secure_meetup.dart';
 import 'package:petadoption/models/response_models/user_verification.dart';
 import 'package:petadoption/services/api_service.dart';
 import 'package:petadoption/services/global_service.dart';
@@ -106,6 +108,20 @@ class ProfileViewModel extends BaseViewModel {
           .getUserVerificationByUserId(UserVerification(userId: adopterId));
       if (res.errorCode == "PA0004") {
         return res.data as UserVerification;
+      }
+      return null;
+    } catch (e, s) {
+      debugPrint("Error ${e.toString()} Stack ${s.toString()}");
+      return null;
+    }
+  }
+
+  Future<SecureMeetup?> getSecureByMeetupId(String meetupId) async {
+    try {
+      var res = await _apiService
+          .getSecureMeetupsByMeetupID(SecureMeetup(meetupId: meetupId));
+      if (res.errorCode == "PA0004") {
+        return res.data as SecureMeetup;
       }
       return null;
     } catch (e, s) {
@@ -263,7 +279,6 @@ class ProfileViewModel extends BaseViewModel {
     try {
       String? userId = _globalService.getuser()!.userId;
       userProfile = null;
-      loading(true, loadingText: "Checking Links");
 
       var userRes = await _apiService.userInfoById(SingleUser(userId: userId));
 
@@ -289,31 +304,38 @@ class ProfileViewModel extends BaseViewModel {
       if (user != null) {
         notifyListeners();
       }
-      loading(false);
     }
     return null;
   }
 
   Future<void> getPet(String userId) async {
-    var resPet = await _apiService.getPetByUserId(SingleUser(userId: userId));
-    if (resPet.errorCode == "PA0004") {
-      try {
-        pet = (resPet.data as List)
-            .map((json) => PetResponse.fromJson(json as Map<String, dynamic>))
-            .toList();
-        debugPrint(pet!.first.name.toString());
-      } catch (e) {
-        debugPrint("Error ${e.toString()}");
+    try {
+      var resPet = await _apiService.getPetByUserId(SingleUser(userId: userId));
+      if (resPet.errorCode == "PA0004") {
+        try {
+          pet = (resPet.data as List)
+              .map((json) => PetResponse.fromJson(json as Map<String, dynamic>))
+              .toList();
+          debugPrint(pet!.first.name.toString());
+        } catch (e) {
+          debugPrint("Error ${e.toString()}");
+        }
+      } else {
+        return;
       }
-    } else {
-      return;
+    } catch (e, s) {
+      printError(error: e.toString(), stack: s.toString(), tag: tag);
+    } finally {
+      notifyListeners();
     }
   }
 
+  String tag = "Profile View Model";
+  List<SecureMeetup> securemeets = [];
   List<Meetup>? meets;
   Future<void> getMeetupByUserId() async {
     try {
-      loading(true, loadingText: "Getting Meetup ....");
+      securemeets = [];
       var res = await _apiService
           .getMeetupsByUserId(Meetup(userId: _globalService.getuser()!.userId));
 
@@ -325,11 +347,13 @@ class ProfileViewModel extends BaseViewModel {
         if (meets != null && meets!.isNotEmpty) {
           // 1️⃣ Get all locations in parallel
           await Future.wait(
-            meets!.map((m) async {
-              m.location = await CurrentLocation().getAddressFromLatLngString(
-                m.latitude ?? "31.580219768112524",
-                m.longitude ?? "74.30350546874999",
-              );
+            meets!.whereType<Meetup>().map((m) async {
+              final lat = m.latitude?.toString() ?? "31.580219768112524";
+              final lng = m.longitude?.toString() ?? "74.30350546874999";
+
+              final address =
+                  await CurrentLocation().getAddressFromLatLngString(lat, lng);
+              m.location = address ?? "Unknown location";
             }),
           );
 
@@ -354,6 +378,13 @@ class ProfileViewModel extends BaseViewModel {
                     () async {
                       m.paymentInfo = await getPaymentInfo(m.adopterId ?? "");
                     }(),
+                  () async {
+                    var res = await getSecureByMeetupId(m.meetupId ?? "");
+                    if (res != null) {
+                      res.meetupinfo = m;
+                      securemeets.add(res);
+                    }
+                  }(),
                 ]);
               }
             }),
@@ -363,7 +394,6 @@ class ProfileViewModel extends BaseViewModel {
     } catch (e) {
       debugPrint(e.toString());
     } finally {
-      loading(false);
       notifyListeners();
     }
   }
@@ -373,6 +403,12 @@ class ProfileViewModel extends BaseViewModel {
       getPet(userId),
       getMeetupByUserId(),
     ]);
+  }
+
+  SecureMeetupAdminViewModel get _secureModel =>
+      locator<SecureMeetupAdminViewModel>();
+  gotoEditSecure(SecureMeetup meetup) {
+    _secureModel.gotoEditSecure(meetup);
   }
 
   void logout() async {

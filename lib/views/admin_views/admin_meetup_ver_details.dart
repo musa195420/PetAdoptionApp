@@ -82,7 +82,17 @@ class _MeetupVerificationDetailPageState
       context: context,
       builder: (ctx) {
         return AlertDialog(
-          title: const Text("Change Verification Status"),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          backgroundColor: const Color(0xFF3E2723), // Dark brown background
+          title: const Text(
+            "Change Verification Status",
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -93,10 +103,14 @@ class _MeetupVerificationDetailPageState
           ),
           actions: [
             TextButton(
-                onPressed: () {
-                  Navigator.of(ctx).pop();
-                },
-                child: const Text("Cancel")),
+              onPressed: () {
+                Navigator.of(ctx).pop();
+              },
+              child: const Text(
+                "Cancel",
+                style: TextStyle(color: Colors.white70),
+              ),
+            ),
           ],
         );
       },
@@ -104,115 +118,62 @@ class _MeetupVerificationDetailPageState
   }
 
   Widget _buildStatusOption(String status) {
-    // Futuristic neon color scheme
-    final Map<String, List<Color>> neonColors = {
-      "approved": [Color(0xFF00FFC8), Color(0xFF00B8F4)], // Cyan/Blue
-      "rejected": [Color(0xFFFF4C61), Color(0xFFD6003E)], // Neon Red
-      "pending": [Color(0xFFFFC700), Color(0xFFFF8C00)], // Neon Orange
+    // Elegant 3-tone brown color palette
+    final Map<String, Color> primaryColors = {
+      "approved": const Color(0xFFA1887F), // Light brown
+      "rejected": const Color(0xFF8D6E63), // Medium brown
+      "pending": const Color(0xFF6D4C41), // Dark brown
     };
 
-    final Map<String, IconData> futuristicIcons = {
-      "approved": Icons.verified_user_rounded,
-      "rejected": Icons.dangerous_rounded,
-      "pending": Icons.timelapse_rounded,
+    final Map<String, IconData> icons = {
+      "approved": Icons.check_circle,
+      "rejected": Icons.cancel,
+      "pending": Icons.hourglass_bottom,
     };
 
-    final colors = neonColors[status] ?? neonColors["pending"]!;
-    final icon = futuristicIcons[status] ?? futuristicIcons["pending"]!;
+    final color = primaryColors[status] ?? primaryColors["pending"]!;
+    final icon = icons[status] ?? icons["pending"]!;
 
     return InkWell(
-      borderRadius: BorderRadius.circular(16),
-      splashColor: colors[0].withOpacity(0.4),
-      highlightColor: Colors.transparent,
+      borderRadius: BorderRadius.circular(12),
       onTap: () {
         setState(() {
           currentStatus = status;
           widget.meetupVerification.adopterVerificationStatus =
-              status.toTitleCase();
+              status[0].toUpperCase() + status.substring(1);
         });
         Navigator.of(context).pop();
       },
       child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 8),
+        margin: const EdgeInsets.symmetric(vertical: 6),
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
-          gradient: LinearGradient(
-            colors: colors,
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: colors[1].withOpacity(0.7),
-              blurRadius: 20,
-              spreadRadius: 1,
-              offset: const Offset(0, 0),
+          color: color.withOpacity(0.15),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: color, width: 1.5),
+        ),
+        child: Row(
+          children: [
+            Icon(icon, color: color, size: 28),
+            const SizedBox(width: 14),
+            Text(
+              status[0].toUpperCase() + status.substring(1),
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: color,
+              ),
             ),
-            BoxShadow(
-              color: Colors.black.withOpacity(0.3),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
+            const Spacer(),
+            Container(
+              width: 12,
+              height: 12,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: color,
+              ),
             ),
           ],
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(16),
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-            child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
-              decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.25),
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: colors[0].withOpacity(0.7),
-                  width: 1.5,
-                ),
-              ),
-              child: Row(
-                children: [
-                  Icon(icon, size: 28, color: Colors.white),
-                  const SizedBox(width: 16),
-                  Text(
-                    status[0].toUpperCase() + status.substring(1),
-                    style: TextStyle(
-                      fontFamily:
-                          'Orbitron', // Futuristic font (add font if needed)
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                      shadows: [
-                        Shadow(
-                          color: colors[0],
-                          blurRadius: 10,
-                        ),
-                      ],
-                    ),
-                  ),
-                  const Spacer(),
-                  // Neon glow dot indicator on right
-                  Container(
-                    width: 16,
-                    height: 16,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      gradient: RadialGradient(
-                        colors: [colors[0], colors[1].withOpacity(0.1)],
-                        radius: 0.8,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: colors[1].withOpacity(0.8),
-                          blurRadius: 12,
-                          spreadRadius: 2,
-                        ),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            ),
-          ),
         ),
       ),
     );
@@ -379,6 +340,17 @@ class _MeetupVerificationDetailPageState
                         meetup.meetupId ?? "N/A"),
                     _infoRow(Icons.verified_user, "Adopter Verification Status",
                         "${adminStatus[0].toUpperCase()}${adminStatus.substring(1)}"),
+                    if (meetup.userVerification != null &&
+                        meetup.userVerification?.userId != null)
+                      _infoRow(
+                        Icons.link,
+                        "See Adopter",
+                        "",
+                        showLink: true,
+                        onTap: () {
+                          _ver.showLink(meetup.userVerification?.userId ?? "");
+                        },
+                      )
                   ]),
 
                   _sectionCard("Payment Info", [
@@ -441,8 +413,8 @@ class _MeetupVerificationDetailPageState
                         size: 20,
                         color: Colors.white,
                       ),
-                      selectedColor: const Color.fromARGB(255, 81, 152, 85),
-                      backgroundColor: const Color.fromARGB(255, 138, 187, 104),
+                      selectedColor: const Color.fromARGB(255, 116, 65, 28),
+                      backgroundColor: const Color.fromARGB(255, 74, 35, 5),
                       padding: const EdgeInsets.symmetric(
                           horizontal: 16, vertical: 10),
                       shape: RoundedRectangleBorder(
@@ -452,12 +424,8 @@ class _MeetupVerificationDetailPageState
                           _isSelected, // a boolean to manage selection state
                       onSelected: (bool selected) {
                         // update your selection state and show dialog
-                        setState(() {
-                          _isSelected = selected;
-                        });
-                        if (selected) {
-                          _showStatusChangeDialog();
-                        }
+
+                        _showStatusChangeDialog();
                       },
                     ),
                   ),

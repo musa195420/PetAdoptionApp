@@ -34,6 +34,7 @@ import "package:petadoption/services/dialog_service.dart";
 import "package:petadoption/services/global_service.dart";
 import "package:petadoption/services/http_service.dart";
 import "package:petadoption/helpers/locator.dart";
+import "package:petadoption/viewModel/authentication_view_model.dart";
 
 import "../models/hive_models/user.dart";
 import "../models/request_models/add_adopter.dart";
@@ -53,6 +54,8 @@ import "../models/response_models/message_info.dart";
 import "../models/response_models/pet_response.dart";
 import "../models/response_models/refresh_token_response.dart";
 import "../models/response_models/secure_meetup.dart";
+
+AuthenticationViewModel get _authModel => locator<AuthenticationViewModel>();
 
 class APIService implements IAPIService {
   HttpService get _httpService => locator<HttpService>();
@@ -1736,6 +1739,7 @@ class APIService implements IAPIService {
       return ApiStatus(data: e, errorCode: "PA0013");
     } on SocketException catch (e, s) {
       _globalService.logError("Error Occured!", e.toString(), s);
+      _authModel.logout(confirm: true);
       debugPrint(e.toString());
       return ApiStatus(data: e, errorCode: "PA0007");
     } on FormatException catch (e, s) {
@@ -1874,6 +1878,11 @@ class APIService implements IAPIService {
             data: ErrorResponse.fromJson(res.toJson()),
             errorCode: res.status.toString());
       }
+    } on SocketException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      _authModel.logout(confirm: true);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0007");
     } on HttpException catch (e, s) {
       _globalService.logError("Error Occured!", e.toString(), s);
       debugPrint(e.toString());
@@ -2001,6 +2010,53 @@ class APIService implements IAPIService {
         if (res.success ?? true) {
           return ApiStatus(
             data: res.data,
+            errorCode: "PA0004",
+          );
+        } else {
+          return ApiStatus(
+              data: ErrorResponse.fromJson(res.toJson()),
+              errorCode: res.status.toString());
+        }
+      } else {
+        return ApiStatus(
+            data: ErrorResponse.fromJson(res.toJson()),
+            errorCode: res.status.toString());
+      }
+    } on HttpException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0013");
+    } on FormatException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0007");
+    } on TimeoutException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0003");
+    } catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0006");
+    }
+  }
+
+  @override
+  Future<ApiStatus> getSecureMeetupsByMeetupID(SecureMeetup meetup) async {
+    try {
+      var response = await _httpService.postData(
+          "api/secureMeetup/meetup", meetup.toJson());
+      if (response.statusCode == 404) {
+        return ApiStatus(data: null, errorCode: "PA0002");
+      }
+      if (response.statusCode == 401) {
+        return ApiStatus(data: null, errorCode: "PA0001");
+      }
+      ApiResponse res = ApiResponse.fromJson(json.decode(response.body));
+      if (response.statusCode == 200) {
+        if (res.success ?? true) {
+          return ApiStatus(
+            data: SecureMeetup.fromJson(res.data),
             errorCode: "PA0004",
           );
         } else {
@@ -3259,6 +3315,48 @@ class APIService implements IAPIService {
           await _httpService.patchData("api/secureMeetup", secure.toJson());
       ApiResponse res = ApiResponse.fromJson(json.decode(response.body));
       if (response.statusCode == 200) {
+        if (res.success ?? false) {
+          return ApiStatus(
+            data: null,
+            errorCode: "PA0004",
+          );
+        } else {
+          return ApiStatus(
+              data: ErrorResponse.fromJson(res.toJson()),
+              errorCode: res.status.toString());
+        }
+      } else {
+        debugPrint(response.statusCode);
+        return ApiStatus(
+            data: ErrorResponse.fromJson(res.toJson()),
+            errorCode: res.status.toString());
+      }
+    } on HttpException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0013");
+    } on FormatException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0007");
+    } on TimeoutException catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0003");
+    } catch (e, s) {
+      _globalService.logError("Error Occured!", e.toString(), s);
+      debugPrint(e.toString());
+      return ApiStatus(data: e, errorCode: "PA0006");
+    }
+  }
+
+  @override
+  Future<ApiStatus> addSecureMeetup(SecureMeetup secure) async {
+    try {
+      var response =
+          await _httpService.postData("api/secureMeetup/", secure.toJson());
+      ApiResponse res = ApiResponse.fromJson(json.decode(response.body));
+      if (response.statusCode == 201) {
         if (res.success ?? false) {
           return ApiStatus(
             data: null,
@@ -5078,9 +5176,12 @@ abstract class IAPIService {
   Future<ApiStatus> getMeetupsBetweenUserId(Meetup meetup);
   Future<ApiStatus> getMeetupsByUserId(Meetup meetup);
   Future<ApiStatus> getMeetupsById(Meetup meetup);
+
   Future<ApiStatus> getSecureMeetups();
+  Future<ApiStatus> getSecureMeetupsByMeetupID(SecureMeetup meetup);
   Future<ApiStatus> deleteSecureMeetup(SecureMeetup meetup);
   Future<ApiStatus> updateSecureMeetup(SecureMeetup secure);
+  Future<ApiStatus> addSecureMeetup(SecureMeetup secure);
   //<=========================== Meetup Verification Requests =======================>
   Future<ApiStatus> addMeetupVerification(MeetupVerification meetup);
   Future<ApiStatus> updateMeetupVerification(MeetupVerification meetup);

@@ -45,43 +45,50 @@ class SignupPage extends StatelessWidget {
                 child: Column(
                   children: [
                     // Character image at top
-                    _buildCharacterImage(),
 
-                    Container(
-                      decoration: BoxDecoration(
-                        color: const Color.fromARGB(255, 255, 247, 240),
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Colors.black12,
-                            blurRadius: 10,
-                            offset: Offset(0, 4),
+                    Stack(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 110),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: const Color.fromARGB(255, 255, 247, 240),
+                              borderRadius: BorderRadius.circular(16),
+                              boxShadow: const [
+                                BoxShadow(
+                                  color: Colors.black12,
+                                  blurRadius: 10,
+                                  offset: Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                            child: Column(
+                              children: [
+                                _buildLoginForm(viewModel),
+                                const SizedBox(height: 10),
+                                Text(
+                                  "What You Are Select The Role?",
+                                  style: TextStyle(
+                                      color: Colors.black54, fontSize: 13),
+                                ),
+                                const SizedBox(height: 5),
+                                buildRoleSelector(
+                                  roles: roles,
+                                  selectedRole: viewModel.role,
+                                  onRoleSelected: (role) {
+                                    viewModel.setRole(role);
+                                  },
+                                ),
+                                const SizedBox(height: 20),
+                                _buildLoginButton(viewModel),
+                                _buildLogin(viewModel),
+                              ],
+                            ),
                           ),
-                        ],
-                      ),
-                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-                      child: Column(
-                        children: [
-                          _buildLoginForm(viewModel),
-                          const SizedBox(height: 10),
-                          Text(
-                            "What You Are Select The Role?",
-                            style:
-                                TextStyle(color: Colors.black54, fontSize: 13),
-                          ),
-                          const SizedBox(height: 5),
-                          buildRoleSelector(
-                            roles: roles,
-                            selectedRole: viewModel.role,
-                            onRoleSelected: (role) {
-                              viewModel.setRole(role);
-                            },
-                          ),
-                          const SizedBox(height: 20),
-                          _buildLoginButton(viewModel),
-                          _buildLogin(viewModel),
-                        ],
-                      ),
+                        ),
+                        _buildCharacterImage(),
+                      ],
                     ),
                   ],
                 ),
@@ -94,10 +101,12 @@ class SignupPage extends StatelessWidget {
   }
 
   Widget _buildCharacterImage() {
-    return Image.asset(
-      'assets/images/signup.png',
-      height: 150,
-      fit: BoxFit.contain,
+    return Center(
+      child: Image.asset(
+        'assets/images/signup.png',
+        height: 120,
+        fit: BoxFit.contain,
+      ),
     );
   }
 
