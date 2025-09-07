@@ -5,6 +5,7 @@ import "dart:convert";
 import "dart:io";
 
 import "package:flutter/material.dart";
+import "package:http/http.dart";
 import "package:petadoption/models/api_status.dart";
 import "package:petadoption/models/error_models/error_reponse.dart";
 import "package:petadoption/models/health_info.dart";
@@ -1746,6 +1747,9 @@ class APIService implements IAPIService {
       _globalService.logError("Error Occured!", e.toString(), s);
       debugPrint(e.toString());
       return ApiStatus(data: e, errorCode: "PA0007");
+    } on ClientException catch (e, s) {
+      _authModel.logout(confirm: true);
+      return ApiStatus(data: "Server Not Reachable", errorCode: "PA0009");
     } on TimeoutException catch (e, s) {
       _globalService.logError("Error Occured!", e.toString(), s);
       debugPrint(e.toString());
@@ -1895,6 +1899,9 @@ class APIService implements IAPIService {
       _globalService.logError("Error Occured!", e.toString(), s);
       debugPrint(e.toString());
       return ApiStatus(data: e, errorCode: "PA0003");
+    } on ClientException catch (e, s) {
+      _authModel.logout(confirm: true);
+      return ApiStatus(data: "Server Not Reachable", errorCode: "PA0009");
     } catch (e, s) {
       _globalService.logError("Error Occured!", e.toString(), s);
       debugPrint(e.toString());
@@ -2124,6 +2131,9 @@ class APIService implements IAPIService {
       _globalService.logError("Error Occured!", e.toString(), s);
       debugPrint(e.toString());
       return ApiStatus(data: e, errorCode: "PA0007");
+    } on ClientException catch (e, s) {
+      _authModel.logout(confirm: true);
+      return ApiStatus(data: "Server Not Reachable", errorCode: "PA0009");
     } on TimeoutException catch (e, s) {
       _globalService.logError("Error Occured!", e.toString(), s);
       debugPrint(e.toString());

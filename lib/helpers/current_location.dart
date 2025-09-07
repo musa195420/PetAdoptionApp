@@ -1,30 +1,53 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 
 class CurrentLocation {
-  Future<String?> getAddressFromLatLngString(
-      String latitudeStr, String longitudeStr) async {
+  Future<String> getAddressFromLatLngString(
+      String? latitudeStr, String? longitudeStr) async {
     try {
-      double latitude = double.parse(latitudeStr);
-      double longitude = double.parse(longitudeStr);
+      if (Platform.isAndroid || Platform.isIOS) {
+        if (latitudeStr == null ||
+            longitudeStr == null ||
+            latitudeStr.trim().isEmpty ||
+            longitudeStr.trim().isEmpty) {
+          return "Not known";
+        }
 
-      List<Placemark> placemarks =
-          await placemarkFromCoordinates(latitude, longitude);
+        final latitude = double.tryParse(latitudeStr);
+        final longitude = double.tryParse(longitudeStr);
 
-      if (placemarks.isNotEmpty) {
+        if (latitude == null || longitude == null) {
+          return "Not known";
+        }
+        debugPrint("logitude = $longitude  latitude = $latitudeStr");
+        final placemarks = await placemarkFromCoordinates(latitude, longitude);
+
+        if (placemarks.isEmpty) {
+          return "Not known";
+        }
+
         final placemark = placemarks.first;
-        String city = placemark.locality ?? '';
-        String state = placemark.administrativeArea ?? '';
-        String country = placemark.country ?? '';
+        final city = placemark.locality ?? '';
+        final state = placemark.administrativeArea ?? '';
+        final country = placemark.country ?? '';
+
+        // If all fields are empty, it's unknown
+        if (city.isEmpty && state.isEmpty && country.isEmpty) {
+          return "Not known";
+        }
 
         debugPrint('City: $city, State: $state, Country: $country');
         return 'City: $city, State: $state, Country: $country';
+      } else {
+        return "Not Supported on Windows";
       }
     } catch (e, s) {
-      debugPrint('Error in reverse geocoding 1: $e \n Stack ${s.toString()}');
+      debugPrint('Error in reverse geocoding: $e\nStack: $s');
+      return "Not known";
     }
-    return null;
   }
 
   Future<String?> getAddressFromLatLng(Position position) async {

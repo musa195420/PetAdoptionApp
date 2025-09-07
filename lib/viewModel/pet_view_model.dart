@@ -336,6 +336,7 @@ class PetViewModel extends BaseViewModel {
 
   Future<void> addPet(String name, int age, String description) async {
     try {
+      loading(true, loadingText: "Adding Pet");
       var addpetRes = await _apiService.addPet(PetRequest(
         donorId: _globalService.getuser()!.userId,
         name: name,
@@ -351,7 +352,9 @@ class PetViewModel extends BaseViewModel {
         if (path != null) {
           _uploadPetImage(path!, pet.petId!);
         }
+
         // await   _dialogService.showSuccess(text: "Pet Added SuccessFully");
+        await loading(false);
         await _navigationService.pushNamed(
           Routes.healthinfo,
           data: HealthInfoModel(
@@ -362,10 +365,10 @@ class PetViewModel extends BaseViewModel {
         await _dialogService.showApiError(addpetRes.data);
       }
     } catch (e) {
-      loading(false);
+      await loading(false);
       debugPrint(e.toString());
     } finally {
-      loading(false);
+      await loading(false);
     }
   }
 
@@ -599,25 +602,23 @@ class PetViewModel extends BaseViewModel {
 
         if (res.errorCode == "PA0004") {
         } else {
+          await loading(false);
           await _dialogService.showApiError(res.data);
           return;
         }
       } else {
-        await _dialogService.showAlert(Message(
-            description:
-                "Please Select The All Info Again \n You migh Be Missing Something"));
-        loading(false);
+        await loading(false);
         return;
       }
     } catch (e, s) {
-      loading(false);
+      await loading(false);
 
       _globalService.logError(
           "Error Occured When Renew User Token", e.toString(), s);
       debugPrint(e.toString());
     } finally {
       notifyListeners();
-      loading(false);
+      await loading(false);
     }
   }
 
@@ -637,12 +638,10 @@ class PetViewModel extends BaseViewModel {
         if (res.errorCode == "PA0004") {
         } else {
           await _dialogService.showApiError(res.data);
+          await loading(false);
           return;
         }
       } else {
-        await _dialogService.showAlert(Message(
-            description:
-                "Please Select The All Info Again \n You migh Be Missing Something"));
         loading(false);
         return;
       }

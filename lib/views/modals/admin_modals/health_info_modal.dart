@@ -5,9 +5,7 @@ import 'package:petadoption/custom_widgets/loading_indicators.dart';
 import 'package:petadoption/custom_widgets/stateful_wrapper.dart';
 import 'package:petadoption/models/response_models/health_info.dart';
 import 'package:petadoption/viewModel/pet_view_model.dart';
-
 import 'package:provider/provider.dart';
-
 import '../../../custom_widgets/default_text_input.dart';
 
 class HealthInfoModal extends StatelessWidget {
@@ -16,6 +14,12 @@ class HealthInfoModal extends StatelessWidget {
   final PetHealthInfo info;
   HealthInfoModal({super.key, required this.info});
   final scaffoldKey = GlobalKey<ScaffoldState>();
+
+  // Color palette
+  final Color darkBrown = const Color(0xFF4E342E);
+  final Color lightBrown = const Color(0xFFD7CCC8);
+  final Color grey = const Color(0xFFE0E0E0);
+  final Color white = Colors.white;
 
   @override
   Widget build(BuildContext context) {
@@ -28,97 +32,91 @@ class HealthInfoModal extends StatelessWidget {
       },
       child: Scaffold(
         key: scaffoldKey,
-        body: Stack(
-          fit: StackFit.expand,
-          children: [
-            // Background image
-            Image.asset(
-              'assets/images/bg.png',
-              fit: BoxFit.cover,
-            ),
-            // Login form content with SafeArea
-            SafeArea(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Column(
-                    spacing: 10,
+        backgroundColor: lightBrown,
+        body: SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              spacing: 20,
+              children: [
+                // Header
+                Container(
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: darkBrown,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Row(
                     children: [
-                      // Character image at top, overlapping the container
-                      Container(
-                        padding: EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: const Color.fromARGB(255, 146, 61, 5),
-                        ),
-                        child: Text(
-                          "Health Info Page",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 30,
-                              fontWeight: FontWeight.w700),
-                        ),
-                      ),
-
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: Image.asset(
-                          "assets/images/health_info.png",
-                          width: 150,
-                          height: 150,
-                        ),
-                      ),
-
-                      // Padding to make space for the image
-                      Container(
-                        decoration: BoxDecoration(
-                          color: const Color.fromARGB(255, 255, 247, 240),
-                          borderRadius: BorderRadius.circular(16),
-                          boxShadow: const [
-                            BoxShadow(
-                              color: Colors.black12,
-                              blurRadius: 10,
-                              offset: Offset(0, 4),
-                            ),
-                          ],
-                        ),
-                        padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-                        child: Column(
-                          children: [
-                            viewModel.isHealthInfoReady
-                                ? _buildAddHealthtForm(viewModel)
-                                : const SizedBox(
-                                    width: 80,
-                                    height: 80,
-                                    child: Center(
-                                        child: FadingCircularDots(
-                                      count: 10,
-                                      radius: 20,
-                                      dotRadius: 4,
-                                      duration: Duration(milliseconds: 1200),
-                                    )),
-                                  ), // or a shimmer/loading UI
-                            const SizedBox(height: 10),
-                            viewModel.isHealthInfoReady
-                                ? InkWell(
-                                    onTap: () {
-                                      if (formKey.currentState!.validate()) {
-                                        viewModel.updateHealthInfo(
-                                            info.petId, info.healthId ?? "");
-                                      }
-                                    },
-                                    child: _buildupdateHealth(viewModel),
-                                  )
-                                : SizedBox.shrink(),
-                          ],
-                        ),
+                      const Icon(Icons.health_and_safety,
+                          color: Colors.white, size: 30),
+                      const SizedBox(width: 10),
+                      const Text(
+                        "Health Info Page",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 26,
+                            fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),
                 ),
-              ),
-            )
-          ],
+
+                // Image
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: Image.asset(
+                    "assets/images/health_info.png",
+                    width: 160,
+                    height: 160,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+
+                // Main card
+                Container(
+                  decoration: BoxDecoration(
+                    color: white,
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    spacing: 15,
+                    children: [
+                      viewModel.isHealthInfoReady
+                          ? _buildAddHealthtForm(viewModel)
+                          : const SizedBox(
+                              height: 80,
+                              child: Center(
+                                  child: FadingCircularDots(
+                                count: 10,
+                                radius: 20,
+                                dotRadius: 4,
+                                duration: Duration(milliseconds: 1200),
+                              )),
+                            ),
+                      if (viewModel.isHealthInfoReady && !info.isViewer)
+                        _buildupdateHealth(viewModel),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -128,146 +126,115 @@ class HealthInfoModal extends StatelessWidget {
     return Form(
       key: formKey,
       child: Column(
-        spacing: 10,
+        spacing: 15,
         children: [
-          SizedBox(
-            height: 15,
+          _buildRowWithAddButton(
+            controller: viewModel.diseaseController,
+            label: "Disease",
+            hint: "Disease",
+            icon: Icons.coronavirus,
+            onTapField: () {
+              if (!info.isViewer) {
+                viewModel.getAnimalDiseases(info.animalId);
+              }
+            },
+            onTapAdd: () => viewModel.addDisease(info.animalId!),
           ),
-          Row(
-            children: [
-              Expanded(
-                child: DefaultTextInput(
-                  controller: viewModel.diseaseController,
-                  hintText: "Disease",
-                  labelText: "Disease",
-                  readOnly: true,
-                  onTap: () {
-                    viewModel.getAnimalDiseases(info.animalId);
-                  },
-                  icon: Icons.pets,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Enter Your Pets Disease Please';
-                    }
-                    return null;
-                  },
-                ),
-              ),
-              const SizedBox(width: 5),
-              GestureDetector(
-                onTap: () async {
-                  viewModel.addDisease(info.animalId!);
-                },
-                child: Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: Colors.brown,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Icon(
-                    Icons.add,
-                    color: Colors.white,
-                    size: 20,
-                  ),
-                ),
-              ),
-            ],
+          _buildRowWithAddButton(
+            controller: viewModel.disabilityController,
+            label: "Disability",
+            hint: "Disability",
+            icon: Icons.accessible,
+            onTapField: () {
+              if (!info.isViewer) {
+                viewModel.getAnimalDisability(info.animalId);
+              }
+            },
+            onTapAdd: () => viewModel.addDisability(info.animalId!),
           ),
-          Row(
-            children: [
-              Expanded(
-                child: DefaultTextInput(
-                  controller: viewModel.disabilityController,
-                  hintText: "Disability",
-                  labelText: "Disability",
-                  readOnly: true,
-                  onTap: () {
-                    viewModel.getAnimalDisability(info.animalId);
-                  },
-                  icon: Icons.pets,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Enter Your Pets Disability Please';
-                    }
-                    return null;
-                  },
-                ),
-              ),
-              const SizedBox(width: 5),
-              GestureDetector(
-                onTap: () async {
-                  viewModel.addDisability(info.animalId!);
-                },
-                child: Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: Colors.brown,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Icon(
-                    Icons.add,
-                    color: Colors.white,
-                    size: 20,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          Row(
-            children: [
-              Expanded(
-                child: DefaultTextInput(
-                  controller: viewModel.vaccinationController,
-                  hintText: "Vaccination",
-                  labelText: "Vaccination",
-                  readOnly: true,
-                  onTap: () {
-                    viewModel.getAnimalVaccination(info.animalId);
-                  },
-                  icon: Icons.pets,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Enter Your Pets Vaccination Please';
-                    }
-                    return null;
-                  },
-                ),
-              ),
-              const SizedBox(width: 5),
-              GestureDetector(
-                onTap: () async {
-                  viewModel.addVaccination(info.animalId!);
-                },
-                child: Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: Colors.brown,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Icon(
-                    Icons.add,
-                    color: Colors.white,
-                    size: 20,
-                  ),
-                ),
-              ),
-            ],
+          _buildRowWithAddButton(
+            controller: viewModel.vaccinationController,
+            label: "Vaccination",
+            hint: "Vaccination",
+            icon: Icons.vaccines,
+            onTapField: () {
+              if (!info.isViewer) {
+                viewModel.getAnimalVaccination(info.animalId);
+              }
+            },
+            onTapAdd: () => viewModel.addVaccination(info.animalId!),
           ),
         ],
       ),
     );
   }
 
+  Widget _buildRowWithAddButton({
+    required TextEditingController controller,
+    required String label,
+    required String hint,
+    required IconData icon,
+    required VoidCallback onTapField,
+    required VoidCallback onTapAdd,
+  }) {
+    return Row(
+      children: [
+        Expanded(
+          child: DefaultTextInput(
+            controller: controller,
+            hintText: hint,
+            labelText: label,
+            readOnly: true,
+            onTap: onTapField,
+            icon: icon,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter $label';
+              }
+              return null;
+            },
+          ),
+        ),
+        const SizedBox(width: 5),
+        GestureDetector(
+          onTap: onTapAdd,
+          child: Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: darkBrown,
+              borderRadius: BorderRadius.circular(10),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black26,
+                  blurRadius: 6,
+                  offset: const Offset(0, 2),
+                )
+              ],
+            ),
+            child: const Icon(Icons.add, color: Colors.white, size: 20),
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildupdateHealth(PetViewModel viewModel) {
-    return Container(
-      padding: EdgeInsets.fromLTRB(60, 10, 60, 10),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(50),
-        color: Colors.deepOrange,
-      ),
-      child: Text(
+    return ElevatedButton.icon(
+      onPressed: () {
+        if (formKey.currentState!.validate()) {
+          viewModel.updateHealthInfo(info.petId, info.healthId ?? "");
+        }
+      },
+      icon: const Icon(Icons.update, color: Colors.white),
+      label: const Text(
         "Update Health",
         style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
+      ),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: darkBrown,
+        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+        elevation: 4,
       ),
     );
   }

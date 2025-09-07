@@ -98,8 +98,8 @@ class MessageViewModel extends BaseViewModel {
 
   Future<void> gotoMessageInfo() async {
     await getMessagesInfo();
-    await _navigationService.pushNamedAndRemoveUntil(
-        args: TransitionType.slideRight, Routes.home);
+    await _navigationService.pushNamed(
+        data: null, args: TransitionType.slideRight, Routes.home);
   }
 
   ReceiverModel? reciverInfo;
@@ -142,8 +142,8 @@ class MessageViewModel extends BaseViewModel {
       if (!mes) {
         return;
       }
-      await _navigationService.pushNamedAndRemoveUntil(
-          args: TransitionType.slideRight, Routes.message);
+      await _navigationService.pushNamed(
+          data: null, args: TransitionType.slideRight, Routes.message);
     } catch (e, s) {
       loading(false);
       debugPrint("Error ${e.toString()} Stack ${s.toString()}");

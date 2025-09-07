@@ -140,13 +140,51 @@ class DetailModal extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            pet.name ?? "Unknown",
-            style: TextStyle(
-              fontSize: screenHeight * 0.035,
-              fontWeight: FontWeight.bold,
-              color: const Color(0xFF522501),
-            ),
+          Row(
+            children: [
+              Text(
+                pet.name ?? "Unknown",
+                style: TextStyle(
+                  fontSize: screenHeight * 0.035,
+                  fontWeight: FontWeight.bold,
+                  color: const Color(0xFF522501),
+                ),
+              ),
+              Spacer(),
+              viewModel.pethealth != null
+                  ? Column(
+                      children: [
+                        ElevatedButton.icon(
+                          onPressed: () {
+                            viewModel.pethealth!.isViewer = true;
+                            viewModel.gotoEdithealth(viewModel.pethealth!);
+                          },
+                          icon: const Icon(
+                            Icons.health_and_safety,
+                            color: Colors.white, // Icon color
+                            size: 28,
+                          ),
+                          label: const Text(
+                            'Special Pet',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.orange, // Button color
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 12),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            elevation: 4,
+                          ),
+                        )
+                      ],
+                    )
+                  : SizedBox(),
+            ],
           ),
           SizedBox(height: screenHeight * 0.005),
           Row(

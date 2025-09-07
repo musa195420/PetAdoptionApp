@@ -2,9 +2,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:petadoption/models/health_info.dart';
+import 'package:petadoption/models/message.dart';
 import 'package:petadoption/models/response_models/meetup.dart';
 import 'package:petadoption/models/response_models/meetup_verification.dart';
 import 'package:petadoption/models/response_models/user_verification.dart';
+import 'package:petadoption/services/dialog_service.dart';
 import 'package:petadoption/views/admin_views/admin.dart';
 import 'package:petadoption/views/admin_views/admin_meetup_ver_details.dart';
 import 'package:petadoption/views/admin_views/adopter_admin.dart';
@@ -51,6 +53,9 @@ import '../views/modals/admin_modals/userlink_modal.dart';
 import '../views/modals/detail_modal.dart';
 import '../views/modals/payment_modal.dart';
 import 'global_service.dart';
+
+final RouteObserver<ModalRoute<void>> routeObserver =
+    RouteObserver<ModalRoute<void>>();
 
 class Routes {
   Routes._();
@@ -609,7 +614,7 @@ class RouteManager {
           return PageRouteBuilder(
             pageBuilder: (BuildContext context, Animation<double> animation,
                 Animation<double> secondaryAnimation) {
-              return Home();
+              return ExitConfirmationWrapper(child: Home());
             },
             transitionsBuilder: (BuildContext context,
                 Animation<double> animation,
@@ -956,4 +961,56 @@ enum TransitionType {
   rotate,
   size,
   scaleRotate,
+}
+
+class ExitConfirmationWrapper extends StatefulWidget {
+  final Widget child;
+
+  const ExitConfirmationWrapper({super.key, required this.child});
+
+  @override
+  State<ExitConfirmationWrapper> createState() =>
+      _ExitConfirmationWrapperState();
+}
+
+class _ExitConfirmationWrapperState extends State<ExitConfirmationWrapper>
+    with RouteAware {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
+  void dispose() {
+    routeObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  @override
+  void didPopNext() {
+    // Came back to this screen
+  }
+
+  Future<bool> _onWillPop() async {
+    final dialogService = locator<IDialogService>();
+    final confirm = await dialogService.showSelectionDialog(
+      message: Message(
+        title: 'Exit App',
+        description: 'Do you really want to exit the app?',
+        okText: 'Yes',
+        cancelText: 'No',
+      ),
+    );
+
+    return confirm;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: widget.child,
+    );
+  }
 }

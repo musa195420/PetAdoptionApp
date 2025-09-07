@@ -173,7 +173,8 @@ class AuthenticationViewModel extends BaseViewModel {
   }
 
   void gotoForgotPassword() {
-    _navigationService.pushNamedAndRemoveUntil(
+    _navigationService.pushNamed(
+      data: null,
       Routes.forgotpassword,
       args: TransitionType.slideRight,
     );

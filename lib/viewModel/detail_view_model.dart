@@ -1,9 +1,13 @@
+import 'package:flutter/material.dart';
 import 'package:petadoption/helpers/locator.dart';
+import 'package:petadoption/models/request_models/single_pet.dart';
+import 'package:petadoption/models/response_models/health_info.dart';
 import 'package:petadoption/models/response_models/message_info.dart';
 import 'package:petadoption/models/response_models/pet_response.dart';
 import 'package:petadoption/services/api_service.dart';
 import 'package:petadoption/viewModel/base_view_model.dart';
 import 'package:petadoption/viewModel/message_view_model.dart';
+import 'package:petadoption/views/modals/admin_modals/health_info_modal.dart';
 
 import '../models/hive_models/user.dart';
 import '../models/request_models/userinforequest.dart';
@@ -27,9 +31,31 @@ class DetailViewModel extends BaseViewModel {
         args: TransitionType.slideLeft);
   }
 
+  Future<void> gotoEdithealth(PetHealthInfo health) async {
+    try {
+      await _navigationService.pushModalBottom(Routes.health_modal,
+          data: HealthInfoModal(
+            info: health,
+          ));
+    } catch (e, s) {
+      debugPrint("Error ${e.toString()} Stack ${s.toString()}");
+    }
+  }
+
+  Future<void> getHealthInfo(String petId) async {
+    pethealth = null;
+    var res = await _apiService.getHealthByPetId(SinglePet(petId: petId));
+    if (res.errorCode == "PA0004") {
+      pethealth = res.data as PetHealthInfo;
+      notifyListeners();
+    }
+  }
+
+  PetHealthInfo? pethealth;
   Future<void> getData(PetResponse pet) async {
     this.pet = pet;
     isFavourite = isfavourite();
+    getHealthInfo(pet.petId ?? "");
     await getUser(pet.userEmail);
   }
 

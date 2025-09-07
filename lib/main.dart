@@ -107,6 +107,7 @@ class MyApp extends StatelessWidget {
           builder: EasyLoading.init(),
           initialRoute: Routes.startup,
           navigatorKey: locator<NavigationService>().navigatorKey,
+          navigatorObservers: [routeObserver],
           onGenerateRoute: RouteManager.generateRoute,
         ));
   }

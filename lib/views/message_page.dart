@@ -186,6 +186,7 @@ class MessagePage extends StatelessWidget {
         borderRadius: const BorderRadius.vertical(bottom: Radius.circular(24)),
       ),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           InkWell(
             onTap: () async {
@@ -197,6 +198,7 @@ class MessagePage extends StatelessWidget {
               color: Colors.white,
             ),
           ),
+          const SizedBox(width: 12),
           CircleAvatar(
             radius: 24,
             backgroundColor: Colors.white,
@@ -231,39 +233,58 @@ class MessagePage extends StatelessWidget {
                 : const Icon(Icons.person, color: Colors.black),
           ),
           const SizedBox(width: 12),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                viewModel.reciverInfo!.name ?? "N/A",
-                style: const TextStyle(fontSize: 16, color: Colors.white),
-              ),
-              const SizedBox(height: 4),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    viewModel.reciverInfo!.role ?? "",
-                    style: const TextStyle(fontSize: 12, color: Colors.white70),
-                  ),
-                  SizedBox(width: MediaQuery.sizeOf(context).width * 0.06),
-                  Row(
-                    children: [
-                      const Icon(Icons.location_on,
-                          color: Colors.white, size: 14),
-                      Text(
-                        viewModel.reciverInfo!.location ?? "Not Specified",
+          // Wrap the name, role, location inside a Flexible to prevent overflow
+          Flexible(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  viewModel.reciverInfo!.name ?? "N/A",
+                  style: const TextStyle(fontSize: 16, color: Colors.white),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 4),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        viewModel.reciverInfo!.role ?? "",
                         style: const TextStyle(
                             fontSize: 12, color: Colors.white70),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                    ],
-                  ),
-                ],
-              ),
-            ],
+                    ),
+                    const SizedBox(width: 8),
+                    Flexible(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Icon(Icons.location_on,
+                              color: Colors.white, size: 14),
+                          const SizedBox(width: 4),
+                          // Location text wrapped in Flexible to allow wrapping
+                          Expanded(
+                            child: Text(
+                              viewModel.reciverInfo!.location ??
+                                  "Not Specified",
+                              style: const TextStyle(
+                                  fontSize: 12, color: Colors.white70),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
-          const Spacer(),
-          // 🍔 menu button
+          const SizedBox(width: 12),
+          // Menu button always visible
           IconButton(
             onPressed: () async {
               await viewModel.drawerLogic();

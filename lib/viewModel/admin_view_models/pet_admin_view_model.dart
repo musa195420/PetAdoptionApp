@@ -86,16 +86,23 @@ class PetAdminViewModel extends BaseViewModel {
 
   Future<void> gotoEdithealth(PetResponse pet) async {
     try {
-      loading(true);
+      await loading(true);
       var res =
           await _apiService.getHealthByPetId(SinglePet(petId: pet.petId ?? ""));
 
       if (res.errorCode == "PA0004") {
+        await loading(false);
         await _navigationService.pushModalBottom(Routes.health_modal,
             data: HealthInfoModal(
               info: res.data as PetHealthInfo,
             ));
       } else {
+        await loading(false);
+        await _navigationService.pushModalBottom(Routes.health_modal,
+            data: HealthInfoModal(
+                info: PetHealthInfo(
+                    petId: pet.petId ?? "", animalId: pet.animalId)));
+
         await _dialogService.showApiError(res.data);
       }
     } catch (e, s) {

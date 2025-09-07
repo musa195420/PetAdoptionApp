@@ -46,6 +46,7 @@ class SearchViewModel extends BaseViewModel {
     }
   }
 
+  List<PetResponse>? allPets;
   List<BreedType>? breeds;
   BreedType? breed;
   String? breedId;
@@ -155,6 +156,24 @@ class SearchViewModel extends BaseViewModel {
     } finally {
       notifyListeners();
     }
+  }
+
+  void search(String text) {
+    if (text.isEmpty) {
+      pets = allPets != null ? List.from(allPets!) : [];
+    } else {
+      final query = text.toLowerCase();
+      pets = allPets?.where((pet) {
+        final name = pet.name?.toLowerCase() ?? '';
+        final breed = pet.breed?.toLowerCase() ?? '';
+        final location = pet.location?.toLowerCase() ?? '';
+
+        return name.contains(query) ||
+            breed.contains(query) ||
+            location.contains(query);
+      }).toList();
+    }
+    notifyListeners();
   }
 
   void clearFilters() {

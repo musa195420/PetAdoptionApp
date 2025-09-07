@@ -9,8 +9,6 @@ import 'package:petadoption/services/dialog_service.dart';
 import '../../helpers/locator.dart';
 import '../../services/api_service.dart';
 
-dynamic formKey = GlobalKey<FormState>();
-
 class AnimalDisabilityModal extends StatelessWidget {
   final String animalId;
   AnimalDisabilityModal({super.key, required this.animalId});
@@ -70,32 +68,29 @@ class AnimalDisabilityModal extends StatelessWidget {
   }
 
   Widget _buildForm() {
-    return Form(
-      key: formKey,
-      child: Column(
-        spacing: 15,
-        children: [
-          Text(
-            "Add New Disability",
-            style: TextStyle(
-                color: const Color.fromARGB(255, 146, 61, 5),
-                fontSize: 24,
-                fontWeight: FontWeight.w700),
-          ),
-          DefaultTextInput(
-            controller: petController,
-            hintText: "Animal Disability",
-            icon: Icons.pets_rounded,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Add Animal Disability';
-              }
-              return null;
-            },
-          ),
-          _buildButton(animalId),
-        ],
-      ),
+    return Column(
+      spacing: 15,
+      children: [
+        Text(
+          "Add New Disability",
+          style: TextStyle(
+              color: const Color.fromARGB(255, 146, 61, 5),
+              fontSize: 24,
+              fontWeight: FontWeight.w700),
+        ),
+        DefaultTextInput(
+          controller: petController,
+          hintText: "Animal Disability",
+          icon: Icons.pets_rounded,
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Add Animal Disability';
+            }
+            return null;
+          },
+        ),
+        _buildButton(animalId),
+      ],
     );
   }
 
@@ -112,9 +107,10 @@ class AnimalDisabilityModal extends StatelessWidget {
           style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
         ),
         onTap: () async {
-          if (formKey.currentState!.validate()) {
+          if (petController.text.isNotEmpty) {
             var addAnimalRes = await _apiService.addDisability(AddInBulk(
-                name: petController.text.toString().toTitleCase(), animalId: animalId));
+                name: petController.text.toString().toTitleCase(),
+                animalId: animalId));
 
             if (addAnimalRes.errorCode == "PA0004") {
               await _dialogService.showSuccess(

@@ -10,6 +10,7 @@ class PetHealthInfo {
   final String? diseaseName;
   final String? disabilityId;
   final String? disabilityName;
+  bool isViewer = false;
 
   PetHealthInfo({
     required this.petId,

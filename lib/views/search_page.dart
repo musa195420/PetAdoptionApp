@@ -117,7 +117,9 @@ class SearchPage extends StatelessWidget {
                         ],
                       ),
                       const SizedBox(height: 5),
-                      _SearchBar(),
+                      _SearchBar(
+                        vm: vm,
+                      ),
                       _CategoryHeader(vm: vm),
                       if (vm.animals != null) _CategoryGrid(vm: vm),
                       _BreedsHeader(vm: vm),
@@ -138,11 +140,19 @@ class SearchPage extends StatelessWidget {
 // ――― widgets ────────────────────────────────────────────────────────────────
 
 class _SearchBar extends StatelessWidget {
+  final SearchViewModel vm;
+
+  const _SearchBar({required this.vm});
   @override
   Widget build(BuildContext context) => TextField(
         decoration: InputDecoration(
           hintText: 'Search',
-          prefixIcon: const Icon(Icons.search),
+          prefixIcon: GestureDetector(
+            onTap: () {
+              // Optional: handle icon tap here
+            },
+            child: const Icon(Icons.search),
+          ),
           filled: true,
           fillColor: const Color(0xFFF5F5F5),
           contentPadding: const EdgeInsets.symmetric(vertical: 0),
@@ -151,6 +161,9 @@ class _SearchBar extends StatelessWidget {
             borderSide: BorderSide.none,
           ),
         ),
+        onChanged: (value) {
+          vm.search(value);
+        },
       );
 }
 

@@ -726,9 +726,101 @@ class DialogService implements IDialogService {
       },
     );
   }
+
+  Future<bool> showSelectionDialog({required Message message}) async {
+    final context = _navigationService.navigatorKey.currentContext!;
+
+    final result = await showDialog<bool>(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext dialogContext) {
+        return Dialog(
+          backgroundColor: const Color(0xFF5D4037), // Dark brown background
+          insetPadding: const EdgeInsets.symmetric(horizontal: 24),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+              child: Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF6D4C41)
+                      .withOpacity(0.9), // Semi-transparent brown overlay
+                  borderRadius: BorderRadius.circular(20),
+                  border:
+                      Border.all(color: Colors.brown.shade300.withOpacity(0.6)),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      message.title,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFFFFE0B2), // Light cream text
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.brown.shade700.withOpacity(0.3),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        message.description,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: Color(0xFFFFF3E0), // Soft cream text
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        if (message.cancelText.isNotEmpty)
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(dialogContext).pop(false);
+                            },
+                            child: Text(
+                              message.cancelText,
+                              style: TextStyle(color: Colors.brown.shade300),
+                            ),
+                          ),
+                        const SizedBox(width: 12),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(dialogContext).pop(true);
+                          },
+                          child: const Text(
+                            'OK',
+                            style: TextStyle(
+                                color: Color(0xFFFFCC80)), // Warm accent
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+
+    return result ?? false;
+  }
 }
 
 abstract class IDialogService {
+  Future<bool> showSelectionDialog({required Message message});
   void showBeautifulToast(String message);
   Future<void> showSuccess({String text = 'Operation Successful'});
   Future<bool> showAlertDialog(Message message);
