@@ -54,7 +54,7 @@ class _AdopterEditModalState extends State<AdopterEditModal> {
       body: Stack(
         fit: StackFit.expand,
         children: [
-           Text(
+          Text(
             "Adopter Edit Page",
             style: TextStyle(
                 color: const Color.fromARGB(255, 146, 61, 5),
@@ -90,16 +90,13 @@ class _AdopterEditModalState extends State<AdopterEditModal> {
                         children: [
                           _buildUpdateAdopter(viewModel),
                           const SizedBox(height: 10),
-                              _buildLiveStatusButton(viewModel), 
+                          _buildLiveStatusButton(viewModel),
                           const SizedBox(height: 20),
                           InkWell(
                             onTap: () {
                               if (formKey.currentState!.validate()) {
-                                viewModel.updatAdopter(
-                                  nameController.text,
-                                  locationController.text,
-                                 widget.user
-                                );
+                                viewModel.updatAdopter(nameController.text,
+                                    locationController.text, widget.user);
                               }
                             },
                             child: Padding(
@@ -121,48 +118,42 @@ class _AdopterEditModalState extends State<AdopterEditModal> {
   }
 
   Widget _buildLiveStatusButton(AdopterAdminViewModel viewModel) {
- bool isActive = viewModel.isActive;
+    bool isActive = viewModel.isActive;
 
-  return GestureDetector(
-    onTap: () {
-      viewModel.setisActive(!isActive);
-    },
-    child: Container(
-      padding: const EdgeInsets.all(3),
-      width: 150,
-      decoration: BoxDecoration(
-        color: isActive 
-            ? Colors.green.withOpacity(0.3)
-            : Colors.red.withOpacity(0.3),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          width: 1,
-          color: isActive 
-            ? Colors.green
-            : Colors.red,
-        )
-      ),
-      child: Center(
-        child: Text(
-          isActive ? "Live" : "Not Live",
-          style:  TextStyle(
-            color:isActive 
-            ? Colors.green
-            : Colors.red,
-            fontWeight: FontWeight.bold,
+    return GestureDetector(
+      onTap: () {
+        viewModel.setisActive(!isActive);
+      },
+      child: Container(
+        padding: const EdgeInsets.all(3),
+        width: 150,
+        decoration: BoxDecoration(
+            color: isActive
+                ? Colors.green.withValues(alpha: 0.3)
+                : Colors.red.withValues(alpha: 0.3),
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+              width: 1,
+              color: isActive ? Colors.green : Colors.red,
+            )),
+        child: Center(
+          child: Text(
+            isActive ? "Live" : "Not Live",
+            style: TextStyle(
+              color: isActive ? Colors.green : Colors.red,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
       ),
-    ),
-  );
-}
+    );
+  }
 
   Widget _buildUpdateAdopter(AdopterAdminViewModel viewModel) {
     return Form(
       key: formKey,
-
       child: Column(
-      spacing: 5,
+        spacing: 5,
         children: [
           const SizedBox(height: 15),
           DefaultTextInput(
@@ -187,13 +178,10 @@ class _AdopterEditModalState extends State<AdopterEditModal> {
               return null;
             },
           ),
-         
         ],
       ),
     );
   }
-
-  
 
   Widget _buildUpdateAdopterButton() {
     return Container(

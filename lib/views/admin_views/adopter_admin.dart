@@ -71,7 +71,7 @@ class AdopterAdmin extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: lightBrown.withOpacity(0.2),
+                    color: lightBrown.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(30),
                   ),
                   child: TextField(
@@ -129,7 +129,7 @@ class AdopterAdmin extends StatelessWidget {
 
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-      color: Colors.white.withOpacity(0.6),
+      color: Colors.white.withValues(alpha: 0.6),
       elevation: 0,
       margin: const EdgeInsets.symmetric(vertical: 8),
       child: ClipRRect(
@@ -139,18 +139,19 @@ class AdopterAdmin extends StatelessWidget {
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(18),
-              border: Border.all(color: lightBrown.withOpacity(0.3), width: 1),
+              border: Border.all(
+                  color: lightBrown.withValues(alpha: 0.3), width: 1),
               gradient: LinearGradient(
                 colors: [
-                  lightBrown.withOpacity(0.25),
-                  whiteColor.withOpacity(0.4),
+                  lightBrown.withValues(alpha: 0.25),
+                  whiteColor.withValues(alpha: 0.4),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: lightBrown.withOpacity(0.15),
+                  color: lightBrown.withValues(alpha: 0.15),
                   blurRadius: 12,
                   offset: const Offset(0, 6),
                 ),
@@ -199,7 +200,7 @@ class AdopterAdmin extends StatelessWidget {
                             padding: const EdgeInsets.symmetric(
                                 vertical: 5, horizontal: 10),
                             decoration: BoxDecoration(
-                              color: statusColor.withOpacity(0.1),
+                              color: statusColor.withValues(alpha: 0.1),
                               border: Border.all(color: statusColor),
                               borderRadius: BorderRadius.circular(10),
                             ),

@@ -53,7 +53,7 @@ class _OSMMapPickerScreenState extends State<OSMMapPickerScreen> {
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [lightBrown, brown.withOpacity(0.9)],
+                colors: [lightBrown, brown.withValues(alpha: 0.9)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -68,7 +68,7 @@ class _OSMMapPickerScreenState extends State<OSMMapPickerScreen> {
               width: 300,
               height: 300,
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.1),
+                color: Colors.white.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
             ),
@@ -80,7 +80,7 @@ class _OSMMapPickerScreenState extends State<OSMMapPickerScreen> {
               width: 300,
               height: 300,
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.08),
+                color: Colors.white.withValues(alpha: 0.08),
                 shape: BoxShape.circle,
               ),
             ),
@@ -131,7 +131,7 @@ class _OSMMapPickerScreenState extends State<OSMMapPickerScreen> {
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
+                  color: Colors.black.withValues(alpha: 0.2),
                   offset: const Offset(0, 3),
                   blurRadius: 8,
                 ),
@@ -161,12 +161,12 @@ class _OSMMapPickerScreenState extends State<OSMMapPickerScreen> {
                 child: Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color:
-                        const Color.fromARGB(255, 84, 31, 13).withOpacity(0.2),
+                    color: const Color.fromARGB(255, 84, 31, 13)
+                        .withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
                       color: const Color.fromARGB(255, 100, 10, 10)
-                          .withOpacity(0.3),
+                          .withValues(alpha: 0.3),
                       width: 1.2,
                     ),
                   ),
@@ -250,7 +250,7 @@ class _OSMMapPickerScreenState extends State<OSMMapPickerScreen> {
                   borderRadius: BorderRadius.circular(30),
                   boxShadow: [
                     BoxShadow(
-                      color: darkBrown.withOpacity(0.4),
+                      color: darkBrown.withValues(alpha: 0.4),
                       blurRadius: 10,
                       offset: const Offset(0, 5),
                     ),

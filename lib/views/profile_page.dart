@@ -104,7 +104,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.2),
+                            color: Colors.black.withValues(alpha: 0.2),
                             offset: const Offset(0, 3),
                             blurRadius: 8,
                           ),
@@ -170,7 +170,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
+                            color: Colors.black.withValues(alpha: 0.1),
                             blurRadius: 15,
                             offset: const Offset(0, 8),
                           ),
@@ -178,7 +178,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                       child: CircleAvatar(
                         radius: 38,
-                        backgroundColor: accentColor.withOpacity(0.1),
+                        backgroundColor: accentColor.withValues(alpha: 0.1),
                         backgroundImage: viewModel.path != null
                             ? FileImage(File(viewModel.path ?? ""))
                             : (user.profileImage != null &&
@@ -206,7 +206,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             border: Border.all(color: Colors.grey.shade300),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.15),
+                                color: Colors.black.withValues(alpha: 0.15),
                                 blurRadius: 6,
                               ),
                             ],
@@ -335,7 +335,8 @@ class _ProfilePageState extends State<ProfilePage> {
                           borderRadius: BorderRadius.circular(16),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.brown.shade900.withOpacity(0.5),
+                              color:
+                                  Colors.brown.shade900.withValues(alpha: 0.5),
                               blurRadius: 12,
                               offset: const Offset(0, 5),
                             ),
@@ -486,7 +487,7 @@ class _ProfilePageState extends State<ProfilePage> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.15),
+            color: Colors.grey.withValues(alpha: 0.15),
             blurRadius: 6,
             offset: const Offset(0, 4),
           ),
@@ -619,7 +620,7 @@ class _ProfilePageState extends State<ProfilePage> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.15),
+            color: Colors.grey.withValues(alpha: 0.15),
             blurRadius: 6,
             offset: const Offset(0, 4),
           ),
@@ -779,7 +780,7 @@ class _ProfilePageState extends State<ProfilePage> {
           selected: true,
           onSelected: (_) => onTap?.call(), // ✅ Actually call the function
           selectedColor: color,
-          backgroundColor: color.withOpacity(0.6),
+          backgroundColor: color.withValues(alpha: 0.6),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(5),
           ),
@@ -943,7 +944,7 @@ class _ProfilePageState extends State<ProfilePage> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.15),
+            color: Colors.grey.withValues(alpha: 0.15),
             blurRadius: 6,
             offset: const Offset(0, 4),
           ),
@@ -1023,7 +1024,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 10, vertical: 6),
                       decoration: BoxDecoration(
-                        color: statusColor.withOpacity(0.2),
+                        color: statusColor.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
@@ -1041,8 +1042,8 @@ class _ProfilePageState extends State<ProfilePage> {
                           horizontal: 10, vertical: 6),
                       decoration: BoxDecoration(
                         color: (pet.isLive ?? false)
-                            ? Colors.green.withOpacity(0.2)
-                            : Colors.red.withOpacity(0.2),
+                            ? Colors.green.withValues(alpha: 0.2)
+                            : Colors.red.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
@@ -1146,8 +1147,8 @@ class _ProfilePageState extends State<ProfilePage> {
       child: Theme(
         data: Theme.of(context).copyWith(
           dividerColor: Colors.transparent,
-          splashColor: accentColor.withOpacity(0.1),
-          highlightColor: accentColor.withOpacity(0.05),
+          splashColor: accentColor.withValues(alpha: 0.1),
+          highlightColor: accentColor.withValues(alpha: 0.05),
           unselectedWidgetColor: accentColor,
         ),
         child: ExpansionTile(
@@ -1155,7 +1156,7 @@ class _ProfilePageState extends State<ProfilePage> {
           childrenPadding:
               const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
           iconColor: accentColor,
-          collapsedIconColor: accentColor.withOpacity(0.7),
+          collapsedIconColor: accentColor.withValues(alpha: 0.7),
           title: Row(
             children: [
               if (icon != null) ...[

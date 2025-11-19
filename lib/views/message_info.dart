@@ -65,7 +65,7 @@ class MessageInfo extends StatelessWidget {
                           hintText: 'Search by email...',
                           hintStyle: const TextStyle(color: Colors.black45),
                           filled: true,
-                          fillColor: lightBrown.withOpacity(0.4),
+                          fillColor: lightBrown.withValues(alpha: 0.4),
                           contentPadding: const EdgeInsets.symmetric(
                               horizontal: 16, vertical: 14),
                           border: OutlineInputBorder(
@@ -154,7 +154,7 @@ class MessageCard extends StatelessWidget {
         border: Border.all(color: Color(0xFFBCAAA4)),
         boxShadow: [
           BoxShadow(
-            color: lightBrown.withOpacity(0.3),
+            color: lightBrown.withValues(alpha: 0.3),
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),

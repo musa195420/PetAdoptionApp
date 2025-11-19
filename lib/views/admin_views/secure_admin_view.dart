@@ -25,7 +25,7 @@ class SecureAdminView extends StatelessWidget {
       onDispose: () {},
       child: Scaffold(
         key: scaffoldKey,
-        backgroundColor: lightBrown.withOpacity(0.3),
+        backgroundColor: lightBrown.withValues(alpha: 0.3),
         body: SafeArea(
           child: Column(
             children: [
@@ -107,7 +107,7 @@ class SecureAdminView extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [whiteTone, lightBrown.withOpacity(0.4)],
+          colors: [whiteTone, lightBrown.withValues(alpha: 0.4)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -170,7 +170,7 @@ class SecureAdminView extends StatelessWidget {
                     secure.approval ?? "Unknown",
                     style: TextStyle(color: color, fontWeight: FontWeight.bold),
                   ),
-                  backgroundColor: color.withOpacity(0.15),
+                  backgroundColor: color.withValues(alpha: 0.15),
                   shape: StadiumBorder(side: BorderSide(color: color)),
                 ),
                 Row(

@@ -406,7 +406,7 @@ class _PetEditModalState extends State<PetEditModal> {
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.2),
+              color: Colors.grey.withValues(alpha: 0.2),
               blurRadius: 10,
               spreadRadius: 2,
             ),
@@ -435,7 +435,7 @@ class _PetEditModalState extends State<PetEditModal> {
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       decoration: BoxDecoration(
-                        color: liveColor.withOpacity(0.1),
+                        color: liveColor.withValues(alpha: 0.1),
                         border: Border.all(color: liveColor),
                         borderRadius: BorderRadius.circular(12),
                       ),

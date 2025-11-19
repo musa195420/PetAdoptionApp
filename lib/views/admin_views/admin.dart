@@ -149,7 +149,7 @@ class AdminPage extends StatelessWidget {
         margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.95),
+          color: Colors.white.withValues(alpha: 0.95),
           border: Border.all(color: Color(0xFF5D1F00), width: 1),
           borderRadius: BorderRadius.circular(8),
         ),

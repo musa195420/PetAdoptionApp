@@ -95,7 +95,7 @@ class ApplicationAdmin extends StatelessWidget {
           hintText: "Search by user email...",
           prefixIcon: Icon(Icons.search, color: darkBrown),
           filled: true,
-          fillColor: whiteColor.withOpacity(0.9),
+          fillColor: whiteColor.withValues(alpha: 0.9),
           contentPadding:
               const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
           border: OutlineInputBorder(
@@ -226,7 +226,8 @@ class ApplicationAdmin extends StatelessWidget {
   Widget _buildEmpty() {
     return Center(
       child: Text("No applications found",
-          style: TextStyle(color: darkBrown.withOpacity(0.7), fontSize: 14)),
+          style:
+              TextStyle(color: darkBrown.withValues(alpha: 0.7), fontSize: 14)),
     );
   }
 
@@ -254,7 +255,7 @@ class ApplicationAdmin extends StatelessWidget {
         return Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.95),
+            color: Colors.white.withValues(alpha: 0.95),
             borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
             boxShadow: [
               BoxShadow(
