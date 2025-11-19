@@ -1,7 +1,4 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
-import 'package:petadoption/extenshions/string_ext.dart';
 import 'package:petadoption/helpers/constants.dart';
 import 'package:petadoption/helpers/locator.dart';
 import 'package:petadoption/models/response_models/meetup_verification.dart';

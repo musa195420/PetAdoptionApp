@@ -27,7 +27,7 @@ class HealthInfoModel {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = {};
-    if (petId != null) data['pet_id'] = petId;
+    data['pet_id'] = petId;
     if (vaccinationId != null) data['vaccination_id'] = vaccinationId;
     if (diseaseId != null) data['disease_id'] = diseaseId;
     if (disabilityId != null) data['disability_id'] = disabilityId;

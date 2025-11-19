@@ -6,7 +6,7 @@ import 'package:petadoption/services/api_service.dart';
 import 'package:petadoption/services/global_service.dart';
 import 'package:petadoption/viewModel/admin_view_models/secureMeetup_admin_view_model.dart';
 import 'package:petadoption/viewModel/base_view_model.dart';
-import 'package:socket_io_client/socket_io_client.dart' as IO;
+import 'package:socket_io_client/socket_io_client.dart' as io;
 
 import '../models/hive_models/user.dart';
 import '../models/message.dart';
@@ -259,7 +259,7 @@ class MessageViewModel extends BaseViewModel {
     notifyListeners();
   }
 
-  IO.Socket? socket;
+  io.Socket? socket;
 
   void initSocket(String userId, String receiverId) async {
     try {
@@ -267,7 +267,7 @@ class MessageViewModel extends BaseViewModel {
         return; // Prevent reinitialization
       }
       String url = await _globalService.getHost();
-      socket = IO.io(url, <String, dynamic>{
+      socket = io.io(url, <String, dynamic>{
         'transports': ['websocket'],
         'autoConnect': false,
       });

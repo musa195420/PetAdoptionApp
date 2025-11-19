@@ -176,14 +176,14 @@ class FadingDotsIndicator extends StatelessWidget {
   final Color inactiveColor;
 
   const FadingDotsIndicator({
-    Key? key,
+    super.key,
     this.count = 5,
     this.selectedIndex = 0,
     this.radius = 6.0,
     this.spacing = 12.0,
     this.activeColor = Colors.blue,
     this.inactiveColor = Colors.grey,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:petadoption/helpers/colors.dart';
 import 'package:petadoption/custom_widgets/stateful_wrapper.dart';
 import 'package:petadoption/models/response_models/pet_response.dart';
@@ -20,8 +19,7 @@ class PetAdmin extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final viewModel = context.watch<PetAdminViewModel>();
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
+    Theme.of(context);
 
     // We'll override the dark mode check, you can toggle it if you want
     // For now, assume always using your brown theme

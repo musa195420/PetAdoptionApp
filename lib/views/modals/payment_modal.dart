@@ -1,9 +1,10 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:petadoption/custom_widgets/loading_indicators.dart';
 import 'package:petadoption/helpers/locator.dart';
 import 'package:petadoption/services/navigation_service.dart';
-import 'package:petadoption/views/application_page.dart';
 import 'package:provider/provider.dart';
 import '../../viewModel/payment_view_model.dart';
 import 'package:petadoption/models/hive_models/user.dart';

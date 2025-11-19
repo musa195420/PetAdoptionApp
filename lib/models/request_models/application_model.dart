@@ -38,8 +38,9 @@ class ApplicationModel {
     if (userId != null) data['user_id'] = userId;
     if (profession != null) data['profession'] = profession;
     if (reason != null) data['reason'] = reason;
-    if (verificationStatus != null)
+    if (verificationStatus != null) {
       data['verification_status'] = verificationStatus;
+    }
     if (createdAt != null) data['created_at'] = createdAt;
     if (meetupId != null) data['meetup_id'] = meetupId;
     return data;
@@ -69,13 +70,13 @@ class ApplicationModel {
   /// Copy from another instance (non-null values only)
   ApplicationModel copyWithModel(ApplicationModel other) {
     return ApplicationModel(
-      applicationId: other.applicationId ?? this.applicationId,
-      userId: other.userId ?? this.userId,
-      profession: other.profession ?? this.profession,
-      reason: other.reason ?? this.reason,
-      verificationStatus: other.verificationStatus ?? this.verificationStatus,
-      createdAt: other.createdAt ?? this.createdAt,
-      meetupId: other.meetupId ?? this.meetupId,
+      applicationId: other.applicationId ?? applicationId,
+      userId: other.userId ?? userId,
+      profession: other.profession ?? profession,
+      reason: other.reason ?? reason,
+      verificationStatus: other.verificationStatus ?? verificationStatus,
+      createdAt: other.createdAt ?? createdAt,
+      meetupId: other.meetupId ?? meetupId,
     );
   }
 }

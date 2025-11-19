@@ -6,7 +6,6 @@ import 'package:petadoption/models/response_models/user_verification.dart';
 import 'package:petadoption/services/api_service.dart';
 import 'package:petadoption/services/global_service.dart';
 import 'package:petadoption/viewModel/base_view_model.dart';
-import 'package:petadoption/viewModel/startup_viewmodel.dart';
 
 import '../services/dialog_service.dart';
 import '../services/navigation_service.dart';
@@ -17,7 +16,6 @@ IDialogService get dialogService => locator<IDialogService>();
 class UserVerificationViewModel extends BaseViewModel {
   IAPIService get _apiService => locator<IAPIService>();
   GlobalService get _globalService => locator<GlobalService>();
-  StartupViewModel get _startupViewModel => locator<StartupViewModel>();
 
   List<UserVerification>? verifications;
   String? cnicpath;

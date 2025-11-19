@@ -1747,7 +1747,7 @@ class APIService implements IAPIService {
       _globalService.logError("Error Occured!", e.toString(), s);
       debugPrint(e.toString());
       return ApiStatus(data: e, errorCode: "PA0007");
-    } on ClientException catch (e, s) {
+    } on ClientException {
       _authModel.logout(confirm: true);
       return ApiStatus(data: "Server Not Reachable", errorCode: "PA0009");
     } on TimeoutException catch (e, s) {
@@ -1899,7 +1899,7 @@ class APIService implements IAPIService {
       _globalService.logError("Error Occured!", e.toString(), s);
       debugPrint(e.toString());
       return ApiStatus(data: e, errorCode: "PA0003");
-    } on ClientException catch (e, s) {
+    } on ClientException {
       _authModel.logout(confirm: true);
       return ApiStatus(data: "Server Not Reachable", errorCode: "PA0009");
     } catch (e, s) {
@@ -2131,7 +2131,7 @@ class APIService implements IAPIService {
       _globalService.logError("Error Occured!", e.toString(), s);
       debugPrint(e.toString());
       return ApiStatus(data: e, errorCode: "PA0007");
-    } on ClientException catch (e, s) {
+    } on ClientException {
       _authModel.logout(confirm: true);
       return ApiStatus(data: "Server Not Reachable", errorCode: "PA0009");
     } on TimeoutException catch (e, s) {

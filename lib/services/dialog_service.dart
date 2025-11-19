@@ -538,6 +538,7 @@ class DialogService implements IDialogService {
   }
 
   /// Returns `null` if the user cancels either picker.
+  @override
   Future<DateTime?> showDateTimePicker({
     DateTime? initialDateTime,
     bool barrierDismissible = false,
@@ -727,6 +728,7 @@ class DialogService implements IDialogService {
     );
   }
 
+  @override
   Future<bool> showSelectionDialog({required Message message}) async {
     final context = _navigationService.navigatorKey.currentContext!;
 

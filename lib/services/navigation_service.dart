@@ -5,7 +5,6 @@ import 'package:petadoption/models/health_info.dart';
 import 'package:petadoption/models/message.dart';
 import 'package:petadoption/models/response_models/meetup.dart';
 import 'package:petadoption/models/response_models/meetup_verification.dart';
-import 'package:petadoption/models/response_models/user_verification.dart';
 import 'package:petadoption/services/dialog_service.dart';
 import 'package:petadoption/views/admin_views/admin.dart';
 import 'package:petadoption/views/admin_views/admin_meetup_ver_details.dart';

@@ -341,9 +341,8 @@ class _MeetupVerificationAdminState extends State<MeetupVerificationAdmin> {
                             ),
                             onSelected: (bool selected) {
                               setState(() {
-                                selectedVerification = selected
-                                    ? status["value"] as String?
-                                    : null;
+                                selectedVerification =
+                                    selected ? status["value"] : null;
                               });
                             },
                           );
@@ -375,9 +374,8 @@ class _MeetupVerificationAdminState extends State<MeetupVerificationAdmin> {
                             ),
                             onSelected: (bool selected) {
                               setState(() {
-                                selectedPayment = selected
-                                    ? status["value"] as String?
-                                    : null;
+                                selectedPayment =
+                                    selected ? status["value"] : null;
                               });
                             },
                           );
@@ -410,9 +408,8 @@ class _MeetupVerificationAdminState extends State<MeetupVerificationAdmin> {
                             ),
                             onSelected: (bool selected) {
                               setState(() {
-                                selectedUserVerification = selected
-                                    ? status["value"] as String?
-                                    : null;
+                                selectedUserVerification =
+                                    selected ? status["value"] : null;
                               });
                             },
                           );
@@ -445,9 +442,8 @@ class _MeetupVerificationAdminState extends State<MeetupVerificationAdmin> {
                             ),
                             onSelected: (bool selected) {
                               setState(() {
-                                selectedApplicationVerification = selected
-                                    ? status["value"] as String?
-                                    : null;
+                                selectedApplicationVerification =
+                                    selected ? status["value"] : null;
                               });
                             },
                           );

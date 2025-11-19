@@ -10,9 +10,7 @@ import 'package:petadoption/helpers/colors.dart';
 import 'package:petadoption/helpers/current_location.dart';
 import 'package:petadoption/helpers/locator.dart';
 import 'package:petadoption/models/hive_models/user.dart';
-import 'package:petadoption/models/request_models/application_model.dart';
 import 'package:petadoption/models/response_models/meetup.dart';
-import 'package:petadoption/models/response_models/payment.dart';
 import 'package:petadoption/models/response_models/pet_response.dart';
 import 'package:petadoption/models/response_models/secure_meetup.dart';
 import 'package:petadoption/models/response_models/user_profile.dart';
@@ -813,8 +811,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget _buildApplicationStatus(Meetup meetup) {
-    final status =
-        (meetup!.application?.verificationStatus ?? "").toLowerCase();
+    final status = (meetup.application?.verificationStatus ?? "").toLowerCase();
 
     if (status == "rejected") {
       return _buildStatusChip(
@@ -1193,41 +1190,6 @@ class _ProfilePageState extends State<ProfilePage> {
           fontSize: 16,
           fontWeight: FontWeight.w600,
           color: color ?? primaryColor,
-        ),
-      ),
-    );
-  }
-
-  Widget _logoutButton() {
-    return InkWell(
-      borderRadius: BorderRadius.circular(14),
-      onTap: () => viewModel.logout(),
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-        decoration: BoxDecoration(
-          color: const Color.fromARGB(255, 57, 26, 21),
-          borderRadius: BorderRadius.circular(14),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: const [
-            Icon(
-              Icons.logout,
-              color: Colors.white,
-              size: 22,
-            ),
-            SizedBox(width: 10),
-            Text(
-              "Logout",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
         ),
       ),
     );

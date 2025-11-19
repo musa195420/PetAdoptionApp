@@ -13,7 +13,6 @@ import '../models/response_models/pet_response.dart';
 const _kPrimary = Color(0xFF222831);
 const _kSecondary = Color.fromARGB(255, 69, 19, 2);
 const _kStroke = Color(0xFFE0E0E0);
-const _kBg = Color(0xFFFFFFFF);
 
 class SearchPage extends StatelessWidget {
   const SearchPage({super.key});

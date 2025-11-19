@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:petadoption/helpers/error_handler.dart';
 import 'package:petadoption/helpers/locator.dart';
-import 'package:petadoption/models/hive_models/user.dart';
 import 'package:petadoption/models/request_models/application_model.dart';
-import 'package:petadoption/models/request_models/delete_user.dart';
 import 'package:petadoption/models/response_models/meetup.dart';
 import 'package:petadoption/models/response_models/meetup_verification.dart';
 import 'package:petadoption/models/response_models/payment.dart';
@@ -15,10 +13,7 @@ import 'package:petadoption/services/global_service.dart';
 import 'package:petadoption/services/navigation_service.dart';
 import 'package:petadoption/viewModel/admin_view_models/user_admin_view_model.dart';
 import 'package:petadoption/viewModel/base_view_model.dart';
-import 'package:petadoption/viewModel/profile_view_model.dart';
-import 'package:petadoption/viewModel/startup_viewmodel.dart';
 
-UserAdminViewModel get _userModel => locator<UserAdminViewModel>();
 NavigationService get navigationService => locator<NavigationService>();
 
 class MeetupVerificationViewModel extends BaseViewModel {
@@ -26,7 +21,6 @@ class MeetupVerificationViewModel extends BaseViewModel {
   IAPIService get _apiService => locator<IAPIService>();
   IDialogService get _dialogService => locator<IDialogService>();
   GlobalService get _globalService => locator<GlobalService>();
-  ProfileViewModel get _profileModel => locator<ProfileViewModel>();
   List<MeetupVerification>? verifymeetups;
   List<MeetupVerification>? fiteredMeetups;
 
