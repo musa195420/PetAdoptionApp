@@ -1194,8 +1194,6 @@ PODS:
   - BoringSSL-GRPC/Implementation (0.0.37):
     - BoringSSL-GRPC/Interface (= 0.0.37)
   - BoringSSL-GRPC/Interface (0.0.37)
-  - camera_avfoundation (0.0.1):
-    - Flutter
   - cloud_firestore (5.6.9):
     - Firebase/Firestore (= 11.13.0)
     - firebase_core
@@ -1455,15 +1453,10 @@ PODS:
     - TensorFlowLiteSwift (= 2.12.0)
     - TensorFlowLiteSwift/CoreML (= 2.12.0)
     - TensorFlowLiteSwift/Metal (= 2.12.0)
-  - tflite_flutter_helper_plus (0.0.1):
-    - Flutter
-  - tflite_flutter_plus (0.0.1):
-    - Flutter
   - url_launcher_ios (0.0.1):
     - Flutter
 
 DEPENDENCIES:
-  - camera_avfoundation (from `.symlinks/plugins/camera_avfoundation/ios`)
   - cloud_firestore (from `.symlinks/plugins/cloud_firestore/ios`)
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
   - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
@@ -1482,9 +1475,8 @@ DEPENDENCIES:
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
   - sqflite_darwin (from `.symlinks/plugins/sqflite_darwin/darwin`)
   - stripe_ios (from `.symlinks/plugins/stripe_ios/ios`)
+  - TensorFlowLiteC
   - tflite_flutter (from `.symlinks/plugins/tflite_flutter/ios`)
-  - tflite_flutter_helper_plus (from `.symlinks/plugins/tflite_flutter_helper_plus/ios`)
-  - tflite_flutter_plus (from `.symlinks/plugins/tflite_flutter_plus/ios`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
 
 SPEC REPOS:
@@ -1516,8 +1508,6 @@ SPEC REPOS:
     - TensorFlowLiteSwift
 
 EXTERNAL SOURCES:
-  camera_avfoundation:
-    :path: ".symlinks/plugins/camera_avfoundation/ios"
   cloud_firestore:
     :path: ".symlinks/plugins/cloud_firestore/ios"
   connectivity_plus:
@@ -1556,17 +1546,12 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/stripe_ios/ios"
   tflite_flutter:
     :path: ".symlinks/plugins/tflite_flutter/ios"
-  tflite_flutter_helper_plus:
-    :path: ".symlinks/plugins/tflite_flutter_helper_plus/ios"
-  tflite_flutter_plus:
-    :path: ".symlinks/plugins/tflite_flutter_plus/ios"
   url_launcher_ios:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
 
 SPEC CHECKSUMS:
   abseil: a05cc83bf02079535e17169a73c5be5ba47f714b
   BoringSSL-GRPC: dded2a44897e45f28f08ae87a55ee4bcd19bc508
-  camera_avfoundation: be3be85408cd4126f250386828e9b1dfa40ab436
   cloud_firestore: 2fdc3301bcc486957ff7fa705430a185468c1987
   connectivity_plus: cb623214f4e1f6ef8fe7403d580fdad517d2f7dd
   device_info_plus: 21fcca2080fbcd348be798aa36c3e5ed849eefbe
@@ -1609,10 +1594,8 @@ SPEC CHECKSUMS:
   TensorFlowLiteC: 20785a69299185a379ba9852b6625f00afd7984a
   TensorFlowLiteSwift: 3a4928286e9e35bdd3e17970f48e53c80d25e793
   tflite_flutter: 64b192e11352fe36943ab6656e1d49207f1a5595
-  tflite_flutter_helper_plus: 78eaf3c53694926048cc91ece0d91e5336023472
-  tflite_flutter_plus: 5dcd8650e1f9b73ece9a83c51c7caecbe28357e2
   url_launcher_ios: 694010445543906933d732453a59da0a173ae33d
 
-PODFILE CHECKSUM: e30f02f9d1c72c47bb6344a0a748c9d268180865
+PODFILE CHECKSUM: 8abfff7d738301e6ae5631c503ba8ce3e81d7897
 
 COCOAPODS: 1.16.2
