@@ -29,6 +29,43 @@ class HomeViewModel extends BaseViewModel {
   List<PetResponse>? pets;
   List<String> petSelection = [];
   List<PetResponse>? filteredPets;
+  bool isSearching = false;
+  String searchQuery = "";
+
+  // Add this method to toggle search mode
+  void toggleSearch() {
+    isSearching = !isSearching;
+    if (!isSearching) {
+      // Clear search when closing
+      searchQuery = "";
+      searchPets("");
+    }
+    notifyListeners();
+  }
+
+  // Add this method to handle search
+  void searchPets(String query) {
+    searchQuery = query;
+
+    if (query.trim().isEmpty) {
+      // If search is empty, apply current animal filter or show all
+      if (selectedAnimal.isEmpty) {
+        unfilterAnimals();
+      } else {
+        filteredSelection(selectedAnimal);
+      }
+    } else {
+      // Search across all pets, combining with animal filter if active
+      filteredPets = pets?.where((pet) {
+        final matchesSearch =
+            pet.name?.toLowerCase().contains(query.toLowerCase()) ?? false;
+        final matchesAnimal = selectedAnimal.isEmpty ||
+            (pet.animal?.toLowerCase() == selectedAnimal.toLowerCase());
+        return matchesSearch && matchesAnimal;
+      }).toList();
+    }
+    notifyListeners();
+  }
 
   Future<void> getPets() async {
     try {

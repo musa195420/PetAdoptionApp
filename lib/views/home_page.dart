@@ -43,9 +43,11 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  _buildUpperSection(HomeViewModel viewModel, BuildContext context) {
+  Widget _buildUpperSection(HomeViewModel viewModel, BuildContext context) {
     return Container(
-      height: MediaQuery.sizeOf(context).height * 0.41,
+      height: viewModel.isSearching
+          ? MediaQuery.sizeOf(context).height * 0.44
+          : MediaQuery.sizeOf(context).height * 0.41,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.centerLeft,
@@ -62,9 +64,83 @@ class HomePage extends StatelessWidget {
       ),
       child: Column(
         children: [
+          // Show carousel only when not searching
+          if (viewModel.isSearching)
+            Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 16),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(25),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                blurRadius: 10,
+                                offset: Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: TextField(
+                            autofocus: true,
+                            onChanged: (value) {
+                              viewModel.searchPets(value);
+                            },
+                            decoration: InputDecoration(
+                              hintText: "Search pets by name...",
+                              border: InputBorder.none,
+                              icon: Icon(
+                                Icons.search,
+                                color: Color.fromARGB(255, 146, 61, 5),
+                              ),
+                            ),
+                            style: TextStyle(
+                              color: Color.fromARGB(255, 83, 36, 6),
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      InkWell(
+                        onTap: () {
+                          viewModel.toggleSearch();
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                blurRadius: 10,
+                                offset: Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: Icon(
+                            Icons.close,
+                            color: Color.fromARGB(255, 146, 61, 5),
+                            size: 24,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           CarouselSlider(
             options: CarouselOptions(
-              height: MediaQuery.sizeOf(context).height * 0.37,
+              // height: viewModel.isSearching
+              //     ? MediaQuery.sizeOf(context).height * 0.41
+              //     : MediaQuery.sizeOf(context).height * 0.37,
               autoPlay: true,
               enlargeCenterPage: true,
               viewportFraction: 0.9,
@@ -75,7 +151,9 @@ class HomePage extends StatelessWidget {
                   return Stack(children: [
                     ClipRRect(
                       child: Image.asset(
-                        height: MediaQuery.sizeOf(context).height * 0.37,
+                        height: viewModel.isSearching
+                            ? MediaQuery.sizeOf(context).height * 0.41
+                            : MediaQuery.sizeOf(context).height * 0.37,
                         imagePath,
                         fit: BoxFit.contain,
                         width: double.infinity,
@@ -162,28 +240,30 @@ class HomePage extends StatelessWidget {
                               ),
                             ),
                           ),
-                          Expanded(
-                            child: Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    InkWell(
-                                      onTap: () {
-                                        debugPrint("Search Pressed!");
-                                      },
-                                      child: Icon(
-                                        Icons.search,
-                                        color: const Color.fromARGB(
-                                            255, 146, 61, 5),
-                                        size: 30,
+                          if (!viewModel.isSearching)
+                            Expanded(
+                              child: Column(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      InkWell(
+                                        onTap: () {
+                                          viewModel.toggleSearch();
+                                          debugPrint("Search Pressed!");
+                                        },
+                                        child: Icon(
+                                          Icons.search,
+                                          color: const Color.fromARGB(
+                                              255, 146, 61, 5),
+                                          size: 30,
+                                        ),
                                       ),
-                                    ),
-                                  ],
-                                )
-                              ],
+                                    ],
+                                  )
+                                ],
+                              ),
                             ),
-                          ),
                         ],
                       ),
                     ),
@@ -192,76 +272,80 @@ class HomePage extends StatelessWidget {
               );
             }).toList(),
           ),
+
+          // Show search bar when searching
         ],
       ),
     );
   }
 
   _buildMiddleSection(HomeViewModel viewModel, BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(5),
-      height: MediaQuery.sizeOf(context).height * 0.25,
-      margin: EdgeInsets.fromLTRB(
-          0, MediaQuery.sizeOf(context).height * 0.33, 0, 0),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              // ignore: deprecated_member_use
-              color: Colors.grey.withValues(alpha: 0.2),
-              spreadRadius: 2,
-              blurRadius: 8,
-            ),
-          ],
-        ),
-        child: Center(
-          child: GridView.count(
-            childAspectRatio: 1.1,
-            shrinkWrap: true,
-            crossAxisCount: 4,
-            mainAxisSpacing: 0,
-            crossAxisSpacing: 0,
-            physics: NeverScrollableScrollPhysics(),
-            children: viewModel.petSelection.map((pet) {
-              bool isSelected = pet == viewModel.selectedAnimal;
-              return InkWell(
-                onTap: () {
-                  viewModel.filteredSelection(pet);
-                },
-                child: SizedBox(
-                  height: 80, // Try adjusting this value
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      CircleAvatar(
-                        radius: 22,
-                        backgroundColor: isSelected
-                            ? Color(0xfff8c561)
-                            : Colors.grey.shade100,
-                        child: Image.asset(
-                          viewModel.getSvgs(pet),
-                          width: 28,
-                          height: 28,
-                        ),
-                      ),
-                      const SizedBox(height: 3),
-                      Text(
-                        pet[0].toUpperCase() + pet.substring(1),
-                        style: TextStyle(fontSize: 11),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
+    return Visibility(
+        visible: !viewModel.isSearching,
+        child: Container(
+          padding: EdgeInsets.all(5),
+          height: MediaQuery.sizeOf(context).height * 0.25,
+          margin: EdgeInsets.fromLTRB(
+              0, MediaQuery.sizeOf(context).height * 0.33, 0, 0),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  // ignore: deprecated_member_use
+                  color: Colors.grey.withValues(alpha: 0.2),
+                  spreadRadius: 2,
+                  blurRadius: 8,
                 ),
-              );
-            }).toList(),
+              ],
+            ),
+            child: Center(
+              child: GridView.count(
+                childAspectRatio: 1.1,
+                shrinkWrap: true,
+                crossAxisCount: 4,
+                mainAxisSpacing: 0,
+                crossAxisSpacing: 0,
+                physics: NeverScrollableScrollPhysics(),
+                children: viewModel.petSelection.map((pet) {
+                  bool isSelected = pet == viewModel.selectedAnimal;
+                  return InkWell(
+                    onTap: () {
+                      viewModel.filteredSelection(pet);
+                    },
+                    child: SizedBox(
+                      height: 80, // Try adjusting this value
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          CircleAvatar(
+                            radius: 22,
+                            backgroundColor: isSelected
+                                ? Color(0xfff8c561)
+                                : Colors.grey.shade100,
+                            child: Image.asset(
+                              viewModel.getSvgs(pet),
+                              width: 28,
+                              height: 28,
+                            ),
+                          ),
+                          const SizedBox(height: 3),
+                          Text(
+                            pet[0].toUpperCase() + pet.substring(1),
+                            style: TextStyle(fontSize: 11),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
           ),
-        ),
-      ),
-    );
+        ));
   }
 
   _buildPetsListView(HomeViewModel viewModel, BuildContext context) {
