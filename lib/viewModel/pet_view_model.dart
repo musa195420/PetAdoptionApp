@@ -219,7 +219,7 @@ class PetViewModel extends BaseViewModel {
   String? selectedBreedName;
   List<BreedType>? breeds;
 
-  Future<BreedSelection> getAnimalBreed(String? selectedAnimalTypeId) async {
+  Future<BreedSelection?> getAnimalBreed(String? selectedAnimalTypeId) async {
     try {
       loading(true);
       if (selectedAnimalTypeId != null) {
@@ -278,9 +278,9 @@ class PetViewModel extends BaseViewModel {
       notifyListeners();
       loading(false);
     }
+    if (selectedBreedId == null) return null;
     return BreedSelection(
-        selectedBreedId: selectedBreedId!,
-        selectedBreedName: selectedBreedName!);
+        selectedBreedId: selectedBreedId, selectedBreedName: selectedBreedName);
   }
 
   String gender = "Male";

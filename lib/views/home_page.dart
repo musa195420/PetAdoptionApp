@@ -19,24 +19,26 @@ class HomePage extends StatelessWidget {
         viewModel.getPets();
       },
       onDispose: () {},
-      child: Scaffold(
-        body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Stack(
-                children: [
-                  _buildUpperSection(viewModel, context),
-                  _buildMiddleSection(viewModel, context),
-                ],
-              ),
+      child: SafeArea(
+        child: Scaffold(
+          body: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Stack(
+                  children: [
+                    _buildUpperSection(viewModel, context),
+                    _buildMiddleSection(viewModel, context),
+                  ],
+                ),
 
-              /// PET CATEGORIES SECTION
+                /// PET CATEGORIES SECTION
 
-              // Any other widget below
-              _buildPetsListView(viewModel, context),
-              const SizedBox(height: 20),
-            ],
+                // Any other widget below
+                _buildPetsListView(viewModel, context),
+                const SizedBox(height: 20),
+              ],
+            ),
           ),
         ),
       ),
@@ -138,9 +140,9 @@ class HomePage extends StatelessWidget {
             ),
           CarouselSlider(
             options: CarouselOptions(
-              // height: viewModel.isSearching
-              //     ? MediaQuery.sizeOf(context).height * 0.41
-              //     : MediaQuery.sizeOf(context).height * 0.37,
+              height: viewModel.isSearching
+                  ? MediaQuery.sizeOf(context).height * 0.41
+                  : MediaQuery.sizeOf(context).height * 0.37,
               autoPlay: true,
               enlargeCenterPage: true,
               viewportFraction: 0.9,
@@ -153,7 +155,7 @@ class HomePage extends StatelessWidget {
                       child: Image.asset(
                         height: viewModel.isSearching
                             ? MediaQuery.sizeOf(context).height * 0.41
-                            : MediaQuery.sizeOf(context).height * 0.37,
+                            : MediaQuery.sizeOf(context).height * 0.48,
                         imagePath,
                         fit: BoxFit.contain,
                         width: double.infinity,

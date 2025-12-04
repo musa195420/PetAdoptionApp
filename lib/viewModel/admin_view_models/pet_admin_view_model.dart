@@ -49,7 +49,8 @@ class PetAdminViewModel extends BaseViewModel {
 
   getBreeds() async {
     if (pet != null) {
-      BreedSelection breed = await _petViewModel.getAnimalBreed(pet!.animalId);
+      BreedSelection? breed = await _petViewModel.getAnimalBreed(pet!.animalId);
+      if (breed == null) return;
       if (breed.selectedBreedId != null && breed.selectedBreedName != null) {
         pet!.breedId = breed.selectedBreedId!;
         pet!.breed = breed.selectedBreedName!;
