@@ -353,7 +353,7 @@ class ProfileViewModel extends BaseViewModel {
 
               final address =
                   await CurrentLocation().getAddressFromLatLngString(lat, lng);
-              m.location = address ?? "Unknown location";
+              m.location = address;
             }),
           );
 

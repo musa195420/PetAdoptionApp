@@ -13,7 +13,6 @@ import 'package:petadoption/models/request_models/pet_request.dart';
 import 'package:petadoption/models/response_models/animal_Type.dart';
 import 'package:petadoption/models/response_models/get_disability.dart';
 import 'package:petadoption/models/response_models/health_info.dart';
-import 'package:petadoption/models/response_models/meetup.dart';
 import 'package:petadoption/services/api_service.dart';
 import 'package:petadoption/services/dialog_service.dart';
 import 'package:petadoption/services/global_service.dart';
@@ -220,7 +219,7 @@ class PetViewModel extends BaseViewModel {
   String? selectedBreedName;
   List<BreedType>? breeds;
 
-  Future<BreedSelection> getAnimalBreed(String? selectedAnimalTypeId) async {
+  Future<BreedSelection?> getAnimalBreed(String? selectedAnimalTypeId) async {
     try {
       loading(true);
       if (selectedAnimalTypeId != null) {
@@ -279,9 +278,9 @@ class PetViewModel extends BaseViewModel {
       notifyListeners();
       loading(false);
     }
+    if (selectedBreedId == null) return null;
     return BreedSelection(
-        selectedBreedId: selectedBreedId!,
-        selectedBreedName: selectedBreedName!);
+        selectedBreedId: selectedBreedId, selectedBreedName: selectedBreedName);
   }
 
   String gender = "Male";

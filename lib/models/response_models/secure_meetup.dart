@@ -51,10 +51,12 @@ class SecureMeetup {
     if (secureMeetupId != null) data['secure_meetup_id'] = secureMeetupId;
     if (meetupId != null) data['meetup_id'] = meetupId;
     if (proofPicUrl != null) data['proof_pic_url'] = proofPicUrl;
-    if (adopterIdFrontUrl != null)
+    if (adopterIdFrontUrl != null) {
       data['adopter_id_front_url'] = adopterIdFrontUrl;
-    if (adopterIdBackUrl != null)
+    }
+    if (adopterIdBackUrl != null) {
       data['adopter_id_back_url'] = adopterIdBackUrl;
+    }
     if (phoneNumber != null) data['phone_number'] = phoneNumber;
     if (currentAddress != null) data['current_address'] = currentAddress;
     if (time != null) data['time'] = time;

@@ -1,6 +1,5 @@
 // ignore_for_file: non_constant_identifier_names
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:petadoption/helpers/error_handler.dart';
 import 'package:petadoption/helpers/locator.dart';

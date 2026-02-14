@@ -1,9 +1,10 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:petadoption/custom_widgets/loading_indicators.dart';
 import 'package:petadoption/helpers/locator.dart';
 import 'package:petadoption/services/navigation_service.dart';
-import 'package:petadoption/views/application_page.dart';
 import 'package:provider/provider.dart';
 import '../../viewModel/payment_view_model.dart';
 import 'package:petadoption/models/hive_models/user.dart';
@@ -123,8 +124,8 @@ class _PaymentModalState extends State<PaymentModal> {
                                   boxShadow: isSelected
                                       ? [
                                           BoxShadow(
-                                            color:
-                                                kPrimaryBrown.withOpacity(0.55),
+                                            color: kPrimaryBrown.withValues(
+                                                alpha: 0.55),
                                             blurRadius: 10,
                                             spreadRadius: 1,
                                           ),
@@ -287,7 +288,7 @@ class _PaymentModalState extends State<PaymentModal> {
                   border: Border.all(color: Colors.white24),
                   boxShadow: [
                     BoxShadow(
-                      color: kPrimaryBrown.withOpacity(0.7),
+                      color: kPrimaryBrown.withValues(alpha: 0.7),
                       blurRadius: 20,
                       spreadRadius: 2,
                     )
@@ -390,12 +391,12 @@ class _GlassCard extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.06),
+            color: Colors.white.withValues(alpha: 0.06),
             borderRadius: BorderRadius.circular(24),
-            border: Border.all(color: Colors.white.withOpacity(0.12)),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.12)),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.2),
+                color: Colors.black.withValues(alpha: 0.2),
                 blurRadius: 20,
                 spreadRadius: 5,
               )

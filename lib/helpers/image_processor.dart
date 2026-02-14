@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,7 +7,6 @@ import 'package:image/image.dart' as img;
 import 'package:petadoption/helpers/animals.dart';
 import 'package:petadoption/helpers/error_handler.dart';
 import 'package:petadoption/helpers/locator.dart';
-import 'package:petadoption/models/message.dart';
 import 'package:petadoption/services/dialog_service.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
 

@@ -70,7 +70,7 @@ class UserAdmin extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: lightBrown.withOpacity(0.2),
+                    color: lightBrown.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(30),
                   ),
                   child: TextField(
@@ -123,8 +123,8 @@ class UserAdmin extends StatelessWidget {
 
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      color: lightBrown.withOpacity(0.15),
-      shadowColor: darkBrown.withOpacity(0.2),
+      color: lightBrown.withValues(alpha: 0.15),
+      shadowColor: darkBrown.withValues(alpha: 0.2),
       elevation: 4,
       margin: const EdgeInsets.symmetric(vertical: 8),
       child: Padding(
@@ -174,7 +174,7 @@ class UserAdmin extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
-                          color: lightBrown.withOpacity(0.9),
+                          color: lightBrown.withValues(alpha: 0.9),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Row(

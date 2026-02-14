@@ -108,7 +108,7 @@ class _MeetupVerificationAdminState extends State<MeetupVerificationAdmin> {
           hintText: "Search by meetup ID or user email...",
           prefixIcon: Icon(Icons.search, color: darkBrown),
           filled: true,
-          fillColor: whiteColor.withOpacity(0.9),
+          fillColor: whiteColor.withValues(alpha: 0.9),
           contentPadding:
               const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
           border: OutlineInputBorder(
@@ -176,13 +176,13 @@ class _MeetupVerificationAdminState extends State<MeetupVerificationAdmin> {
                   Text(
                     "Payment Amount: \$${amount.toString()}",
                     style: TextStyle(
-                        fontSize: 14, color: darkBrown.withOpacity(0.8)),
+                        fontSize: 14, color: darkBrown.withValues(alpha: 0.8)),
                   ),
                   const SizedBox(height: 6),
                   Text(
                     "Application ID: ${meetup.applicationId ?? 'N/A'}",
                     style: TextStyle(
-                        fontSize: 14, color: darkBrown.withOpacity(0.8)),
+                        fontSize: 14, color: darkBrown.withValues(alpha: 0.8)),
                   ),
                 ],
               ),
@@ -232,7 +232,8 @@ class _MeetupVerificationAdminState extends State<MeetupVerificationAdmin> {
   Widget _buildEmpty() {
     return Center(
       child: Text("No meetup verifications found",
-          style: TextStyle(color: darkBrown.withOpacity(0.7), fontSize: 16)),
+          style:
+              TextStyle(color: darkBrown.withValues(alpha: 0.7), fontSize: 16)),
     );
   }
 
@@ -283,7 +284,7 @@ class _MeetupVerificationAdminState extends State<MeetupVerificationAdmin> {
               return Container(
                 padding: const EdgeInsets.fromLTRB(24, 24, 24, 32),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.98),
+                  color: Colors.white.withValues(alpha: 0.98),
                   borderRadius:
                       const BorderRadius.vertical(top: Radius.circular(24)),
                   boxShadow: [
@@ -340,9 +341,8 @@ class _MeetupVerificationAdminState extends State<MeetupVerificationAdmin> {
                             ),
                             onSelected: (bool selected) {
                               setState(() {
-                                selectedVerification = selected
-                                    ? status["value"] as String?
-                                    : null;
+                                selectedVerification =
+                                    selected ? status["value"] : null;
                               });
                             },
                           );
@@ -374,9 +374,8 @@ class _MeetupVerificationAdminState extends State<MeetupVerificationAdmin> {
                             ),
                             onSelected: (bool selected) {
                               setState(() {
-                                selectedPayment = selected
-                                    ? status["value"] as String?
-                                    : null;
+                                selectedPayment =
+                                    selected ? status["value"] : null;
                               });
                             },
                           );
@@ -409,9 +408,8 @@ class _MeetupVerificationAdminState extends State<MeetupVerificationAdmin> {
                             ),
                             onSelected: (bool selected) {
                               setState(() {
-                                selectedUserVerification = selected
-                                    ? status["value"] as String?
-                                    : null;
+                                selectedUserVerification =
+                                    selected ? status["value"] : null;
                               });
                             },
                           );
@@ -444,9 +442,8 @@ class _MeetupVerificationAdminState extends State<MeetupVerificationAdmin> {
                             ),
                             onSelected: (bool selected) {
                               setState(() {
-                                selectedApplicationVerification = selected
-                                    ? status["value"] as String?
-                                    : null;
+                                selectedApplicationVerification =
+                                    selected ? status["value"] : null;
                               });
                             },
                           );

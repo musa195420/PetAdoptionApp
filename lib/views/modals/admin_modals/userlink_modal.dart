@@ -151,17 +151,18 @@ class UserLinkModal extends StatelessWidget {
               placeholder: (context, url) => SizedBox(
                 width: 80,
                 height: 80,
-                child: Center(child:SizedBox(
-                      width: 80,
-                      height: 80,
-                      child: Center(
-                          child: FadingCircularDots(
-                        count: 10,
-                        radius: 20,
-                        dotRadius: 4,
-                        duration: Duration(milliseconds: 1200),
-                      )),
-                    )),
+                child: Center(
+                    child: SizedBox(
+                  width: 80,
+                  height: 80,
+                  child: Center(
+                      child: FadingCircularDots(
+                    count: 10,
+                    radius: 20,
+                    dotRadius: 4,
+                    duration: Duration(milliseconds: 1200),
+                  )),
+                )),
               ),
               errorWidget: (context, url, error) => Image.asset(
                 defaultAsset,
@@ -242,7 +243,7 @@ class UserLinkModal extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                 decoration: BoxDecoration(
-                  color: color.withOpacity(0.1),
+                  color: color.withValues(alpha: 0.1),
                   border: Border.all(color: color),
                   borderRadius: boxRadius,
                 ),

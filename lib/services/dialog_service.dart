@@ -538,6 +538,7 @@ class DialogService implements IDialogService {
   }
 
   /// Returns `null` if the user cancels either picker.
+  @override
   Future<DateTime?> showDateTimePicker({
     DateTime? initialDateTime,
     bool barrierDismissible = false,
@@ -673,7 +674,7 @@ class DialogService implements IDialogService {
               borderRadius: BorderRadius.circular(20),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.brown.shade300.withOpacity(0.5),
+                  color: Colors.brown.shade300.withValues(alpha: 0.5),
                   blurRadius: 18,
                   offset: const Offset(0, 8),
                 ),
@@ -689,7 +690,7 @@ class DialogService implements IDialogService {
                     color: Colors.brown.shade700, // dark brown circle
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.brown.shade900.withOpacity(0.7),
+                        color: Colors.brown.shade900.withValues(alpha: 0.7),
                         blurRadius: 12,
                         offset: const Offset(0, 6),
                       )
@@ -712,7 +713,7 @@ class DialogService implements IDialogService {
                     color: Colors.brown.shade900, // dark brown text
                     shadows: [
                       Shadow(
-                        color: Colors.brown.shade200.withOpacity(0.6),
+                        color: Colors.brown.shade200.withValues(alpha: 0.6),
                         offset: const Offset(1, 1),
                         blurRadius: 1,
                       ),
@@ -727,6 +728,7 @@ class DialogService implements IDialogService {
     );
   }
 
+  @override
   Future<bool> showSelectionDialog({required Message message}) async {
     final context = _navigationService.navigatorKey.currentContext!;
 
@@ -745,10 +747,10 @@ class DialogService implements IDialogService {
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   color: const Color(0xFF6D4C41)
-                      .withOpacity(0.9), // Semi-transparent brown overlay
+                      .withValues(alpha: 0.9), // Semi-transparent brown overlay
                   borderRadius: BorderRadius.circular(20),
-                  border:
-                      Border.all(color: Colors.brown.shade300.withOpacity(0.6)),
+                  border: Border.all(
+                      color: Colors.brown.shade300.withValues(alpha: 0.6)),
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -766,7 +768,7 @@ class DialogService implements IDialogService {
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: Colors.brown.shade700.withOpacity(0.3),
+                        color: Colors.brown.shade700.withValues(alpha: 0.3),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(

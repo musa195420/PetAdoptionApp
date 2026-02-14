@@ -47,8 +47,8 @@ class MessagePage extends StatelessWidget {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  Color(0xFF1C0B00).withOpacity(0.9),
-                  Color(0xFF3D1B00).withOpacity(0.95),
+                  Color(0xFF1C0B00).withValues(alpha: 0.9),
+                  Color(0xFF3D1B00).withValues(alpha: 0.95),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -68,15 +68,15 @@ class MessagePage extends StatelessWidget {
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            Color(0xFF3D1B00).withOpacity(0.6),
-                            Color(0xFFFF7700).withOpacity(0.4),
+                            Color(0xFF3D1B00).withValues(alpha: 0.6),
+                            Color(0xFFFF7700).withValues(alpha: 0.4),
                           ],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                         ),
                         borderRadius: BorderRadius.circular(16),
                         border: Border.all(
-                            color: Colors.orangeAccent.withOpacity(0.4)),
+                            color: Colors.orangeAccent.withValues(alpha: 0.4)),
                       ),
                       child: const Center(
                         child: Text(
@@ -101,11 +101,11 @@ class MessagePage extends StatelessWidget {
                             duration: const Duration(milliseconds: 300),
                             margin: const EdgeInsets.symmetric(vertical: 6),
                             decoration: BoxDecoration(
-                              color: Color(0xFF4A2C18).withOpacity(0.8),
+                              color: Color(0xFF4A2C18).withValues(alpha: 0.8),
                               borderRadius: BorderRadius.circular(14),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withOpacity(0.2),
+                                  color: Colors.black.withValues(alpha: 0.2),
                                   blurRadius: 6,
                                   offset: const Offset(2, 4),
                                 ),
@@ -127,8 +127,8 @@ class MessagePage extends StatelessWidget {
                                 viewModel
                                     .onMenuItemTap(viewModel.listItems[index]);
                               },
-                              hoverColor: Colors.orange.withOpacity(0.1),
-                              splashColor: Colors.orange.withOpacity(0.2),
+                              hoverColor: Colors.orange.withValues(alpha: 0.1),
+                              splashColor: Colors.orange.withValues(alpha: 0.2),
                             ),
                           ),
                         )

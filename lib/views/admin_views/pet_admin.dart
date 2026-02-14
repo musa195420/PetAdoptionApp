@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:petadoption/helpers/colors.dart';
 import 'package:petadoption/custom_widgets/stateful_wrapper.dart';
 import 'package:petadoption/models/response_models/pet_response.dart';
@@ -20,8 +19,7 @@ class PetAdmin extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final viewModel = context.watch<PetAdminViewModel>();
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
+    Theme.of(context);
 
     // We'll override the dark mode check, you can toggle it if you want
     // For now, assume always using your brown theme
@@ -77,7 +75,7 @@ class PetAdmin extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
-                    color: darkBrown.withOpacity(0.7),
+                    color: darkBrown.withValues(alpha: 0.7),
                     blurRadius: 8,
                     offset: const Offset(0, 3),
                   ),
@@ -111,7 +109,7 @@ class PetAdmin extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
-                    color: darkBrown.withOpacity(0.7),
+                    color: darkBrown.withValues(alpha: 0.7),
                     blurRadius: 8,
                     offset: const Offset(0, 3),
                   ),
@@ -134,11 +132,13 @@ class PetAdmin extends StatelessWidget {
         style: TextStyle(color: darkBrown),
         decoration: InputDecoration(
           hintText: "Search pets...",
-          hintStyle: TextStyle(color: darkBrown.withOpacity(0.6)),
-          prefixIcon: Icon(Icons.search, color: darkBrown.withOpacity(0.6)),
+          hintStyle: TextStyle(color: darkBrown.withValues(alpha: 0.6)),
+          prefixIcon:
+              Icon(Icons.search, color: darkBrown.withValues(alpha: 0.6)),
           suffixIcon: searchController.text.isNotEmpty
               ? IconButton(
-                  icon: Icon(Icons.clear, color: darkBrown.withOpacity(0.6)),
+                  icon: Icon(Icons.clear,
+                      color: darkBrown.withValues(alpha: 0.6)),
                   onPressed: () {
                     searchController.clear();
                     viewModel.resetFilters();
@@ -249,7 +249,7 @@ class PetAdmin extends StatelessWidget {
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 8, vertical: 4),
                               decoration: BoxDecoration(
-                                color: statusColor.withOpacity(0.5),
+                                color: statusColor.withValues(alpha: 0.5),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Text(status,
@@ -264,18 +264,19 @@ class PetAdmin extends StatelessWidget {
                         const SizedBox(height: 4),
                         Text(pet.animal ?? "Unknown breed",
                             style: TextStyle(
-                              color: darkBrown.withOpacity(0.7),
+                              color: darkBrown.withValues(alpha: 0.7),
                               fontSize: 14,
                             )),
                         const SizedBox(height: 8),
                         Row(
                           children: [
                             Icon(Icons.person_outline,
-                                size: 16, color: darkBrown.withOpacity(0.7)),
+                                size: 16,
+                                color: darkBrown.withValues(alpha: 0.7)),
                             const SizedBox(width: 4),
                             Text(pet.userEmail ?? "No owner",
                                 style: TextStyle(
-                                  color: darkBrown.withOpacity(0.7),
+                                  color: darkBrown.withValues(alpha: 0.7),
                                   fontSize: 13,
                                 )),
                           ],
@@ -318,7 +319,7 @@ class PetAdmin extends StatelessWidget {
                           horizontal: 12, vertical: 6),
                       decoration: BoxDecoration(
                         border: Border.all(color: rejectedRed, width: 2),
-                        color: rejectedRed.withOpacity(0.15),
+                        color: rejectedRed.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: Text(
@@ -365,18 +366,18 @@ class PetAdmin extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.pets, size: 60, color: darkBrown.withOpacity(0.5)),
+          Icon(Icons.pets, size: 60, color: darkBrown.withValues(alpha: 0.5)),
           const SizedBox(height: 16),
           Text("No pets found",
               style: TextStyle(
                 fontSize: 18,
-                color: darkBrown.withOpacity(0.7),
+                color: darkBrown.withValues(alpha: 0.7),
                 fontWeight: FontWeight.bold,
               )),
           const SizedBox(height: 8),
           Text("Try adjusting your search or filter",
               style: TextStyle(
-                color: darkBrown.withOpacity(0.5),
+                color: darkBrown.withValues(alpha: 0.5),
               )),
         ],
       ),
@@ -398,7 +399,7 @@ class PetAdmin extends StatelessWidget {
             height: 120,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16),
-              color: lightBrown.withOpacity(0.3),
+              color: lightBrown.withValues(alpha: 0.3),
             ),
           ),
         );
@@ -530,7 +531,7 @@ class _FilterOptionsDialogState extends State<FilterOptionsDialog> {
             borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.1),
+                color: Colors.black.withValues(alpha: 0.1),
                 blurRadius: 12,
                 offset: const Offset(0, -3),
               ),
@@ -559,7 +560,7 @@ class _FilterOptionsDialogState extends State<FilterOptionsDialog> {
                   color: darkBrown,
                   shadows: [
                     Shadow(
-                      color: Colors.black.withOpacity(0.15),
+                      color: Colors.black.withValues(alpha: 0.15),
                       offset: Offset(1, 1),
                       blurRadius: 2,
                     ),
@@ -603,7 +604,7 @@ class _FilterOptionsDialogState extends State<FilterOptionsDialog> {
                     borderRadius: BorderRadius.circular(14),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.25),
+                        color: Colors.black.withValues(alpha: 0.25),
                         offset: const Offset(0, 4),
                         blurRadius: 8,
                       ),
@@ -680,7 +681,7 @@ extension GradientChip on ChoiceChip {
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.15),
+              color: Colors.black.withValues(alpha: 0.15),
               offset: const Offset(0, 3),
               blurRadius: 6,
             ),

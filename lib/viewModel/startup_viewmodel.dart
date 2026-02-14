@@ -1,11 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:petadoption/helpers/image_processor.dart';
 import 'package:petadoption/helpers/locator.dart';
 import 'package:petadoption/models/hive_models/user.dart';
 import 'package:petadoption/services/api_service.dart';
 import 'package:petadoption/services/db_service.dart';
-import 'package:petadoption/services/dialog_service.dart';
 import 'package:petadoption/services/global_service.dart';
 import 'package:petadoption/services/navigation_service.dart';
 import 'package:petadoption/services/pref_service.dart';
@@ -13,8 +11,6 @@ import 'package:petadoption/viewModel/base_view_model.dart';
 import '../helpers/constants.dart';
 import '../models/request_models/refresh_token_request.dart';
 import '../models/response_models/refresh_token_response.dart';
-
-IDialogService get _dialogService => locator<IDialogService>();
 
 class StartupViewModel extends BaseViewModel {
   PrefService get _prefService => locator<PrefService>();

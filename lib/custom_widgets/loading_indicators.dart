@@ -155,7 +155,7 @@ class _FadingHorizontalDotsState extends State<FadingHorizontalDots>
                 width: widget.dotRadius * 2,
                 height: widget.dotRadius * 2,
                 decoration: BoxDecoration(
-                  color: widget.color.withOpacity(opacity),
+                  color: widget.color.withValues(alpha: opacity),
                   shape: BoxShape.circle,
                 ),
               );
@@ -176,14 +176,14 @@ class FadingDotsIndicator extends StatelessWidget {
   final Color inactiveColor;
 
   const FadingDotsIndicator({
-    Key? key,
+    super.key,
     this.count = 5,
     this.selectedIndex = 0,
     this.radius = 6.0,
     this.spacing = 12.0,
     this.activeColor = Colors.blue,
     this.inactiveColor = Colors.grey,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -197,7 +197,8 @@ class FadingDotsIndicator extends StatelessWidget {
           width: radius * 2,
           height: radius * 2,
           decoration: BoxDecoration(
-            color: isSelected ? activeColor : inactiveColor.withOpacity(0.5),
+            color:
+                isSelected ? activeColor : inactiveColor.withValues(alpha: 0.5),
             shape: BoxShape.circle,
           ),
         );

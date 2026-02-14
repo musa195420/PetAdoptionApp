@@ -4,9 +4,6 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:petadoption/custom_widgets/default_text_input.dart';
-import 'package:petadoption/custom_widgets/loading_indicators.dart';
-import 'package:petadoption/custom_widgets/stateful_wrapper.dart';
-import 'package:petadoption/helpers/colors.dart';
 import 'package:petadoption/models/response_models/secure_meetup.dart';
 import 'package:provider/provider.dart';
 
@@ -290,7 +287,7 @@ class _SecureEditState extends State<SecureEdit> {
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.2),
+              color: Colors.grey.withValues(alpha: 0.2),
               blurRadius: 10,
               spreadRadius: 2,
             ),

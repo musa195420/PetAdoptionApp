@@ -27,7 +27,7 @@ class FavouritePage extends StatelessWidget {
       onDispose: () {},
       child: Scaffold(
         key: scaffoldKey,
-        //backgroundColor: lightBrown.withOpacity(0.2),
+        //backgroundColor: lightBrown.withValues( alpha :0.2),
         body: Column(
           children: [
             Container(
@@ -94,7 +94,8 @@ class FavouritePage extends StatelessWidget {
             // 🐾 Pet List
             Expanded(
               child: viewModel.filteredFavourite == null
-                  ? const Center(child: SizedBox(
+                  ? const Center(
+                      child: SizedBox(
                       width: 80,
                       height: 80,
                       child: Center(

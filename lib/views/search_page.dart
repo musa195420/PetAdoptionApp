@@ -13,7 +13,6 @@ import '../models/response_models/pet_response.dart';
 const _kPrimary = Color(0xFF222831);
 const _kSecondary = Color.fromARGB(255, 69, 19, 2);
 const _kStroke = Color(0xFFE0E0E0);
-const _kBg = Color(0xFFFFFFFF);
 
 class SearchPage extends StatelessWidget {
   const SearchPage({super.key});
@@ -223,8 +222,9 @@ class _CategoryGrid extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 decoration: BoxDecoration(
-                  color:
-                      selected ? _kSecondary.withOpacity(0.08) : Colors.white,
+                  color: selected
+                      ? _kSecondary.withValues(alpha: 0.08)
+                      : Colors.white,
                   border: Border.all(
                     color: selected ? _kSecondary : _kStroke,
                     width: 1.4,
@@ -233,7 +233,7 @@ class _CategoryGrid extends StatelessWidget {
                   boxShadow: [
                     if (selected)
                       BoxShadow(
-                        color: _kSecondary.withOpacity(0.15),
+                        color: _kSecondary.withValues(alpha: 0.15),
                         blurRadius: 4,
                         offset: const Offset(0, 2),
                       ),
@@ -349,7 +349,9 @@ class _BreedsGrid extends StatelessWidget {
                 curve: Curves.easeInOut,
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
                 decoration: BoxDecoration(
-                  color: selected ? _kSecondary.withOpacity(0.1) : Colors.white,
+                  color: selected
+                      ? _kSecondary.withValues(alpha: 0.1)
+                      : Colors.white,
                   border: Border.all(
                     color: selected ? _kSecondary : _kStroke,
                     width: 1.5,
@@ -358,7 +360,7 @@ class _BreedsGrid extends StatelessWidget {
                   boxShadow: [
                     if (selected)
                       BoxShadow(
-                        color: _kSecondary.withOpacity(0.2),
+                        color: _kSecondary.withValues(alpha: 0.2),
                         blurRadius: 4,
                         offset: const Offset(0, 2),
                       ),
@@ -463,14 +465,14 @@ class _PetCard extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.white.withOpacity(0.9), Colors.grey.shade100],
+            colors: [Colors.white.withValues(alpha: 0.9), Colors.grey.shade100],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 12,
               offset: const Offset(4, 6),
             ),
@@ -522,7 +524,7 @@ class _PetCard extends StatelessWidget {
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [Colors.white.withOpacity(0.9), Colors.white],
+                    colors: [Colors.white.withValues(alpha: 0.9), Colors.white],
                   ),
                 ),
                 child: Column(

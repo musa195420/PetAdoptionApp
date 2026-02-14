@@ -23,10 +23,12 @@ class ProofImages {
     final map = <String, String>{};
 
     if (proofPicPath?.isNotEmpty ?? false) map['proof_pic'] = proofPicPath!;
-    if (adopterIdFrontPath?.isNotEmpty ?? false)
+    if (adopterIdFrontPath?.isNotEmpty ?? false) {
       map['adopter_id_front'] = adopterIdFrontPath!;
-    if (adopterIdBackPath?.isNotEmpty ?? false)
+    }
+    if (adopterIdBackPath?.isNotEmpty ?? false) {
       map['adopter_id_back'] = adopterIdBackPath!;
+    }
 
     return map;
   }

@@ -140,7 +140,7 @@ class DonorAdmin extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(
                             vertical: 5, horizontal: 10),
                         decoration: BoxDecoration(
-                          color: color.withOpacity(0.1),
+                          color: color.withValues(alpha: 0.1),
                           border: Border.all(color: color),
                           borderRadius: BorderRadius.circular(10),
                         ),

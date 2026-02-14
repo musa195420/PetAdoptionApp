@@ -276,7 +276,7 @@ class MeetupModal extends StatelessWidget {
                   blurRadius: 8,
                   offset: const Offset(0, 4),
                   spreadRadius: 0,
-                  color: Colors.green.shade200.withOpacity(.5),
+                  color: Colors.green.shade200.withValues(alpha: .5),
                 ),
             ],
           ),
@@ -376,7 +376,7 @@ class MeetupModal extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.green.withOpacity(0.1),
+              color: Colors.green.withValues(alpha: 0.1),
               blurRadius: 10,
               spreadRadius: 2,
             ),
@@ -529,7 +529,7 @@ class MeetupModal extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.3),
+              color: Colors.black.withValues(alpha: 0.3),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -685,10 +685,10 @@ Widget _buildIconButton({
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: color.withOpacity(0.15),
+          color: color.withValues(alpha: 0.15),
           boxShadow: [
             BoxShadow(
-              color: color.withOpacity(.4),
+              color: color.withValues(alpha: .4),
               blurRadius: 10,
               spreadRadius: 1,
             ),

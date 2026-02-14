@@ -9,7 +9,6 @@ import 'package:petadoption/services/api_service.dart';
 import 'package:petadoption/services/global_service.dart';
 import 'package:petadoption/viewModel/admin_view_models/user_admin_view_model.dart';
 import 'package:petadoption/viewModel/base_view_model.dart';
-import 'package:petadoption/viewModel/startup_viewmodel.dart';
 
 import '../services/dialog_service.dart';
 import '../services/navigation_service.dart';
@@ -21,7 +20,6 @@ class ApplicationViewModel extends BaseViewModel {
   IAPIService get _apiService => locator<IAPIService>();
   IDialogService get _dialogService => locator<IDialogService>();
   GlobalService get _globalService => locator<GlobalService>();
-  StartupViewModel get _startupViewModel => locator<StartupViewModel>();
   List<ApplicationModel>? applications;
   List<ApplicationModel>? filteredApplications;
 

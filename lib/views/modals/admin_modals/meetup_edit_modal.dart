@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:petadoption/custom_widgets/default_text_input.dart';
-import 'package:petadoption/custom_widgets/stateful_wrapper.dart';
 import 'package:petadoption/models/response_models/meetup.dart';
 import 'package:provider/provider.dart';
 
@@ -225,8 +224,8 @@ class _MeetupEditState extends State<MeetupEdit> {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            statusColor.withOpacity(0.15),
-            statusColor.withOpacity(0.05),
+            statusColor.withValues(alpha: 0.15),
+            statusColor.withValues(alpha: 0.05),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,

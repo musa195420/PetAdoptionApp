@@ -1,7 +1,4 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
-import 'package:petadoption/extenshions/string_ext.dart';
 import 'package:petadoption/helpers/constants.dart';
 import 'package:petadoption/helpers/locator.dart';
 import 'package:petadoption/models/response_models/meetup_verification.dart';
@@ -148,7 +145,7 @@ class _MeetupVerificationDetailPageState
         margin: const EdgeInsets.symmetric(vertical: 6),
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
         decoration: BoxDecoration(
-          color: color.withOpacity(0.15),
+          color: color.withValues(alpha: 0.15),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(color: color, width: 1.5),
         ),
@@ -226,7 +223,7 @@ class _MeetupVerificationDetailPageState
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.2),
+                color: Colors.black.withValues(alpha: 0.2),
                 offset: const Offset(0, 3),
                 blurRadius: 8,
               ),
