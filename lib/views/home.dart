@@ -20,44 +20,41 @@ class Home extends StatelessWidget {
 
     return Scaffold(
       key: scaffoldKey,
-      backgroundColor: const Color.fromARGB(255, 99, 34, 10),
-      extendBody: true,
-      bottomNavigationBar: SafeArea(
-        minimum: const EdgeInsets.only(bottom: 0), // Pushes above nav bar
-        child: CircleNavBar(
-          activeIcons: const [
-            Icon(Icons.favorite, color: Colors.white),
-            Icon(Icons.search, color: Colors.white),
-            Icon(Icons.home, color: Colors.white),
-            Icon(Icons.message, color: Colors.white),
-            Icon(Icons.person, color: Colors.white),
-          ],
-          inactiveIcons: const [
-            Column(children: [Icon(Icons.favorite, color: Colors.white)]),
-            Column(children: [Icon(Icons.search, color: Colors.white)]),
-            Column(children: [Icon(Icons.home, color: Colors.white)]),
-            Column(
-                children: [Icon(Icons.message_rounded, color: Colors.white)]),
-            Column(children: [Icon(Icons.person, color: Colors.white)]),
-          ],
-          color: const Color.fromARGB(255, 99, 34, 10),
-          height: 50,
-          circleWidth: 50,
-          activeIndex: viewModel.tabIndex,
-          onTap: (index) {
-            viewModel.tabIndex = index;
-            pageController.jumpToPage(viewModel.tabIndex);
-          },
-          padding: EdgeInsets.zero,
-          cornerRadius: const BorderRadius.only(
-            topLeft: Radius.circular(8),
-            topRight: Radius.circular(8),
-            bottomRight: Radius.circular(0),
-            bottomLeft: Radius.circular(0),
-          ),
-          shadowColor: const Color(0xFF3E2723),
-          elevation: 10,
+      backgroundColor: const Color(0xfff8c561),
+      // extendBody: true,
+      bottomNavigationBar: CircleNavBar(
+        activeIcons: const [
+          Icon(Icons.favorite, color: Colors.white),
+          Icon(Icons.search, color: Colors.white),
+          Icon(Icons.home, color: Colors.white),
+          Icon(Icons.message, color: Colors.white),
+          Icon(Icons.person, color: Colors.white),
+        ],
+        inactiveIcons: const [
+          Column(children: [Icon(Icons.favorite, color: Colors.white)]),
+          Column(children: [Icon(Icons.search, color: Colors.white)]),
+          Column(children: [Icon(Icons.home, color: Colors.white)]),
+          Column(
+              children: [Icon(Icons.message_rounded, color: Colors.white)]),
+          Column(children: [Icon(Icons.person, color: Colors.white)]),
+        ],
+        color: const Color.fromARGB(255, 99, 34, 10),
+        height: 50,
+        circleWidth: 50,
+        activeIndex: viewModel.tabIndex,
+        onTap: (index) {
+          viewModel.tabIndex = index;
+          pageController.jumpToPage(viewModel.tabIndex);
+        },
+        padding: EdgeInsets.zero,
+        cornerRadius: const BorderRadius.only(
+          topLeft: Radius.circular(8),
+          topRight: Radius.circular(8),
+          bottomRight: Radius.circular(0),
+          bottomLeft: Radius.circular(0),
         ),
+        shadowColor: const Color(0xFF3E2723),
+        elevation: 10,
       ),
       body: PageView(
         controller: pageController,

@@ -13,7 +13,6 @@ import 'package:petadoption/models/hive_models/user.dart';
 import 'package:petadoption/models/response_models/meetup.dart';
 import 'package:petadoption/models/response_models/pet_response.dart';
 import 'package:petadoption/models/response_models/secure_meetup.dart';
-import 'package:petadoption/models/response_models/user_profile.dart';
 import 'package:petadoption/models/response_models/user_verification.dart';
 import 'package:petadoption/services/navigation_service.dart';
 import 'package:petadoption/viewModel/profile_view_model.dart';
@@ -22,7 +21,7 @@ import 'package:provider/provider.dart';
 import '../helpers/constants.dart';
 
 NavigationService get _navigationService => locator<NavigationService>();
-
+late ProfileViewModel viewModel;
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
@@ -34,36 +33,23 @@ class _ProfilePageState extends State<ProfilePage> {
   final Color primaryColor = const Color(0xFF3E2723);
   final Color accentColor = const Color.fromARGB(255, 83, 36, 6);
   final Color backgroundColor = const Color(0xFFFAF3E0);
-  UserProfile? user;
 
   late TextEditingController nameController;
   late TextEditingController phoneController;
   late TextEditingController addressController;
 
-  late ProfileViewModel viewModel;
-
   @override
   void initState() {
     super.initState();
+
     nameController = TextEditingController();
     phoneController = TextEditingController();
     addressController = TextEditingController();
-
-    viewModel = context.read<ProfileViewModel>();
-
-    _loadUserData();
-  }
-
-  Future<void> _loadUserData() async {
-    final loadedUser = await viewModel.getUser();
-    if (loadedUser != null) {
-      setState(() {
-        user = loadedUser;
-        nameController.text = user?.name ?? "";
-        addressController.text = user?.location ?? "";
-        phoneController.text = user?.phonenumber ?? "";
-      });
-    }
+viewModel = context.read<ProfileViewModel>();
+    // Call API from ViewModel
+    Future.microtask(() {
+      viewModel.getUser();
+    });
   }
 
   @override
@@ -76,71 +62,81 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: backgroundColor,
-      body: user == null
-          ? const Center(
+    return Consumer<ProfileViewModel>(
+      builder: (context, viewModel, _) {
+        final profile = viewModel.userProfile;
+        final user = viewModel.user;
+
+        // 🔥 Loading state handled by ViewModel
+        if (profile == null || user == null) {
+          return Scaffold(
+            backgroundColor: backgroundColor,
+            body: const Center(
               child: FadingCircularDots(
                 count: 8,
                 radius: 20,
                 dotRadius: 3,
                 duration: Duration(milliseconds: 1200),
               ),
-            )
-          : SafeArea(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(vertical: 20),
-                      decoration: BoxDecoration(
-                        gradient: appBarGradient,
-                        borderRadius: const BorderRadius.only(
-                          bottomLeft: Radius.circular(30),
-                          bottomRight: Radius.circular(30),
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.2),
-                            offset: const Offset(0, 3),
-                            blurRadius: 8,
-                          ),
-                        ],
+            ),
+          );
+        }
+
+        // ✅ Fill controllers once
+        if (nameController.text.isEmpty) {
+          nameController.text = profile.name ?? "";
+          addressController.text = profile.location ?? "";
+          phoneController.text = user.phoneNumber ?? "";
+        }
+
+        return Scaffold(
+          backgroundColor: backgroundColor,
+          body: SafeArea(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    decoration: BoxDecoration(
+                      gradient: appBarGradient,
+                      borderRadius: const BorderRadius.only(
+                        bottomLeft: Radius.circular(30),
+                        bottomRight: Radius.circular(30),
                       ),
-                      child: const Center(
-                        child: Text(
-                          'Profile',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 1.1,
-                          ),
+                    ),
+                    child: const Center(
+                      child: Text(
+                        'Profile',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 5, horizontal: 16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          _profileHeaderWidget(),
-                          const SizedBox(height: 24),
-                          _updateInfoWidget(),
-                          const SizedBox(height: 24),
-                          _infoSectionWidget(),
-                          const SizedBox(height: 24),
-                          // _logoutButton(),
-                          const SizedBox(height: 16),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 5, horizontal: 16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        _profileHeaderWidget(),
+                        const SizedBox(height: 24),
+                        _updateInfoWidget(),
+                        const SizedBox(height: 24),
+                        _infoSectionWidget(),
+                        const SizedBox(height: 24),
+                      ],
+                    ),
+                  )
+                ],
               ),
             ),
+          ),
+        );
+      },
     );
   }
 
